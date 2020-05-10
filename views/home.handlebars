@@ -1,0 +1,13 @@
+<section class="section">
+  {{#if user}}
+  Welcome back, {{user.username}}!
+
+  <ul class="collection">
+    <li class="collection-item">  <a href="/games">Games</a></li>
+
+  </ul>
+  {{/if}}
+  {{#unless user}}
+  Login to play some ebic games
+  {{/unless}}
+</section>

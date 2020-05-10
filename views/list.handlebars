@@ -1,0 +1,19 @@
+<section class="section">
+
+  {{#if user}}
+  Welcome back, {{user.username}}!
+  <h1> List of Games </h1>
+
+  <ul id="games" class="collection">
+    <li class="collection-item">
+      <a href="/taikyoku">Taikyoku Shogi</a>
+    </li>
+  </ul>
+
+
+
+  {{/if}}
+  {{#unless user}}
+  <h1>Please Login!</h1>
+  {{/unless}}
+</section>

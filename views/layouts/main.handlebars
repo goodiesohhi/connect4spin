@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js.map">
+
+  </script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="utf-8">
+  <title>FoxFyreGames</title>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Materialize CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+  {{#if user}}
+
+    <ul id="presence" class="dropdown-content">
+
+      <li>
+
+        <a href="/logout">Log Out</a>
+      </li>
+    </ul>
+  {{/if}}
+  <nav>
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="/" class="brand-logo">EbicGames</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          {{#unless user}}
+          <li>
+            <a href="/login">Log In</a>
+          </li>
+          {{/unless}}
+          {{#if user}}
+
+            <li>
+              <a class="dropdown-trigger" href="#!" data-target="presence">
+                {{user.username}}
+                <i class="material-icons right">arrow_drop_down</i>
+              </a>
+            </li>
+          {{/if}}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+
+
+<button class="openbtn" onclick="openNav()">&#9776; Chat</button>
+
+<div id="content">
+{{{body}}}
+
+</div>
+<div id="mySidepanel" class="sidepanel">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+<div class="panel-body">
+     <ul class="media-list" style="height: 600px; overflow-y: scroll" id="chatbox-listMessages">
+
+     </ul>
+</div>
+<div class="chatbox">
+{{#if user}}
+ <input type="text" class="form-control" placeholder="Type message and press Enter" id="userMessage" />
+{{/if}}
+{{#unless user}}
+Please Login to Chat
+{{/unless}}
+</div>
+</div>
+
+
+
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+  crossorigin="anonymous"></script>
+  <!-- Materialize JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      $(".dropdown-trigger").dropdown();
+    });
+  </script>
+
+  <script>
+  /*
+  var locationz=""
+  if(window.location.hostname.includes("localhost")) {
+    locationz='http://localhost:3001'
+  } else {
+    locationz=window.location.hostname
+  }
+   const socket = io.connect(location);
+  /*var tai=2;
+
+
+ const socket = io.connect('http://localhost:3001');
+ */
+
+var socket=0;
+  if (window.location.host.includes("localhost")){
+
+  socket= io.connect('http://localhost:3001')
+  console.log("On LOCAL")
+  }else{
+   socket= io.connect(window.location.host)
+   console.log("not local")
+  }
+
+
+
+
+   var userMessage = function (name, text) {
+    return ('<li class="media"> <div class="media-body"> <div class="media">' +
+        '<div class="media-body"' +
+        '<b>' + name + '</b> : ' + text +
+        '<hr/> </div></div></div></li>'
+    );
+};
+
+
+var sendMessage = function () {
+    var userMessage = $('#userMessage').val();
+
+    socket.emit('chatMessage', { message: userMessage, username: "{{user.username}}" });
+
+    $('#userMessage').val("");
+};
+
+$('#userMessage').keypress(function (event) {
+
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == '13') {
+        sendMessage();
+    }
+
+});
+socket.on('chatMessage', function (data) {
+    var messages = $('#chatbox-listMessages'),
+    messagesNode = messages[0];
+    $('#chatbox-listMessages').append(userMessage(data.username, data.message));
+    messagesNode.scrollTop = messagesNode.scrollHeight;
+});
+
+   function sendTXT() {
+        console.log("button press");
+        fetch('/send', {method: 'POST'})
+     .then(function(response) {
+       if(response.ok) {
+   console.log("message sent")
+         return;
+       }
+       throw new Error('Request failed.');
+     })
+     .catch(function(error) {
+       console.log(error);
+     });
+
+      };
+
+
+
+
+
+
+function openNav() {
+  document.getElementById("mySidepanel").style.width = "500px";
+}
+
+/* Set the width of the sidebar to 0 (hide it) */
+function closeNav() {
+  document.getElementById("mySidepanel").style.width = "0";
+}
+
+  </script>
+</body>
+
+</html>
