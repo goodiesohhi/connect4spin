@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.4.0",
+    "bcrypt": "^4.0.1",
     "bcrypt-nodejs": "0.0.3",
     "bootstrap": "^4.4.1",
     "bufferutil": "^4.0.1",

@@ -41,5 +41,5 @@ nsp.on('connection', function(socket){
 
 
 setInterval(function(){
-    console.log(app)
+  //  console.log(app)
   }, 500);
