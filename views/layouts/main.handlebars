@@ -138,8 +138,10 @@ var socket=0;
 
 var sendMessage = function () {
     var userMessage = $('#userMessage').val();
+    if (/\S/.test(userMessage)) {
+      socket.emit('chatMessage', { message: userMessage, username: "{{user.username}}" });
+    }
 
-    socket.emit('chatMessage', { message: userMessage, username: "{{user.username}}" });
 
     $('#userMessage').val("");
 };
@@ -160,7 +162,7 @@ socket.on('chatMessage', function (data) {
 });
 
 socket.on('update',function(data){
-  
+
   game=data.state
 })
 
