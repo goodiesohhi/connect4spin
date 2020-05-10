@@ -113,11 +113,11 @@ Please Login to Chat
 
  const socket = io.connect('http://localhost:3001');
  */
-
+var game=null;
 var socket=0;
   if (window.location.host.includes("localhost")){
 
-  socket= io.connect('http://localhost:3001')
+  socket= io.connect('http://localhost')
   console.log("On LOCAL")
   }else{
    socket= io.connect(window.location.host)
@@ -158,6 +158,11 @@ socket.on('chatMessage', function (data) {
     $('#chatbox-listMessages').append(userMessage(data.username, data.message));
     messagesNode.scrollTop = messagesNode.scrollHeight;
 });
+
+socket.on('update',function(data){
+  
+  game=data.state
+})
 
    function sendTXT() {
         console.log("button press");

@@ -1,6 +1,6 @@
 const roomstuff={}
 
-const app = require("../app")
+const app = require("./app")
 function create_UUID(){
     var dt = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -11,10 +11,10 @@ function create_UUID(){
     return uuid;
 }
 
-roomstuff.createRoom=function(name) {
+roomstuff.createRoom=function(name,game) {
 var gs=null;
 if(name=="taikyoku" ) {
-gs=app.games[0].makeroom();
+gs=game.makeroom();
 }
 var room={
   id:name+":"+create_UUID(),
@@ -30,3 +30,10 @@ var room={
 return room
 
 }
+
+
+start=function(app) {
+  roomstuff.app=app;
+  return roomstuff
+}
+module.exports=start

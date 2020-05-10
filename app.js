@@ -15,9 +15,12 @@ var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 const fs = require('fs');
 const app = require('express')();
+var roomstuff=require('./roomstuff')(app)
 const x=0;
 app.lib = {
   io: null,
+  games:null,
+  rooms:{},
 
 
  };
@@ -43,15 +46,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 require('./passport')(app);
-var taikyoku=require('./games/taikyoku.js');
-var games={
-taikyoku
+app.lib.roomstuff=roomstuff;
 
-
-
-}
-
-app.games=games;
 
 
 app.use(logger('dev'));
@@ -64,7 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('./routes'));
 app.post('/send', (req, res) => {
   const click = {clickTime: new Date()};
-  console.log(click);
+
 
 
 
@@ -109,8 +105,9 @@ require('./shared/middleware/mongoose')()
 
     app.lib.io.on('connection', (socket) => {
       socket.join('public')
+      socket.join('test')
   socket.on('chatMessage', (msg) => {
-    console.log(msg.username+" said "+msg.message)
+
   socket.to('public').emit('chatMessage', { username:msg.username,
 message:msg.message
 
@@ -126,6 +123,15 @@ message:msg.message
 });
 
 
+var taikyoku=require('./games/taikyoku.js')(app);
+var games={
+taikyoku
+
+
+
+}
+
+app.lib.games=games;
 
 })
 .catch(err => {

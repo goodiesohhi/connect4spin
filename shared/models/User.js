@@ -22,6 +22,9 @@ const UserSchema = new Schema({
   },
   password: {
     type: String
+  },
+  joinDate:{
+    type:String
   }
 });
 
@@ -52,6 +55,12 @@ UserSchema.pre('save', function(next) {
 
       // override the cleartext password with the hashed one
       user.password = hash;
+
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+var dateTime = date+' '+time;
+      user.joinDate=dateTime
       // let mongoose know we're done now that we've hashed the plaintext password
       next();
     });

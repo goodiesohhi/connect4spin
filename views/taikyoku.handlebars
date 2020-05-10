@@ -8,6 +8,30 @@
 
 -->
   <script type="text/javascript">
+
+//  owner:null,
+//  space:"none",
+  var database={
+"k":{
+  movementData: {
+  type:"step",
+  left:2,
+  right:2,
+  up:2,
+  down:2,
+  upleft:2,
+  upright:2,
+  downleft:2,
+  downright:2
+
+  }
+
+
+
+},
+
+
+  }
 /*
   var locationz=""
   if(window.location.hostname.includes("localhost")) {
@@ -21,13 +45,113 @@ var gameState={};
 
 $( document ).ready(function() {
 
-
   taiSocket=socket;
 });
+input=null;
+var GameScene = new Phaser.Class({
+
+Extends: Phaser.Scene,
+
+  initialize:
+
+  function GameScene ()
+   {
+       Phaser.Scene.call(this, { key: 'gameScene', active: true });
+
+
+   },
+
+ preload:function ()
+{
+
+    this.load.image('tile','images/taikyoku/tile.png');
+    this.load.tilemapTiledJSON('map', 'javascripts/board.json');
+    if (this.game.canvas!=null) {
+    this.game.canvas.id = 'game';
+    }
+
+
+
+
+
+
+},
+
+create:function ()
+{
+    //this.add.image(400, 300, 'sky');
+    var map = this.make.tilemap({ key: 'map' });
+    var tiles = map.addTilesetImage('tile', 'tile');
+    var layer = map.createStaticLayer(0, tiles, 0, 0);
+
+input=this.input;
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    var cursors =  this.input.keyboard.createCursorKeys();
+    var particles = this.add.particles('red');
+    var controlConfig = {
+        camera: this.cameras.main,
+        left: cursors.left,
+        right: cursors.right,
+        up: cursors.up,
+        down: cursors.down,
+        speed: 0.5
+    };
+
+    controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+/*
+    var emitter = particles.createEmitter({
+        speed: 100,
+        scale: { start: 1, end: 0 },
+        blendMode: 'ADD'
+    });
+*/
+  //  var logo = this.physics.add.image(400, 100, 'logo');
+
+    //logo.setVelocity(100, 200);
+    //logo.setBounce(1, 1);
+    //logo.setCollideWorldBounds(true);
+
+    //emitter.startFollow(logo);
+      $("#userMessage").focus(function(){
+  input.keyboard.enabled=false
+
+      });
+    $("#game").mouseenter(function() {
+      if (!input.keyboard.enabled) {
+                  cursors =  input.keyboard.createCursorKeys();
+                }
+                  input.keyboard.enabled=true;
+                  input.keyboard.preventDefault = true;
+
+
+
+            });
+
+            $("#game").mouseleave(function() {
+
+              input.keyboard.enabled=false;
+              input.keyboard.preventDefault = false;
+              input.keyboard.clearCaptures()
+
+
+            });
+},
+
+
+update:function(time, delta) {
+
+
+ controls.update(delta);
+
+
+
+},
+})
+
 
 var config = {
     type: Phaser.AUTO,
-    height:800,
+    height:600,
     width:1200,
     physics: {
         default: 'arcade',
@@ -35,50 +159,11 @@ var config = {
             gravity: { y: 200 }
         }
     },
-    scene: {
-        preload: preload,
-        create: create
-    }
-};
+    scene:GameScene
+  };
+
+
 var game = new Phaser.Game(config);
-
-function preload ()
-{
-    this.load.setBaseURL('http://labs.phaser.io');
-
-    this.load.image('sky', 'assets/skies/space3.png');
-    this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-    this.load.image('red', 'assets/particles/red.png');
-}
-
-function create ()
-{
-    this.add.image(400, 300, 'sky');
-
-    var particles = this.add.particles('red');
-
-    var emitter = particles.createEmitter({
-        speed: 100,
-        scale: { start: 1, end: 0 },
-        blendMode: 'ADD'
-    });
-
-    var logo = this.physics.add.image(400, 100, 'logo');
-
-    logo.setVelocity(100, 200);
-    logo.setBounce(1, 1);
-    logo.setCollideWorldBounds(true);
-
-    emitter.startFollow(logo);
-}
-
-
-function update() {
-
-
-
-}
-
 
 
 

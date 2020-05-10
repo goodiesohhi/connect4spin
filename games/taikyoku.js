@@ -18,8 +18,40 @@ tai.makeroom=function() {
 
 }
 
+start=function(app) {
+  tai.app=app
 
-module.exports=tai;
+  console.log(tai.app)
+  roomTemp=tai.app.lib.roomstuff.createRoom("taikyoku",tai)
+  tai.app.lib.rooms[roomTemp.id]=roomTemp
+  console.log(tai.app.lib.rooms)
+
+  tai.app.lib.io.on('connection', (socket) => {
+  socket.join("test")
+  socket.on('joinRoom', (room) => {
+  socket.join(room)
+
+  });
+  });
+  return tai
+
+
+}
+
+
+
+
+module.exports=start;
+
+
+
+/*
+socket.emit('chatMessage', { username:msg.username,
+message:msg.message
+
+
+});
+*/
 //io.set('origins', '*:*');
 
 
@@ -41,5 +73,15 @@ nsp.on('connection', function(socket){
 
 
 setInterval(function(){
-  //  console.log(app)
+
+  for(var key in tai.app.lib.rooms) {
+  var value = tai.app.lib.rooms[key];
+
+    //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
+    tai.app.lib.io.to("test").emit('update', { state:value
+    });
+}
+
+
+
   }, 500);
