@@ -9,7 +9,7 @@ var cookieParser = require('cookie-parser');
 var events = require('events');
 var logger = require('morgan');
 var http = require('http');
-
+var secure = require('express-force-https');
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
@@ -24,7 +24,7 @@ app.lib = {
 
 const server = require('http').Server(app);
 app.use(flash());
-
+app.use(secure)
 app.use(function (req, res, next) {
     console.log("Set CORS")
     // Website you wish to allow to connect

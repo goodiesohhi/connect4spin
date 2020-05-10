@@ -20,6 +20,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-force-https": "^1.0.0",
     "express-handlebars": "^4.0.4",
     "express-session": "^1.17.1",
     "grapesjs": "^0.16.12",
