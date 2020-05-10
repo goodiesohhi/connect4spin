@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
 });
 
 // view engine setup
-const PORT=process.env.PORT || 3001
+const PORT=process.env.PORT || 80
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
