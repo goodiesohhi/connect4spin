@@ -202,14 +202,17 @@ console.log("marker")
                obj.save()
 
               });
+
+                socket.join(j.roomName)
         } else {
             tRoom.spectators["sp"+Object.keys(tRoom.spectators).length]=socket.username
+              socket.join(j.roomName)
         }
       } else {
         console.log("Invalid Room")
       }
 
-  socket.join(j)
+
 })
   socket.on('chatMessage', (msg) => {
 
