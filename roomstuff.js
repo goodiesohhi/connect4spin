@@ -1,6 +1,6 @@
 const roomstuff={}
 
-const app = require("./app")
+
 function create_UUID(){
     var dt = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -13,15 +13,17 @@ function create_UUID(){
 
 roomstuff.createRoom=function(name,game) {
 var gs=null;
-if(name=="taikyoku" ) {
-gs=game.makeroom();
+if(game=="taikyoku" ) {
+
+gs=roomstuff.app.lib.games["tai"].makeroom();
 }
 var room={
-  id:name+":"+create_UUID(),
+  id:game+":"+create_UUID(),
+  roomname:name,
   gamename:name,
-  players: [],
+  players: {},
   gamestate:gs,
-  spectators:[]
+  spectators:{}
 
 
 
@@ -34,6 +36,7 @@ return room
 
 start=function(app) {
   roomstuff.app=app;
+
   return roomstuff
 }
 module.exports=start

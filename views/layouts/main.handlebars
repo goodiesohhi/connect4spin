@@ -8,10 +8,14 @@
 
 
   </script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="/javascripts/dat.gui.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <link rel="stylesheet" href="/stylesheets/style.css">
 <link rel="stylesheet" href="/stylesheets/dat.gui.css">
@@ -63,28 +67,53 @@
   <div class="container">
 
 
-
-<button class="openbtn" onclick="openNav()">&#9776; Chat</button>
-
+<form action="#chat">
+<button class="openbtn"  onclick="openNav()">&#9776; Chat</button>
+</form>
 <div id="content">
 {{{body}}}
 
 </div>
 <div id="mySidepanel" class="sidepanel">
 <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-<div class="panel-body">
-     <ul class="media-list" style="height: 600px; overflow-y: scroll" id="chatbox-listMessages">
+<div class="container">
 
-     </ul>
+  <ul class="nav nav-tabs">
+    <li ><a data-toggle="tab" href="#chat">Chat</a></li>
+    <li><a data-toggle="tab" class= "smaller" href="#menu1">Menu 1</a></li>
+    <li><a data-toggle="tab" class= "smaller" href="#menu2">Menu 2</a></li>
+
+  </ul>
+
+  <div class="tab-content">
+    <div id="chat" class="tab-pane fade">
+
+      <div class="panel-body ">
+           <ul class="media-list" style="height: 525px; overflow-y: scroll" id="chatbox-listMessages">
+
+           </ul>
+      </div>
+      <div class="chatbox">
+      {{#if user}}
+       <input type="text" class="form-control" placeholder="Type message and press Enter" id="userMessage" />
+      {{/if}}
+      {{#unless user}}
+      Please Login to Chat
+      {{/unless}}
+      </div>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Menu 1</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+    <div id="menu2" class="tab-pane fade">
+      <h3>Menu 2</h3>
+      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+    </div>
+
+  </div>
 </div>
-<div class="chatbox">
-{{#if user}}
- <input type="text" class="form-control" placeholder="Type message and press Enter" id="userMessage" />
-{{/if}}
-{{#unless user}}
-Please Login to Chat
-{{/unless}}
-</div>
+
 </div>
 
 
@@ -99,10 +128,45 @@ Please Login to Chat
   <script type="text/javascript">
     $(function() {
       $(".dropdown-trigger").dropdown();
+
+      $('button.openbtn').click(function(e)
+{
+    // Special stuff to do when this link is clicked...
+
+    // Cancel the default action
+    e.preventDefault();
+});
     });
+
+
   </script>
 
   <script>
+
+  var body = document.body,
+    overlay = document.querySelector('.overlay'),
+    overlayBtts = document.querySelectorAll('button[class$="overlay"]');
+
+[].forEach.call(overlayBtts, function(btt) {
+
+  btt.addEventListener('click', function() {
+
+     /* Detect the button class name */
+     var overlayOpen = this.className === 'open-overlay';
+
+     /* Toggle the aria-hidden state on the overlay and the
+        no-scroll class on the body */
+     overlay.setAttribute('aria-hidden', !overlayOpen);
+     body.classList.toggle('noscroll', overlayOpen);
+
+     /* On some mobile browser when the overlay was previously
+        opened and scrolled, if you open it again it doesn't
+        reset its scrollTop property */
+     overlay.scrollTop = 0;
+
+  }, false);
+
+});
   /*
   var locationz=""
   if(window.location.hostname.includes("localhost")) {
@@ -126,7 +190,7 @@ var socket=0;
    socket= io.connect(window.location.host)
    console.log("not local")
   }
-
+socket.emit('connectZ', {  username: "{{user.username}}" });
 
 
 
@@ -134,9 +198,11 @@ var socket=0;
     return ('<li class="media"> <div class="media-body"> <div class="media">' +
         '<div class="media-body"' +
         '<b>' + name + '</b> : ' + text +
-        '<hr/> </div></div></div></li>'
+        ' </div></div></div></li>'
     );
 };
+
+
 
 
 var sendMessage = function () {
@@ -170,6 +236,14 @@ socket.on('update',function(data){
 
 })
 
+socket.on('roomList',function(data){
+
+  RecRooms=JSON.parse(data.state)
+
+
+})
+
+
    function sendTXT() {
         console.log("button press");
         fetch('/send', {method: 'POST'})
@@ -193,6 +267,7 @@ socket.on('update',function(data){
 
 function openNav() {
   document.getElementById("mySidepanel").style.width = "500px";
+
 }
 
 /* Set the width of the sidebar to 0 (hide it) */

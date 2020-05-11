@@ -11,12 +11,59 @@
 			  src="https://code.jquery.com/jquery-3.5.1.js"
 			  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			  crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
+
+
+
+
+
+<link rel="stylesheet" href="/stylesheets/style.css">
 <script src="./javascripts/taidata.js"></script>
-  <script type="text/javascript">
+
+<script type="text/javascript">
+var body = document.body,
+    overlay = document.querySelector('.overlay'),
+    overlayBtts = document.querySelectorAll('button[class$="overlay"]');
+
+[].forEach.call(overlayBtts, function(btt) {
+
+  btt.addEventListener('click', function() {
+
+     /* Detect the button class name */
+     var overlayOpen = this.className === 'open-overlay';
+
+     /* Toggle the aria-hidden state on the overlay and the
+        no-scroll class on the body */
+     overlay.setAttribute('aria-hidden', !overlayOpen);
+     body.classList.toggle('noscroll', overlayOpen);
+
+     /* On some mobile browser when the overlay was previously
+        opened and scrolled, if you open it again it doesn't
+        reset its scrollTop property */
+     overlay.scrollTop = 0;
+
+  }, false);
+
+});
+
+
+
 
 //  owner:null,
 //  space:"none",
+RecRooms=0;
+var context = {
+  title: "My First Blog Post!",
+  author: {
+    id: 47,
+    name: "Yehuda Katz"
+  },
+  body: "My first post. Wheeeee!"
+};
+
 
 
 
@@ -31,83 +78,129 @@ return piece;
 
 }
 /*
-  var locationz=""
-  if(window.location.hostname.includes("localhost")) {
-    locationz='http://localhost:3001'
-  } else {
-    locationz=window.location.hostname
-  }
+var locationz=""
+if(window.location.hostname.includes("localhost")) {
+  locationz='http://localhost:3001'
+} else {
+  locationz=window.location.hostname
+}
 */
 var taiSocket=0
 var gameState={};
 jQuery(function ($) {
 $( document ).ready(function() {
 
-  taiSocket=socket;
+
+
+taiSocket=socket;
 
 input=null;
 loaded=false
 var Preload = new Phaser.Class({
-  Extends: Phaser.Scene,
-
-    initialize:
-    function GameScene ()
-     {
-         Phaser.Scene.call(this, { key: 'Preload', active: true });
-
-
-     },
-      preload:function () {
-
-      },
-
-      create:function(){
-
-      },
-
-      update:function() {
-
-        if(!loaded) {
-
-          if(gameN!=null) {
-
-            if(gameN.gamestate!=null) {
-                console.log("update3")
-              loaded=true;
-              this.scene.start('gameScene');
-            }
-
-
-          }
-        }
-
-      }
-
-
-})
-var GameScene = new Phaser.Class({
-
 Extends: Phaser.Scene,
 
   initialize:
-
   function GameScene ()
    {
-
-       Phaser.Scene.call(this, { key: 'gameScene', active: false });
+       Phaser.Scene.call(this, { key: 'Preload', active: true });
 
 
    },
+    preload:function () {
 
- preload:function ()
-{
-console.log("START")
-    this.load.image('tile','images/taikyoku/tile.png');
-    this.load.image('piece','images/taikyoku/piece.png');
-    this.load.tilemapTiledJSON('map', 'javascripts/board.json');
-    if (this.game.canvas!=null) {
-    this.game.canvas.id = 'game';
+  },
+
+    create:function(){
+
+
+
+
+    },
+
+    update:function() {
+
+      if(!loaded) {
+
+        if(gameN!=null) {
+
+          if(gameN.gamestate!=null) {
+
+            loaded=true;
+
+
+            $('#startGameNow').trigger('click')
+            this.scene.start('gameScene');
+          }
+
+
+        }
+      }
+
     }
+
+
+})
+var createRoom=function(roomNAME) {
+  var txt = $('#roomtxt').val();
+socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"taikyoku" });
+  $('#roomtxt').val("");
+  window.location.reload();
+}
+
+var joinClick=function(txt) {
+
+socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
+  $('#roomtxt').val("");
+  window.location.reload();
+}
+
+var joinRoom=function() {
+  var txt = $('#roomtxt').val();
+socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
+  $('#roomtxt').val("");
+  window.location.reload();
+}
+
+$('#create').click(function(){
+
+  createRoom();
+})
+
+$('#joinC').click(function(){
+
+  joinClick($(this).attr("value"));
+})
+
+
+
+$('#join').click(function(){
+
+  joinRoom();
+})
+
+var GameScene = new Phaser.Class({
+
+
+Extends: Phaser.Scene,
+
+initialize:
+
+function GameScene ()
+ {
+
+     Phaser.Scene.call(this, { key: 'gameScene', active: false });
+
+
+ },
+
+preload:function ()
+{
+  this.load.image('tile','images/taikyoku/tile.png');
+  this.load.image('piece','images/taikyoku/piece.png');
+  this.load.tilemapTiledJSON('map', 'javascripts/board.json');
+  if (this.game.canvas!=null) {
+  this.game.canvas.id = 'game';
+  }
 
 
 
@@ -118,119 +211,121 @@ console.log("START")
 
 create:function ()
 {
-    //this.add.image(400, 300, 'sky');
-    var map = this.make.tilemap({ key: 'map' });
-    var tiles = map.addTilesetImage('tile', 'tile');
-    var layer = map.createStaticLayer(0, tiles, 650, 0);
+  //this.add.image(400, 300, 'sky');
+  var map = this.make.tilemap({ key: 'map' });
+  var tiles = map.addTilesetImage('tile', 'tile');
+  var layer = map.createStaticLayer(0, tiles, 650, 0);
 
 input=this.input;
-  //  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels+2050);
-    this.cameras.main.zoom =0.5;
-    this.cameras.main.scrollX=1250;
-    var cursors =  this.input.keyboard.createCursorKeys();
-    var particles = this.add.particles('red');
-    var controlConfig = {
-        camera: this.cameras.main,
-        zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-        zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-        left: cursors.left,
-        right: cursors.right,
-        up: cursors.up,
-        down: cursors.down,
-        speed: 1,
-        acceleration: 0.06,
+//  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels+2050);
+  this.cameras.main.zoom =0.5;
+  this.cameras.main.scrollX=1250;
+  var cursors =  this.input.keyboard.createCursorKeys();
+  var particles = this.add.particles('red');
+  var controlConfig = {
+
+      camera: this.cameras.main,
+
+      zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+      zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+      left: cursors.left,
+      right: cursors.right,
+      up: cursors.up,
+      down: cursors.down,
+      speed: 1,
+      acceleration: 0.06,
 drag: 0.0005,
 maxSpeed: 1.0
-    };
+  };
 
-    var pieces=   0;
-    var pieceSprites={}
+  var pieces=   0;
+  var pieceSprites={}
 
-    var cam = this.cameras.main;
-
-
-       gui = new dat.GUI( { autoPlace: false });
-       gui.domElement.id = 'gui';
-
-       var help = {
-           line1: 'Cursors to move',
-           line2: 'Q & E to zoom'
-       }
-
-       var f1 = gui.addFolder('Camera');
-       f1.add(cam, 'x').listen();
-       f1.add(cam, 'y').listen();
-       f1.add(cam, 'scrollX').listen();
-       f1.add(cam, 'scrollY').listen();
-
-       f1.add(cam, 'zoom', 0.2, 2).step(0.1).listen();
-       //f1.add(help, 'line1');
-      // f1.add(help, 'line2');
-       //f1.open();
-
-    for(var key in gameN.gamestate.board) {
-    var p= gameN.gamestate.board[key];
-
-    pieceSprites[key]  = makePiece(p,this);
-
-  }
+  var cam = this.cameras.main;
 
 
+     gui = new dat.GUI( { autoPlace: false });
+     gui.domElement.id = 'gui';
+
+     var help = {
+         line1: 'Cursors to move',
+         line2: 'Q & E to zoom'
+     }
+
+     var f1 = gui.addFolder('Camera');
+     f1.add(cam, 'x').listen();
+     f1.add(cam, 'y').listen();
+     f1.add(cam, 'scrollX').listen();
+     f1.add(cam, 'scrollY').listen();
+
+     f1.add(cam, 'zoom', 0.2, 2).step(0.1).listen();
+     //f1.add(help, 'line1');
+    // f1.add(help, 'line2');
+     //f1.open();
+
+  for(var key in gameN.gamestate.board) {
+  var p= gameN.gamestate.board[key];
+
+  pieceSprites[key]  = makePiece(p,this);
+
+}
 
 
 
-    controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+
+
+  controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
 /*
-    var emitter = particles.createEmitter({
-        speed: 100,
-        scale: { start: 1, end: 0 },
-        blendMode: 'ADD'
-    });
+  var emitter = particles.createEmitter({
+      speed: 100,
+      scale: { start: 1, end: 0 },
+      blendMode: 'ADD'
+  });
 */
-  //  var logo = this.physics.add.image(400, 100, 'logo');
+//  var logo = this.physics.add.image(400, 100, 'logo');
 
-    //logo.setVelocity(100, 200);
-    //logo.setBounce(1, 1);
-    //logo.setCollideWorldBounds(true);
+  //logo.setVelocity(100, 200);
+  //logo.setBounce(1, 1);
+  //logo.setCollideWorldBounds(true);
 
-    //emitter.startFollow(logo);
-      $("#userMessage").focus(function(){
-  input.keyboard.enabled=false
+  //emitter.startFollow(logo);
+    $("#userMessage").focus(function(){
+input.keyboard.enabled=false
 
-      });
-    $("#game").mouseenter(function() {
-      if (!input.keyboard.enabled) {
-                  cursors =  input.keyboard.createCursorKeys();
-                }
-                  input.keyboard.enabled=true;
-                  input.keyboard.preventDefault = true;
-
-
-
-            });
-
-            $("#game").mouseleave(function() {
-
-              input.keyboard.enabled=false;
-              input.keyboard.preventDefault = false;
-              input.keyboard.clearCaptures()
+    });
+  $("#game").mouseenter(function() {
+    if (!input.keyboard.enabled) {
+                cursors =  input.keyboard.createCursorKeys();
+              }
+                input.keyboard.enabled=true;
+                input.keyboard.preventDefault = true;
 
 
-            });
+
+          });
+
+          $("#game").mouseleave(function() {
+
+            input.keyboard.enabled=false;
+            input.keyboard.preventDefault = false;
+            input.keyboard.clearCaptures()
+
+
+          });
 },
 
 
 update:function(time, delta) {
-    this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom, 0.2, 1));﻿
-      this.cameras.main.scrollX=Phaser.Math.Clamp(this.cameras.main.scrollX, 0, 3400)
+  this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom, 0.2, 1));﻿
+    this.cameras.main.scrollX=Phaser.Math.Clamp(this.cameras.main.scrollX, 0, 3400)
 
-      this.cameras.main.scrollY=  Phaser.Math.Clamp(this.cameras.main.scrollY, 0, 2850);
-console.log(3400*(this.cameras.main.zoom/0.2))
-  if(gameN!=null) {
+    this.cameras.main.scrollY=  Phaser.Math.Clamp(this.cameras.main.scrollY, 0, 2850);
+
+if(gameN!=null) {
 pieces=       gameN.gamestate.board;
 }
 
- controls.update(delta);
+controls.update(delta);
 
 
 
@@ -243,20 +338,22 @@ pieces=       gameN.gamestate.board;
 
 
 var config = {
-    type: Phaser.AUTO,
-    height:600,
-    width:1200,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 200 }
-        }
-    },
-    scene:[Preload,GameScene]
-  };
+  type: Phaser.CANVAS,
+  height:600,
+  width:1200,
+  parent:document.getElementById("gameCanvasDiv"),
+  physics: {
+      default: 'arcade',
+      arcade: {
+          gravity: { y: 200 }
+      }
+  },
+  scene:[Preload,GameScene]
+};
 
 
 var game = new Phaser.Game(config);
+
 
 });
 })
@@ -266,9 +363,77 @@ var game = new Phaser.Game(config);
 
 
 
-  </script>
 
-  </script>
+
+
+</script>
+<!--<script type="module" type="text/javascript"  src='./javascripts/imports.js'></script> -->
+
+
+
+<div class="container absH" id="theGame">
+
+  <ul class="nav nav-tabs">
+    <li ><a data-toggle="tab" id="startGameNow" href="#game">Game</a></li>
+    <li class="active"><a class="active" data-toggle="tab" href="#menu1g" aria-expanded="true">Menu 1</a></li>
+    <li><a data-toggle="tab" href="#menu2g">Menu 2</a></li>
+
+  </ul>
+
+  <div class="tab-content">
+    <div id="game" class="tab-pane fade">
+
+<div id="gameCanvasDiv"></div>
+
+
+
+
+</div>
+<div id="menu1g" class="tab-pane fade in active show">
+  {{#unless (inGame user.roomlock) }}
+  <h3>RoomList</h3>
+  <div class="input-group mb-3">
+     <input type="text" class="form-control" placeholder="Room" id="roomtxt" />
+    <div class="input-group-append">
+<button id ="create" type="button" class="input-group-append btn btn-success right">Create</button>
+
+   <button  id ="join" type="button" class="input-group-append btn btn-success right">Join</button>
+</div>
+
+
+</div>
+
+<button class="input-group-append btn btn-success" onClick="window.location.reload();">Refresh</button>
+<hr>
+<div class="container">
+
+
+{{#each (rooms)}}
+<div>
+Room name:  {{roomname}}  id: {{id}} <button id= "joinC" class="input-group-append btn btn-success" value="{{id}}">Join</button>
+</div>
+
+{{/each}}
+
+
+
+</div>
+
+{{/unless}}
+{{#if (inGame user.roomlock) }}
+<h1> Can't view rooms while ingame</h1>
+{{/if}}
+
+
+
+</div>
+<div id="menu2g" class="tab-pane fade">
+  <h3>Menu 2</h3>
+  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+</div>
+
+</div>
+</div>
   {{/if}}
   {{#unless user}}
   You must be logged in to play

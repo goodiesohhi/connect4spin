@@ -25,6 +25,9 @@ const UserSchema = new Schema({
   },
   joinDate:{
     type:String
+  },
+  roomlock:{
+    type:String
   }
 });
 
@@ -39,7 +42,7 @@ const UserSchema = new Schema({
 // "user.isModified is not a function"
 UserSchema.pre('save', function(next) {
   const user = this;
-  console.log(user.username+" hi!");
+
   // only hash the password if it has been modified (or is new)
   if (!user.isModified('password')) {
     return next();

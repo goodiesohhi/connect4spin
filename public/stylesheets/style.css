@@ -7,6 +7,36 @@ a {
   color: #00B7FF;
 }
 
+.noscroll { overflow: hidden; }
+
+@media (min-device-width: 1025px) {
+    /* not strictly necessary, just an experiment for
+       this specific example and couldn't be necessary
+       at all on some browser */
+    .noscroll {
+        padding-right: 15px;
+    }
+}
+
+.overlay {
+     position: fixed;
+     overflow-y: scroll;
+     top: 0; left: 0; right: 0; bottom: 0;
+}
+
+[aria-hidden="true"] {
+    transition: opacity 1s, z-index 0s 1s;
+    width: 100vw;
+    z-index: -1;
+    opacity: 0;
+}
+
+[aria-hidden="false"] {
+    transition: opacity 1s;
+    width: 100%;
+    z-index: 1;
+    opacity: 1;
+}
 /* The sidepanel menu */
 .sidepanel {
   height: 1050px; /* Specify a height */
@@ -19,16 +49,28 @@ a {
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 20px; /* Place content 60px from the top */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
-  opacity: 0.75
+  opacity: 0.90;
+  font-size: 15px;
 }
 .right{
+
   right:0
+}
+.absH{
+  position:absolute;
+  left:0;
+
+}
+.userMessage{
+
+    opacity: 1;
+    color:  #FFFFFF;
 }
 /* The sidepanel links */
 .sidepanel a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 10px;
   color: #818181;
   display: block;
   transition: 0.3s;
@@ -64,6 +106,10 @@ a {
 
 }
 
+#smaller {
+font-size:15px;
+
+}
 #gui {
 z-index: 1;
      position: absolute; top: 2px; left: 2px
