@@ -63,3 +63,8 @@ a {
   border: none;
 
 }
+
+#gui {
+z-index: 1;
+     position: absolute; top: 2px; left: 2px
+}

@@ -26,6 +26,7 @@ app.lib = {
  };
 
 const server = require('http').Server(app);
+app.express=express;
 app.use(flash());
 app.use(secure)
 app.use(function (req, res, next) {

@@ -6,13 +6,19 @@ const cors = require('cors')
 
 
 const app = require("../app.js")
+const dat= require ("../public/javascripts/taidata")
 var fs = require('fs');
 const tai={}
 tai.makeroom=function() {
   var shogi={}
   shogi.players=[];
 
-  shogi.board=[];
+  shogi.board={};
+
+console.log(dat["k"])
+console.log(dat["k"])
+console.log(dat)
+  shogi.board["wK"]=dat["k"]
 
   return shogi;
 
@@ -21,10 +27,10 @@ tai.makeroom=function() {
 start=function(app) {
   tai.app=app
 
-  console.log(tai.app)
+//  console.log(tai.app)
   roomTemp=tai.app.lib.roomstuff.createRoom("taikyoku",tai)
   tai.app.lib.rooms[roomTemp.id]=roomTemp
-  console.log(tai.app.lib.rooms)
+  //console.log(tai.app.lib.rooms)
 
   tai.app.lib.io.on('connection', (socket) => {
   socket.join("test")
@@ -78,7 +84,8 @@ setInterval(function(){
   var value = tai.app.lib.rooms[key];
 
     //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
-    tai.app.lib.io.to("test").emit('update', { state:value
+    //console.log(value.gamestate.board)
+    tai.app.lib.io.to("test").emit('update', { state:JSON.stringify(value)
     });
 }
 

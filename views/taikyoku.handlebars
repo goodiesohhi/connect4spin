@@ -7,31 +7,29 @@
   <canvas class="right" id="taibox" width="200" height="600"></canvas>
 
 -->
+<script
+			  src="https://code.jquery.com/jquery-3.5.1.js"
+			  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+			  crossorigin="anonymous"></script>
+
+<script src="./javascripts/taidata.js"></script>
   <script type="text/javascript">
 
 //  owner:null,
 //  space:"none",
-  var database={
-"k":{
-  movementData: {
-  type:"step",
-  left:2,
-  right:2,
-  up:2,
-  down:2,
-  upleft:2,
-  upright:2,
-  downleft:2,
-  downright:2
-
-  }
 
 
 
-},
+var makePiece=function(dat,p) {
+piece={}
+piece.sprite=p.add.sprite(400, 300, 'piece');
+piece.dat=dat
+return piece;
 
 
-  }
+
+
+}
 /*
   var locationz=""
   if(window.location.hostname.includes("localhost")) {
@@ -42,12 +40,51 @@
 */
 var taiSocket=0
 var gameState={};
-
+jQuery(function ($) {
 $( document ).ready(function() {
 
   taiSocket=socket;
-});
+
 input=null;
+loaded=false
+var Preload = new Phaser.Class({
+  Extends: Phaser.Scene,
+
+    initialize:
+    function GameScene ()
+     {
+         Phaser.Scene.call(this, { key: 'Preload', active: true });
+
+
+     },
+      preload:function () {
+
+      },
+
+      create:function(){
+
+      },
+
+      update:function() {
+
+        if(!loaded) {
+
+          if(gameN!=null) {
+
+            if(gameN.gamestate!=null) {
+                console.log("update3")
+              loaded=true;
+              this.scene.start('gameScene');
+            }
+
+
+          }
+        }
+
+      }
+
+
+})
 var GameScene = new Phaser.Class({
 
 Extends: Phaser.Scene,
@@ -56,15 +93,17 @@ Extends: Phaser.Scene,
 
   function GameScene ()
    {
-       Phaser.Scene.call(this, { key: 'gameScene', active: true });
+
+       Phaser.Scene.call(this, { key: 'gameScene', active: false });
 
 
    },
 
  preload:function ()
 {
-
+console.log("START")
     this.load.image('tile','images/taikyoku/tile.png');
+    this.load.image('piece','images/taikyoku/piece.png');
     this.load.tilemapTiledJSON('map', 'javascripts/board.json');
     if (this.game.canvas!=null) {
     this.game.canvas.id = 'game';
@@ -82,20 +121,63 @@ create:function ()
     //this.add.image(400, 300, 'sky');
     var map = this.make.tilemap({ key: 'map' });
     var tiles = map.addTilesetImage('tile', 'tile');
-    var layer = map.createStaticLayer(0, tiles, 0, 0);
+    var layer = map.createStaticLayer(0, tiles, 650, 0);
 
 input=this.input;
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+  //  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels+2050);
+    this.cameras.main.zoom =0.5;
+    this.cameras.main.scrollX=1250;
     var cursors =  this.input.keyboard.createCursorKeys();
     var particles = this.add.particles('red');
     var controlConfig = {
         camera: this.cameras.main,
+        zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+        zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
         left: cursors.left,
         right: cursors.right,
         up: cursors.up,
         down: cursors.down,
-        speed: 0.5
+        speed: 1,
+        acceleration: 0.06,
+drag: 0.0005,
+maxSpeed: 1.0
     };
+
+    var pieces=   0;
+    var pieceSprites={}
+
+    var cam = this.cameras.main;
+
+
+       gui = new dat.GUI( { autoPlace: false });
+       gui.domElement.id = 'gui';
+
+       var help = {
+           line1: 'Cursors to move',
+           line2: 'Q & E to zoom'
+       }
+
+       var f1 = gui.addFolder('Camera');
+       f1.add(cam, 'x').listen();
+       f1.add(cam, 'y').listen();
+       f1.add(cam, 'scrollX').listen();
+       f1.add(cam, 'scrollY').listen();
+
+       f1.add(cam, 'zoom', 0.2, 2).step(0.1).listen();
+       //f1.add(help, 'line1');
+      // f1.add(help, 'line2');
+       //f1.open();
+
+    for(var key in gameN.gamestate.board) {
+    var p= gameN.gamestate.board[key];
+
+    pieceSprites[key]  = makePiece(p,this);
+
+  }
+
+
+
+
 
     controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
 /*
@@ -139,13 +221,24 @@ input=this.input;
 
 
 update:function(time, delta) {
+    this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom, 0.2, 1));﻿
+      this.cameras.main.scrollX=Phaser.Math.Clamp(this.cameras.main.scrollX, 0, 3400)
 
+      this.cameras.main.scrollY=  Phaser.Math.Clamp(this.cameras.main.scrollY, 0, 2850);
+console.log(3400*(this.cameras.main.zoom/0.2))
+  if(gameN!=null) {
+pieces=       gameN.gamestate.board;
+}
 
  controls.update(delta);
 
 
 
-},
+
+
+}
+
+
 })
 
 
@@ -159,13 +252,14 @@ var config = {
             gravity: { y: 200 }
         }
     },
-    scene:GameScene
+    scene:[Preload,GameScene]
   };
 
 
 var game = new Phaser.Game(config);
 
-
+});
+})
 
 
 
