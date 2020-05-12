@@ -59,6 +59,17 @@ RecRooms=0;
 var SelectedPiece=null;
 
 var localPlayer;
+
+var revPX=function(p) {
+  z=p.worldX;
+
+
+  var x=Math.floor((4350-z)/100)
+return x;
+
+
+
+}
 var getPX=function(dat) {
 var str=dat.tile.split(";")
 var x =parseInt(str[1] , 10)
@@ -66,6 +77,132 @@ var x =parseInt(str[1] , 10)
 return 4300-100*x
 
 }
+
+
+var revPY=function(p) {
+  z=p.worldY;
+var x=Math.floor((z+100)/100)
+var str;
+if(x==1) {
+  str="a"
+} else if(x==2) {
+  str="b"
+}
+else if(x==3) {
+  str="c"
+}
+
+else if(x==4) {
+  str="d"
+}
+
+else if(x==5) {
+  str="e"
+}
+
+else if(x==6) {
+  str="f"
+}
+
+else if(x==7) {
+  str="g"
+}
+
+else if(x==8) {
+  str="h"
+}
+else if(x==9) {
+  str="i"
+}
+else if(x==10) {
+  str="j"
+}
+else if(x==11) {
+  str="k"
+}
+else if(x==12) {
+  str="l"
+}
+else if(x==13) {
+  str="m"
+}
+else if(x==14) {
+  str="n"
+}
+else if(x==15) {
+  str="o"
+}
+else if(x==16) {
+  str="p"
+}
+else if(x==17) {
+  str="q"
+}
+else if(x==18) {
+  str="r"
+}
+else if(x==19) {
+  str="s"
+}
+else if(x==20) {
+  str="t"
+}
+else if(x==21) {
+  str="u"
+}
+else if(x==22) {
+  str="v"
+}
+else if(x==23) {
+  str="w"
+}
+else if(x==24) {
+  str="x"
+}
+else if(x==25) {
+  str="y"
+}
+else if(x==26) {
+  str="z"
+}
+else if(x==27) {
+  str="aa"
+}
+else if(x==28) {
+  str="bb"
+}
+else if(x==29) {
+  str="cc"
+}
+else if(x==30) {
+  str="dd"
+}
+else if(x==31) {
+  str="ee"
+}
+else if(x==32) {
+  str="ff"
+}
+else if(x==33) {
+  str="gg"
+}
+else if(x==34) {
+  str="hh"
+}
+else if(x==35) {
+  str="ii"
+}
+else if(x==36) {
+  str="jj"
+}
+
+
+
+
+return str;
+
+}
+
 var getPY=function(dat) {
 x=0
 var str=dat.tile.split(";")
@@ -151,17 +288,45 @@ x=36
 return 100*x-50;
 
 }
+onObjectClicked=function(pointer,object)
+    {
+      console.log(object);
+
+      if(object.isTilemap) {
+        locationP=revPY(pointer)+";"+revPX(pointer)
+        socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id});
+        SelectedPiece=null;
+          layer.removeInteractive()
+      } else {
+      let objectName = object.texture.key;
+
+        if(objectName === "piece") {
+      if (SelectedPiece==null) {
+      SelectedPiece=object
+      layer.setInteractive({ useHandCursor: true })
+    } else {
+
+      locationP=revPY(pointer)+";"+revPX(pointer)
+      socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id});
+      SelectedPiece=null;
+
+
+    }
+    }
+
+    if(objectName === "") {
+
+    }
+  }
+
+    }
 
 
 
 var makePiece=function(dat,p) {
 var piece={}
 piece.dat=dat
-piece.onObjectClicked=function(pointer,gameObject)
-    {
-      SelectedPiece=gameObject
 
-    }
 piece.x=getPX(dat)
 piece.y=getPY(dat)
 piece.dx=piece.x
@@ -169,7 +334,7 @@ piece.dy=piece.y
 piece.sprite=p.add.sprite( piece.dx,piece.dy, 'piece');
 piece.sprite.parRef=piece;
 piece.sprite.setInteractive({ useHandCursor: true })
-p.input.on('gameobjectdown',piece.onObjectClicked);
+
 
 if(dat.owner=="p2") {
   piece.sprite.flipY=true;
@@ -178,7 +343,7 @@ if(dat.owner=="p2") {
 var SelectBox;
 var textConfig={fontSize:'40px',color:'#ffff00',fontFamily: 'Arial'};
 piece.text = p.add.text(piece.dx-(40-(25*dat.pID.length)),piece.dy-25,dat.pID.toUpperCase(),textConfig);
-return piece;
+return piece.sprite;
 
 
 
@@ -192,8 +357,11 @@ if(window.location.hostname.includes("localhost")) {
   locationz=window.location.hostname
 }
 */
+var layer =null
+var tiles =null;
 var taiSocket=0
 var gameState={};
+var pieceSprites;
 jQuery(function ($) {
 $( document ).ready(function() {
 
@@ -296,6 +464,7 @@ $('#join').click(function(){
   joinRoom();
 })
 
+
 var GameScene = new Phaser.Class({
 
 
@@ -332,12 +501,15 @@ create:function ()
 {
   //this.add.image(400, 300, 'sky');
   var map = this.make.tilemap({ key: 'map' });
-  var tiles = map.addTilesetImage('tile', 'tile');
-  var layer = map.createStaticLayer(0, tiles, 650, 0);
+   tiles = map.addTilesetImage('tile', 'tile');
+   layer = map.createStaticLayer(0, tiles, 650, 0);
 
 
 
 input=this.input;
+input.on('gameobjectdown',onObjectClicked);
+var textConfig={fontSize:'80px',color:'#ffffff',fontFamily: 'Arial'};
+turntext = this.add.text(-575,-200, gameN.players[gameN.gamestate.turnOwner].name+"'s turn.",textConfig).setScrollFactor(0);
 
 //  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels+2050);
   this.cameras.main.zoom =0.5;
@@ -362,7 +534,7 @@ maxSpeed: 1.0
   };
 
   var pieces=   0;
-  var pieceSprites={}
+  pieceSprites={}
 
   cam = this.cameras.main;
 
@@ -460,6 +632,50 @@ update:function(time, delta) {
 
 if(gameN!=null) {
 
+  for(var key in pieceSprites) {
+  var p= pieceSprites[key];
+
+  p.parRef.x=getPX(gameN.gamestate.board[key])
+  p.parRef.y=getPY(gameN.gamestate.board[key])
+
+}
+
+for(var key in pieceSprites) {
+
+var p= pieceSprites[key];
+if(p.parRef.x>p.parRef.dx) {
+p.parRef.dx+=10;
+p.parRef.dx=Phaser.Math.Clamp(p.parRef.dx,p.parRef.dx,p.parRef.x)
+
+
+}
+
+if(p.parRef.x<p.parRef.dx) {
+p.parRef.dx-=10;
+p.parRef.dx=Phaser.Math.Clamp(p.parRef.dx,p.parRef.x,p.parRef.dx)
+
+
+}
+if(p.parRef.y>p.parRef.dy) {
+p.parRef.dy+=10;
+p.parRef.dy=Phaser.Math.Clamp(p.parRef.dy,p.parRef.dy,p.parRef.y)
+
+
+}
+if(p.parRef.y<p.parRef.dy) {
+p.parRef.dy-=10;
+p.parRef.dy=Phaser.Math.Clamp(p.parRef.dy,p.parRef.y,p.parRef.dy)
+
+
+}
+p.parRef.text.x= p.parRef.dx-(40-(25*p.parRef.text._text.length))
+p.parRef.text.y=p.parRef.dy-25
+
+p.x=p.parRef.dx;
+p.y=p.parRef.dy;
+}
+
+
 
   if(SelectedPiece!=null) {
     SelectBox.x=SelectedPiece.x;
@@ -470,7 +686,8 @@ if(gameN!=null) {
       SelectBox.flipY=false;
     }
   } else {
-
+    SelectBox.x=-4000
+    SelectBox.y=-4000
   }
 pieces=       gameN.gamestate.board;
 }

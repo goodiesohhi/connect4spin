@@ -75,6 +75,8 @@ start=function(app) {
 
   socket.on('makeMove', (data) => {
   console.log(data)
+  tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile=data.location;
+
 
   });
 
