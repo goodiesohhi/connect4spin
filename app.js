@@ -169,7 +169,12 @@ mongoose=require('./shared/middleware/mongoose')()
 
         socket.on('createRoom', (j) => {
         tRoom=  addRoom( app.lib.roomstuff.createRoom(j.roomName,j.game));
-        tRoom.players["p1"]=socket.username;
+        tRoom.players["p1"]= {
+        name: socket.username,
+
+        }
+
+
 
 
 console.log("marker")
@@ -194,7 +199,10 @@ console.log("marker")
       tRoom=app.lib.rooms[j.roomName];
       if(tRoom!=null) {
         if(tRoom.players["p2"]==null) {
-            tRoom.players["p2"]=socket.username;
+            tRoom.players["p2"]={
+            name: socket.username,
+
+            }
             var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 
