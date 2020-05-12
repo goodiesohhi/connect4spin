@@ -20,8 +20,7 @@ start=function(appz) {
 
 
   router.get('/taikyoku', (req, res) => {
-    console.log(app)
-    console.log(app.lib)
+
     res.render('taikyoku', {
       user: req.user,
       rooms: app.lib.rooms

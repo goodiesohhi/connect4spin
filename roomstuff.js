@@ -14,12 +14,13 @@ function create_UUID(){
 
 roomstuff.createRoom=function(name,game) {
 var gs=null;
+var theID=game+":"+create_UUID()
 if(game=="taikyoku" ) {
 
-gs=roomstuff.app.lib.games["tai"].makeroom();
+gs=roomstuff.app.lib.games["tai"].makeroom(theID);
 }
 var room={
-  id:game+":"+create_UUID(),
+  id:theID,
   roomname:name,
   gamename:name,
   players: {},

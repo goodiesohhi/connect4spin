@@ -294,7 +294,7 @@ onObjectClicked=function(pointer,object)
 
       if(object.isTilemap) {
         locationP=revPY(pointer)+";"+revPX(pointer)
-        socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id});
+        socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id,player:  localPlayer});
         SelectedPiece=null;
           layer.removeInteractive()
       } else {

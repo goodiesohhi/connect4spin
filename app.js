@@ -120,7 +120,7 @@ app.use(function(err, req, res, next) {
 app.lib.io=0
 
 app.lib.handlebars=handlebars
-console.log(app.lib.handlebars)
+
 //Xtq2663BdpFeugE
 
 
@@ -177,7 +177,7 @@ mongoose=require('./shared/middleware/mongoose')()
 
 
 
-console.log("marker")
+
   var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 

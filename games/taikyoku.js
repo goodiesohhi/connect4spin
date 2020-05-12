@@ -11,6 +11,366 @@ const dat= require ("../public/javascripts/taidata")
 var fs = require('fs');
 const tai={}
 
+
+
+
+coordInt=function(strx) {
+  x=0
+  var str=strx.split(";")
+  if(str[0]=="a") {
+  x=1
+  }
+  else if (str[0]=="b") {
+  x=2
+  }
+  else if (str[0]=="c") {
+  x=3
+  }
+  else if (str[0]=="d") {
+  x=4
+  }else if (str[0]=="e") {
+  x=5
+  }else if (str[0]=="f") {
+  x=6
+  }else if (str[0]=="g") {
+  x=7
+  }else if (str[0]=="h") {
+  x=8
+  }else if (str[0]=="i") {
+  x=9
+  }else if (str[0]=="j") {
+  x=10
+  }else if (str[0]=="k") {
+  x=11
+  }else if (str[0]=="l") {
+  x=12
+  }else if (str[0]=="m") {
+  x=13
+  }else if (str[0]=="n") {
+  x=14
+  }else if (str[0]=="o") {
+  x=15
+  }else if (str[0]=="p") {
+  x=16
+  }else if (str[0]=="q") {
+  x=17
+  }else if (str[0]=="r") {
+  x=18
+  }else if (str[0]=="s") {
+  x=19
+  }else if (str[0]=="t") {
+  x=20
+  }else if (str[0]=="u") {
+  x=21
+  }else if (str[0]=="v") {
+  x=22
+  }else if (str[0]=="w") {
+  x=23
+  }else if (str[0]=="x") {
+  x=24
+  }else if (str[0]=="y") {
+  x=25
+  }else if (str[0]=="z") {
+  x=26
+  }else if (str[0]=="aa") {
+  x=27
+  }else if (str[0]=="bb") {
+  x=28
+  }else if (str[0]=="cc") {
+  x=29
+  }else if (str[0]=="dd") {
+  x=30
+  }else if (str[0]=="ee") {
+  x=31
+  }else if (str[0]=="ff") {
+  x=32
+  }else if (str[0]=="gg") {
+  x=33
+  }else if (str[0]=="hh") {
+  x=34
+  }else if (str[0]=="ii") {
+  x=35
+  }else if (str[0]=="jj") {
+  x=36
+  }
+
+return x;
+
+}
+coordStr=function(x) {
+  str=0;
+  if(x==1) {
+    str="a"
+  } else if(x==2) {
+    str="b"
+  }
+  else if(x==3) {
+    str="c"
+  }
+
+  else if(x==4) {
+    str="d"
+  }
+
+  else if(x==5) {
+    str="e"
+  }
+
+  else if(x==6) {
+    str="f"
+  }
+
+  else if(x==7) {
+    str="g"
+  }
+
+  else if(x==8) {
+    str="h"
+  }
+  else if(x==9) {
+    str="i"
+  }
+  else if(x==10) {
+    str="j"
+  }
+  else if(x==11) {
+    str="k"
+  }
+  else if(x==12) {
+    str="l"
+  }
+  else if(x==13) {
+    str="m"
+  }
+  else if(x==14) {
+    str="n"
+  }
+  else if(x==15) {
+    str="o"
+  }
+  else if(x==16) {
+    str="p"
+  }
+  else if(x==17) {
+    str="q"
+  }
+  else if(x==18) {
+    str="r"
+  }
+  else if(x==19) {
+    str="s"
+  }
+  else if(x==20) {
+    str="t"
+  }
+  else if(x==21) {
+    str="u"
+  }
+  else if(x==22) {
+    str="v"
+  }
+  else if(x==23) {
+    str="w"
+  }
+  else if(x==24) {
+    str="x"
+  }
+  else if(x==25) {
+    str="y"
+  }
+  else if(x==26) {
+    str="z"
+  }
+  else if(x==27) {
+    str="aa"
+  }
+  else if(x==28) {
+    str="bb"
+  }
+  else if(x==29) {
+    str="cc"
+  }
+  else if(x==30) {
+    str="dd"
+  }
+  else if(x==31) {
+    str="ee"
+  }
+  else if(x==32) {
+    str="ff"
+  }
+  else if(x==33) {
+    str="gg"
+  }
+  else if(x==34) {
+    str="hh"
+  }
+  else if(x==35) {
+    str="ii"
+  }
+  else if(x==36) {
+    str="jj"
+  }
+
+return str;
+}
+
+getX= function(x) {
+return parseInt(x.split(";")[1]);
+
+}
+
+checkSpace =function(space,board) {
+var re=null
+    for(var key in board) {
+        var value = board[key];
+
+        if(value.tile==space){
+          re=value
+
+        }
+    }
+
+return re;
+}
+
+
+getValidMoves=function(o) {
+
+  var validMoves=[]
+ var travelled=[]
+ if(o.owner=="p2") {
+  travelled[0]=traverse(o,o.movementData.up,0,1)
+    travelled[1]=traverse(o,o.movementData.down,0,-1)
+      travelled[2]=traverse(o,o.movementData.left,-1,0)
+        travelled[3]=traverse(o,o.movementData.right,1,0)
+          travelled[4]=traverse(o,o.movementData.downleft,-1,-1)
+            travelled[5]=traverse(o,o.movementData.downright,1,-1)
+              travelled[6]=traverse(o,o.movementData.upleft,-1,1)
+                travelled[7]=traverse(o,o.movementData.upright,1,1)
+              } else {
+
+                travelled[0]=traverse(o,o.movementData.up,0,-1)
+                  travelled[1]=traverse(o,o.movementData.down,0,1)
+                    travelled[2]=traverse(o,o.movementData.left,1,0)
+                      travelled[3]=traverse(o,o.movementData.right,-1,0)
+                        travelled[4]=traverse(o,o.movementData.downleft,1,1)
+                          travelled[5]=traverse(o,o.movementData.downright,-1,1)
+                            travelled[6]=traverse(o,o.movementData.upleft,1,-1)
+                              travelled[7]=traverse(o,o.movementData.upright,-1,-1)
+
+
+              }
+
+
+
+            travelled.forEach((item, i) => {
+
+
+
+                    var value = item
+
+                    for(var key2 in value.path) {
+                      var value2 = value.path[key2];
+
+
+
+                      possible=value.dat[value2]
+
+                      if(possible!=null) {
+                        if(o.owner==possible.owner) {
+                          break
+                        } else {
+                          validMoves.push(value2)
+                          break
+
+                        }
+
+                      } else {
+
+                        validMoves.push(value2)
+                      }
+                    }
+                  });
+
+return validMoves;
+
+}
+
+traverse=function(o,distance, x,y,board) {
+
+ var result={}
+  result.dat=null
+
+ result.path=[]
+
+ var xdir =1;
+ var ydir =1;
+
+
+ var xStr;
+ var yStr;
+ var stop=false
+var cancel=false
+  for (var i = 1; i <= distance; i++) {
+    cancel=false
+
+    c=(coordInt( o.tile)+(i)*y)
+
+    if(c<1) {
+      c=900
+      stop=true;
+        cancel=true;
+    }
+
+    if(c>36){
+      stop=true;
+      cancel=true;
+      c=900
+    }
+    if(c>0 && c<37) {
+      yStr=coordStr (c);
+    }
+
+    d=getX(o.tile)+(i)*x
+    if(d<1) {
+      d=900
+        stop=true;
+          cancel=true;
+    }
+    if(d>36) {
+      d=3900
+        stop=true;
+          cancel=true;
+    }
+
+    if(d>0&&d<37) {
+  xStr= d
+
+}
+  var ar= yStr+";"+xStr;
+
+  if(!cancel) {
+
+  result.path[i-1]=ar
+  result.dat={}
+  result.dat[ar]={
+  }
+
+  space=checkSpace(ar,tai.app.lib.rooms[o.roomID].gamestate.board)
+  if(space!=null) {
+  result.dat={}
+  result.dat[ar]=space;
+}
+}
+}
+
+
+
+
+  return result;
+}
+
 function create_UUID(){
     var dt = new Date().getTime();
     var uuid = 'xxxxx-xxxx-4xxx-yxxx-xxxxx'.replace(/[xy]/g, function(c) {
@@ -21,27 +381,47 @@ function create_UUID(){
     return uuid;
 }
 
-tai.loadPiece=function(board,p,player,tile) {
+tai.loadPiece=function(sho,p,player,tile) {
 
   var temp=cloneDeep (dat[p])
   temp.owner=player;
   temp.tile=tile;
   temp.pID=p;
   temp.pUUID=p+create_UUID()
-board[temp.pUUID]=temp
-return
+  temp.roomID=sho.id;
+sho.board[temp.pUUID]=temp
+return sho.board[temp.pUUID];
 }
+
 tai.makeBoard=function(shogi) {
-  tai.loadPiece(shogi.board,"k","p1","a;1")
-  tai.loadPiece(shogi.board,"k","p2","a;3")
-  tai.loadPiece(shogi.board,"k","p2","b;4")
-  tai.loadPiece(shogi.board,"k","p2","b;5")
+test=  tai.loadPiece(shogi,"k","p1","b;1")
+ tai.loadPiece(shogi,"k","p1","b;2")
+  tai.loadPiece(shogi,"k","p1","b;3")
+   tai.loadPiece(shogi,"k","p1","b;4")
+    tai.loadPiece(shogi,"k","p1","b;5")
+     tai.loadPiece(shogi,"k","p1","b;6")
+
+tai.loadPiece(shogi,"k","p2","e;1")
+     tai.loadPiece(shogi,"k","p2","e;2")
+      tai.loadPiece(shogi,"k","p2","e;3")
+       tai.loadPiece(shogi,"k","p2","e;4")
+        tai.loadPiece(shogi,"k","p2","e;5")
+         tai.loadPiece(shogi,"k","p2","e;6")
+//  tai.loadPiece(shogi,"k","p2","a;2")
+  //  tai.loadPiece(shogi,"k","p1","c;1")
+  //tai.loadPiece(shogi,"k","p2","b;3")
+  //tai.loadPiece(shogi,"k","p2","b;5")
+
+
+
+
 
 
 
 }
-tai.makeroom=function() {
+tai.makeroom=function(theID) {
   var shogi={}
+  shogi.id=theID;
   shogi.players=[];
   shogi.turn=0;
   shogi.turnOwner="p1";
@@ -74,8 +454,18 @@ start=function(app) {
 
 
   socket.on('makeMove', (data) => {
-  console.log(data)
+if(data.player==  tai.app.lib.rooms[data.room].gamestate.turnOwner) {
+
+  if(tai.app.lib.rooms[data.room].gamestate.board[data.piece].owner==data.player) {
+
+
+      var valid=getValidMoves(tai.app.lib.rooms[data.room].gamestate.board[data.piece])
+
+      if(valid.includes(data.location)) {
   tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile=data.location;
+}
+}
+}
 
 
   });
@@ -119,14 +509,20 @@ nsp.on('connection', function(socket){
 });
 */
 
-
+runOnce=false
 setInterval(function(){
 
 //tai.app.lib.io.emit('roomList', { state:JSON.stringify()});
 
   for(var key in tai.app.lib.rooms) {
-  var value = tai.app.lib.rooms[key];
 
+  var value = tai.app.lib.rooms[key];
+  if(!runOnce) {
+    runOnce=true;
+
+
+
+  }
 
 if(value.players["p1"]!=null && value.players["p2"]!=null) {
 
