@@ -721,6 +721,7 @@ onObjectClicked=function(pointer,object)
       socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id,player:  localPlayer});
       SelectedPiece=null;
       SelectedRange=null
+      removeSelection()
 
 
     }
@@ -1057,6 +1058,15 @@ update:function(time, delta) {
 if(gameN!=null) {
   if(gameN.players[gameN.gamestate.turnOwner]!=null) {
   turntext.text= gameN.players[gameN.gamestate.turnOwner].name+"'s turn."
+
+  $( "#log" ).empty();
+
+  for (var lo in gameN.gamestate.movelog) {
+
+      var opu=gameN.gamestate.movelog[lo]
+      $( "#log" ).append( "<p>"+opu+"</p>" );
+  }
+
 }
 
   for(var key in pieceSprites) {
@@ -1180,7 +1190,7 @@ var game = new Phaser.Game(config);
   <ul class="nav nav-tabs">
     <li ><a data-toggle="tab" id="startGameNow" href="#game">Game</a></li>
     <li class="active"><a class="active" data-toggle="tab" href="#menu1g" aria-expanded="true">Menu 1</a></li>
-    <li><a data-toggle="tab" href="#menu2g">Menu 2</a></li>
+    <li><a data-toggle="tab" href="#menu2g">Move Log</a></li>
 
   </ul>
 
@@ -1189,10 +1199,17 @@ var game = new Phaser.Game(config);
 
 <div id="gameCanvasDiv"></div>
 
+<div id="log" style="overflow:auto; height:400px;" class="container">
+
+
+ </div>
+
 
 
 
 </div>
+
+
 <div id="menu1g" class="tab-pane fade in active show">
   {{#unless (inGame user.roomlock) }}
   <h3>RoomList</h3>
@@ -1232,8 +1249,11 @@ Room name:  {{roomname}}  id: {{id}} <button id= "joinC" class="input-group-appe
 
 </div>
 <div id="menu2g" class="tab-pane fade">
-  <h3>Menu 2</h3>
-  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+  <h3>Move Log</h3>
+  <div id="log" style="overflow:auto; height:400px;" class="container">
+
+
+   </div>
 </div>
 
 </div>

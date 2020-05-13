@@ -466,6 +466,8 @@ tai.loadPiece(shogi,"gb","p1","y;26")
 //rook
 tai.loadPiece(shogi,"r","p1","ff;33")
 tai.loadPiece(shogi,"r","p1","ff;4")
+tai.loadPiece(shogi,"b","p1","ff;34")
+tai.loadPiece(shogi,"b","p1","ff;3")
 
 
 
@@ -533,6 +535,10 @@ tai.loadPiece(shogi,"gb","p2","l;26")
 //Rook
 tai.loadPiece(shogi,"r","p2","e;33")
 tai.loadPiece(shogi,"r","p2","e;4")
+//Bishop
+tai.loadPiece(shogi,"b","p2","e;34")
+tai.loadPiece(shogi,"b","p2","e;3")
+
 
 //  tai.loadPiece(shogi,"k","p2","a;2")
   //  tai.loadPiece(shogi,"k","p1","c;1")
@@ -554,7 +560,7 @@ tai.makeroom=function(theID) {
   shogi.turnOwner="p1";
   shogi.turnSwitch=-50;
   shogi.board={};
-
+  shogi.movelog=[]
 
   tai.makeBoard(shogi)
 
@@ -604,8 +610,12 @@ if(K!=null) {
  //console.log(p)
  delete p;
 }
+
+  tai.app.lib.rooms[data.room].gamestate.movelog.push(tai.app.lib.rooms[data.room].gamestate.board[data.piece].name+" moves "+tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile+"->"+data.location)
   tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile=data.location;
   tai.app.lib.rooms[data.room].gamestate.turnSwitch=5;
+
+
 }}
 }
 }
@@ -680,6 +690,8 @@ setInterval(function(){
 
         value.gamestate.turnOwner="p1"
       }
+
+    value.gamestate.turn+=1;
     }
   }
 

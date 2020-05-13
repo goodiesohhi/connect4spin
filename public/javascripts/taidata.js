@@ -124,6 +124,27 @@
 
 
     },
+
+
+        "b":{
+        name:"Bishop",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:0,
+        down:0,
+        upleft:1000,
+        upright:1000,
+        downleft:1000,
+        downright:1000
+
+      },
+        promote:"dh"
+
+
+
+        },
     }
 
     if (typeof module === "object" && module && typeof module.exports === "object") {
