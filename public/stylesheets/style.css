@@ -61,6 +61,17 @@ a {
   left:0;
 
 }
+
+.absL{
+  position:absolute;
+  right:0;
+  top:115px;
+  width:400px;
+  height:700px;
+
+}
+
+
 .userMessage{
 
     opacity: 1;

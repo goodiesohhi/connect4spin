@@ -5,6 +5,7 @@
 (function(window){
 
     var database={
+
     "k":{
     name:"King",
     movementData: {
@@ -17,6 +18,26 @@
     upright:2,
     downleft:2,
     downright:2
+
+  },
+  promote:null
+
+
+
+    },
+
+    "cp":{
+    name:"Prince",
+    movementData: {
+    type:"step",
+    left:1,
+    right:1,
+    up:1,
+    down:1,
+    upleft:1,
+    upright:1,
+    downleft:1,
+    downright:1
 
   },
   promote:null
@@ -117,12 +138,70 @@
     upright:0,
     downleft:0,
     downright:0
-
   },
     promote:"dk"
+    },
 
+    "so":{
+    name:"Soldier",
+    movementData: {
+    type:"step",
+    left:1000,
+    right:1000,
+    up:1000,
+    down:1000,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+  },
+    promote:"cv"
+    },
 
-
+    "rh":{
+    name:"Running Chariot",
+    movementData: {
+    type:"step",
+    left:1000,
+    right:1000,
+    up:1000,
+    down:1000,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+  },
+    promote:"bh"
+    },
+    "sq":{
+    name:"Square Mover",
+    movementData: {
+    type:"step",
+    left:1000,
+    right:1000,
+    up:1000,
+    down:1000,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+  },
+    promote:"sh"
+    },
+    "gi":{
+    name:"Gliding Swallow",
+    movementData: {
+    type:"step",
+    left:1000,
+    right:1000,
+    up:1000,
+    down:1000,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+  },
+    promote:null
     },
 
 
@@ -161,6 +240,129 @@
 
       },
         promote:"gg"
+
+
+
+        },
+
+        "i":{
+        name:"Iron General",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:1,
+        down:0,
+        upleft:1,
+        upright:1,
+        downleft:0,
+        downright:0
+
+      },
+        promote:"we"
+
+
+
+        },
+
+        "d":{
+        name:"Dog",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:1,
+        down:0,
+        upleft:1,
+        upright:1,
+        downleft:0,
+        downright:0
+
+      },
+        promote:"mg"
+
+
+
+        },
+
+        "si":{
+        name:"Side Dragon",
+        movementData: {
+        type:"step",
+        left:1000,
+        right:1000,
+        up:1000,
+        down:0,
+        upleft:0,
+        upright:0,
+        downleft:0,
+        downright:0
+
+      },
+      //dr= running dragon
+        promote:"dr"
+
+
+
+        },
+
+        "mw":{
+        name:"Mountain Witch",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:0,
+        down:1000,
+        upleft:0,
+        upright:0,
+        downleft:1000,
+        downright:1000
+
+      },
+
+        promote:null
+
+
+
+        },
+        "wh":{
+        name:"White Horse",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:1000,
+        down:1000,
+        upleft:1000,
+        upright:1000,
+        downleft:0,
+        downright:0
+
+      },
+      //dr= running dragon
+        promote:"gh"
+
+
+
+        },
+
+        "si":{
+        name:"Side Dragon",
+        movementData: {
+        type:"step",
+        left:1000,
+        right:1000,
+        up:1000,
+        down:0,
+        upleft:1,
+        upright:1,
+        downleft:0,
+        downright:0
+
+      },
+      //dr= running dragon
+        promote:"dr"
 
 
 

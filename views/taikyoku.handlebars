@@ -87,7 +87,7 @@ getValidMoves=function(o) {
   var validMoves=[]
  var travelled=[]
  if(o.owner=="p2") {
-   console.log(o)
+
   travelled[0]=traverse(o,o.movementData.up,0,1)
     travelled[1]=traverse(o,o.movementData.down,0,-1)
       travelled[2]=traverse(o,o.movementData.left,-1,0)
@@ -462,7 +462,7 @@ var cancel=false
 
 var removeSelection=function() {
 for (var x in Selects) {
-  console.log(x)
+//  console.log(x)
 
   var z= Selects[x];
   z.destroy()
@@ -754,8 +754,8 @@ if(dat.owner=="p2") {
 }
 
 var SelectBox;
-var textConfig={fontSize:'40px',color:'#ffff00',fontFamily: 'Arial'};
-piece.text = p.add.text(piece.dx-(40-(25*dat.pID.length)),piece.dy-25,dat.pID.toUpperCase(),textConfig);
+var textConfig={fontSize:'40px',color:'#000000',fontFamily: 'Arial'};
+piece.text = p.add.text(piece.dx-(40+(25*dat.pID.length)),piece.dy-25,dat.pID.toUpperCase(),textConfig);
 return piece.sprite;
 
 
@@ -777,6 +777,7 @@ var gameState={};
 var pieceSprites;
 jQuery(function ($) {
 $( document ).ready(function() {
+  $( "#info" ).trigger('click')
 
 
 
@@ -826,6 +827,7 @@ Extends: Phaser.Scene,
               localPlayer="p2"
             }
           }
+
             $('#startGameNow').trigger('click')
 
             this.scene.start('gameScene');
@@ -923,6 +925,18 @@ create:function ()
    tiles = map.addTilesetImage('tile', 'tile');
    layer = map.createStaticLayer(0, tiles, 650, 0);
 
+for (var i = 1; i <37; i++) {
+  var textConfig={fontSize:'50px',color:'#ffffff',fontFamily: 'Arial'};
+
+  this.add.text(4280-(100*i),-100, i,textConfig)
+}
+
+
+for (var i = 1; i <37; i++) {
+  var textConfig={fontSize:'50px',color:'#ffffff',fontFamily: 'Arial'};
+
+  this.add.text(4300,-80+100*i, coordStr(i),textConfig)
+}
 
 
 input=this.input;
@@ -930,10 +944,12 @@ input.on('gameobjectdown',onObjectClicked);
 var textConfig={fontSize:'80px',color:'#ffffff',fontFamily: 'Arial'};
 if(gameN.players[gameN.gamestate.turnOwner]!=null) {
 turntext = this.add.text(-575,-200, gameN.players[gameN.gamestate.turnOwner].name+"'s turn.",textConfig).setScrollFactor(0);
+turntext.scale=1-this.cameras.main.zoom
 } else {
-turntext = this.add.text(-575,-200, "undefined's turn.",textConfig).setScrollFactor(0);
+turntext = this.add.text(-575-this.cameras.main.zoom*500,-200-this.cameras.main.zoom*500, "undefined's turn.",textConfig).setScrollFactor(0);
+turntext.scale=50/(this.cameras.main.zoom*50)
 }
-
+console.log(this.cameras.main.zoom)
 //  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels+2050);
   this.cameras.main.zoom =0.5;
   this.cameras.main.scrollX=1250;
@@ -1019,7 +1035,7 @@ input.keyboard.enabled=false
 
 
               //
-                  console.log(input.keyboard)
+                //  console.log(input.keyboard)
                   input.keyboard.addCapture('LEFT,RIGHT,UP,DOWN,Q,E');
 
                   input.keyboard.enabled=true;
@@ -1056,18 +1072,64 @@ update:function(time, delta) {
     this.cameras.main.scrollY=  Phaser.Math.Clamp(this.cameras.main.scrollY, 0, 2850);
 
 if(gameN!=null) {
+
   if(gameN.players[gameN.gamestate.turnOwner]!=null) {
   turntext.text= gameN.players[gameN.gamestate.turnOwner].name+"'s turn."
+  turntext.scale=50/(this.cameras.main.zoom*50)
+  console.log(this.cameras.main.zoom)
+} else {
+  turntext.x=-2500+(this.cameras.main.zoom)*4200
+    turntext.y=-1400+(this.cameras.main.zoom)*1200
 
+  turntext.scale=(1/this.cameras.main.zoom)/2
+  console.log(this.cameras.main.zoom)
+}
   $( "#log" ).empty();
-
+$( "#log" ).append( "<br>" );
   for (var lo in gameN.gamestate.movelog) {
 
       var opu=gameN.gamestate.movelog[lo]
+
       $( "#log" ).append( "<p>"+opu+"</p>" );
   }
 
+  $( "#info" ).empty();
+if(SelectedPiece==null) {
+$( "#info" ).append( "<h1> Turn "+gameN.gamestate.turn+"</h1>" )
+
+$( "#info" ).append( "<br>" );
+if(gameN.players["p1"]!=null){
+
+  if(gameN.gamestate.turnOwner=="p1") {
+    $( "#info" ).append( "<p>P1: "+gameN.players["p1"].name +" (turn)");
+  } else {
+
+    $( "#info" ).append( "<p>P1: "+gameN.players["p1"].name );
+  }
+
+
+
+
 }
+if(gameN.players["p2"]!=null){
+  if(gameN.gamestate.turnOwner=="p2") {
+    $( "#info" ).append( "<p>P2: "+gameN.players["p2"].name +" (turn)");
+  } else {
+
+    $( "#info" ).append( "<p>P2: "+gameN.players["p2"].name );
+  }
+
+}
+
+$( "#info" ).append( "<br>" );
+$( "#info" ).append( "<p> Arrow Keys to move around </p>" );
+$( "#info" ).append( "<p>Q and E to zoom </p>" );
+} else {
+$( "#info" ).append( "<h1>"+SelectedPiece.parRef.dat.name+"</h1>" );
+$( "#info" ).append( "<p> Promotes to "+SelectedPiece.parRef.dat.promote+"</p>" );
+
+}
+
 
   for(var key in pieceSprites) {
   var p= pieceSprites[key];
@@ -1115,7 +1177,11 @@ p.parRef.dy=Phaser.Math.Clamp(p.parRef.dy,p.parRef.y,p.parRef.dy)
 
 
 }
-p.parRef.text.x= p.parRef.dx-(40-(25*p.parRef.text._text.length))
+if (p.parRef.text._text.length==1) {
+p.parRef.text.x= p.parRef.dx-15
+} else {
+  p.parRef.text.x= p.parRef.dx-(40-(10))
+}
 p.parRef.text.y=p.parRef.dy-25
 
 p.x=p.parRef.dx;
@@ -1153,8 +1219,8 @@ controls.update(delta);
 
 var config = {
   type: Phaser.CANVAS,
-  height:600,
-  width:1200,
+  height:700,
+  width:1100,
   parent:document.getElementById("gameCanvasDiv"),
   physics: {
       default: 'arcade',
@@ -1184,13 +1250,16 @@ var game = new Phaser.Game(config);
 <!--<script type="module" type="text/javascript"  src='./javascripts/imports.js'></script> -->
 
 
+<div class="row">
 
-<div class="container absH" id="theGame">
+
+
+<div class="container absH col-xs-6" id="theGame">
 
   <ul class="nav nav-tabs">
     <li ><a data-toggle="tab" id="startGameNow" href="#game">Game</a></li>
     <li class="active"><a class="active" data-toggle="tab" href="#menu1g" aria-expanded="true">Menu 1</a></li>
-    <li><a data-toggle="tab" href="#menu2g">Move Log</a></li>
+    <li><a data-toggle="tab" href="#menu2g">KSOSML</a></li>
 
   </ul>
 
@@ -1199,10 +1268,8 @@ var game = new Phaser.Game(config);
 
 <div id="gameCanvasDiv"></div>
 
-<div id="log" style="overflow:auto; height:400px;" class="container">
 
 
- </div>
 
 
 
@@ -1249,12 +1316,38 @@ Room name:  {{roomname}}  id: {{id}} <button id= "joinC" class="input-group-appe
 
 </div>
 <div id="menu2g" class="tab-pane fade">
-  <h3>Move Log</h3>
-  <div id="log" style="overflow:auto; height:400px;" class="container">
 
+</div></div>
 
-   </div>
 </div>
+<div class="col-xs-6 absL border">
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Info</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#log" role="tab" aria-controls="log" aria-selected="false">Move Log</a>
+    </li>
+
+  </ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active in" id="info" role="tabpanel" aria-labelledby="info-tab">
+
+  </div>
+  <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab"  style="overflow:auto; height:400px;">
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
 
 </div>
 </div>
