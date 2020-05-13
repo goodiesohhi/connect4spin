@@ -425,6 +425,7 @@ tai.makeBoard=function(shogi) {
   tai.loadPiece(shogi,"p","p1","z;9")
   tai.loadPiece(shogi,"p","p1","z;10")
   tai.loadPiece(shogi,"p","p1","z;11")
+  tai.loadPiece(shogi,"p","p1","z;12")
   tai.loadPiece(shogi,"p","p1","z;13")
   tai.loadPiece(shogi,"p","p1","z;13")
   tai.loadPiece(shogi,"p","p1","z;14")
@@ -478,6 +479,7 @@ tai.loadPiece(shogi,"p","p2","k;8")
 tai.loadPiece(shogi,"p","p2","k;9")
 tai.loadPiece(shogi,"p","p2","k;10")
 tai.loadPiece(shogi,"p","p2","k;11")
+tai.loadPiece(shogi,"p","p2","k;12")
 tai.loadPiece(shogi,"p","p2","k;13")
 tai.loadPiece(shogi,"p","p2","k;13")
 tai.loadPiece(shogi,"p","p2","k;14")
@@ -565,13 +567,12 @@ start=function(app) {
   socket.on('makeMove', (data) => {
 
 
-    console.log("try ")
+
     if(tai.app.lib.rooms[data.room].gamestate.turnSwitch==-50) {
-      console.log("try 1")
+
 if(data.player==  tai.app.lib.rooms[data.room].gamestate.turnOwner) {
-console.log("try 2")
+
   if(tai.app.lib.rooms[data.room].gamestate.board[data.piece].owner==data.player) {
-console.log("try 3")
 
       var valid=getValidMoves(tai.app.lib.rooms[data.room].gamestate.board[data.piece])
 
