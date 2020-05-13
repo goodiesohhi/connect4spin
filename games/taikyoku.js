@@ -413,19 +413,108 @@ return sho.board[temp.pUUID];
 }
 
 tai.makeBoard=function(shogi) {
- tai.loadPiece(shogi,"k","p1","b;1")
- tai.loadPiece(shogi,"k","p1","b;2")
-  tai.loadPiece(shogi,"k","p1","b;3")
-  test=  tai.loadPiece(shogi,"k","p1","b;4")
-    tai.loadPiece(shogi,"k","p1","b;5")
-     tai.loadPiece(shogi,"k","p1","b;6")
+ tai.loadPiece(shogi,"k","p1","jj;19")
+   tai.loadPiece(shogi,"p","p1","z;1")
+  tai.loadPiece(shogi,"p","p1","z;2")
+  tai.loadPiece(shogi,"p","p1","z;3")
+  tai.loadPiece(shogi,"p","p1","z;4")
+  tai.loadPiece(shogi,"p","p1","z;5")
+  tai.loadPiece(shogi,"p","p1","z;6")
+  tai.loadPiece(shogi,"p","p1","z;7")
+  tai.loadPiece(shogi,"p","p1","z;8")
+  tai.loadPiece(shogi,"p","p1","z;9")
+  tai.loadPiece(shogi,"p","p1","z;10")
+  tai.loadPiece(shogi,"p","p1","z;11")
+  tai.loadPiece(shogi,"p","p1","z;13")
+  tai.loadPiece(shogi,"p","p1","z;13")
+  tai.loadPiece(shogi,"p","p1","z;14")
+  tai.loadPiece(shogi,"p","p1","z;15")
+  tai.loadPiece(shogi,"p","p1","z;16")
+  tai.loadPiece(shogi,"p","p1","z;17")
+  tai.loadPiece(shogi,"p","p1","z;18")
+  tai.loadPiece(shogi,"p","p1","z;19")
+  tai.loadPiece(shogi,"p","p1","z;20")
+  tai.loadPiece(shogi,"p","p1","z;21")
+  tai.loadPiece(shogi,"p","p1","z;22")
+  tai.loadPiece(shogi,"p","p1","z;23")
+  tai.loadPiece(shogi,"p","p1","z;24")
+  tai.loadPiece(shogi,"p","p1","z;25")
+  tai.loadPiece(shogi,"p","p1","z;26")
+  tai.loadPiece(shogi,"p","p1","z;27")
+  tai.loadPiece(shogi,"p","p1","z;28")
+  tai.loadPiece(shogi,"p","p1","z;29")
+  tai.loadPiece(shogi,"p","p1","z;30")
+  tai.loadPiece(shogi,"p","p1","z;31")
+  tai.loadPiece(shogi,"p","p1","z;32")
+  tai.loadPiece(shogi,"p","p1","z;33")
+  tai.loadPiece(shogi,"p","p1","z;34")
+  tai.loadPiece(shogi,"p","p1","z;35")
+  tai.loadPiece(shogi,"p","p1","z;36")
 
-tai.loadPiece(shogi,"k","p2","e;1")
-     tai.loadPiece(shogi,"k","p2","e;2")
-      tai.loadPiece(shogi,"k","p2","e;3")
-       tai.loadPiece(shogi,"k","p2","e;4")
-        tai.loadPiece(shogi,"k","p2","e;5")
-         tai.loadPiece(shogi,"k","p2","e;6")
+//ea
+tai.loadPiece(shogi,"ea","p1","bb;11")
+tai.loadPiece(shogi,"ea","p1","bb;26")
+
+tai.loadPiece(shogi,"gb","p1","y;11")
+tai.loadPiece(shogi,"gb","p1","y;26")
+
+
+
+
+
+//p2
+tai.loadPiece(shogi,"k","p2","a;18")
+
+//pawnwall
+
+tai.loadPiece(shogi,"p","p2","k;1")
+tai.loadPiece(shogi,"p","p2","k;2")
+tai.loadPiece(shogi,"p","p2","k;3")
+tai.loadPiece(shogi,"p","p2","k;4")
+tai.loadPiece(shogi,"p","p2","k;5")
+tai.loadPiece(shogi,"p","p2","k;6")
+tai.loadPiece(shogi,"p","p2","k;7")
+tai.loadPiece(shogi,"p","p2","k;8")
+tai.loadPiece(shogi,"p","p2","k;9")
+tai.loadPiece(shogi,"p","p2","k;10")
+tai.loadPiece(shogi,"p","p2","k;11")
+tai.loadPiece(shogi,"p","p2","k;13")
+tai.loadPiece(shogi,"p","p2","k;13")
+tai.loadPiece(shogi,"p","p2","k;14")
+tai.loadPiece(shogi,"p","p2","k;15")
+tai.loadPiece(shogi,"p","p2","k;16")
+tai.loadPiece(shogi,"p","p2","k;17")
+tai.loadPiece(shogi,"p","p2","k;18")
+tai.loadPiece(shogi,"p","p2","k;19")
+tai.loadPiece(shogi,"p","p2","k;20")
+tai.loadPiece(shogi,"p","p2","k;21")
+tai.loadPiece(shogi,"p","p2","k;22")
+tai.loadPiece(shogi,"p","p2","k;23")
+tai.loadPiece(shogi,"p","p2","k;24")
+tai.loadPiece(shogi,"p","p2","k;25")
+tai.loadPiece(shogi,"p","p2","k;26")
+tai.loadPiece(shogi,"p","p2","k;27")
+tai.loadPiece(shogi,"p","p2","k;28")
+tai.loadPiece(shogi,"p","p2","k;29")
+tai.loadPiece(shogi,"p","p2","k;30")
+tai.loadPiece(shogi,"p","p2","k;31")
+tai.loadPiece(shogi,"p","p2","k;32")
+tai.loadPiece(shogi,"p","p2","k;33")
+tai.loadPiece(shogi,"p","p2","k;34")
+tai.loadPiece(shogi,"p","p2","k;35")
+tai.loadPiece(shogi,"p","p2","k;36")
+
+//ea
+
+tai.loadPiece(shogi,"ea","p2","i;11")
+tai.loadPiece(shogi,"ea","p2","i;26")
+
+//gb
+
+tai.loadPiece(shogi,"gb","p2","l;11")
+tai.loadPiece(shogi,"gb","p2","l;26")
+
+
 //  tai.loadPiece(shogi,"k","p2","a;2")
   //  tai.loadPiece(shogi,"k","p1","c;1")
   //tai.loadPiece(shogi,"k","p2","b;3")

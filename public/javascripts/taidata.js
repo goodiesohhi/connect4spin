@@ -18,7 +18,88 @@
     downleft:2,
     downright:2
 
-    }
+  },
+  promote:null
+
+
+
+    },
+
+    "p":{
+    name:"Pawn",
+    movementData: {
+    type:"step",
+    left:0,
+    right:0,
+    up:1,
+    down:0,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+
+  },
+    promote:"g"
+
+
+
+    },
+
+    "ea":{
+    name:"Earth General",
+    movementData: {
+    type:"step",
+    left:0,
+    right:0,
+    up:1,
+    down:1,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+
+  },
+    promote:"we"
+
+
+
+    },
+
+    "gb":{
+    name:"Go Between",
+    movementData: {
+    type:"step",
+    left:0,
+    right:0,
+    up:1,
+    down:1,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+
+  },
+    promote:"de"
+
+
+
+    },
+
+    "sg":{
+    name:"Stone General",
+    movementData: {
+    type:"step",
+    left:0,
+    right:0,
+    up:0,
+    down:0,
+    upleft:1,
+    upright:1,
+    downleft:0,
+    downright:0
+
+  },
+    promote:"we"
 
 
 
