@@ -427,7 +427,7 @@ tai.makeBoard=function(shogi) {
   tai.loadPiece(shogi,"p","p1","z;11")
   tai.loadPiece(shogi,"p","p1","z;12")
   tai.loadPiece(shogi,"p","p1","z;13")
-  tai.loadPiece(shogi,"p","p1","z;13")
+
   tai.loadPiece(shogi,"p","p1","z;14")
   tai.loadPiece(shogi,"p","p1","z;15")
   tai.loadPiece(shogi,"p","p1","z;16")
@@ -455,9 +455,17 @@ tai.makeBoard=function(shogi) {
 //ea
 tai.loadPiece(shogi,"ea","p1","bb;11")
 tai.loadPiece(shogi,"ea","p1","bb;26")
+//sg
 
+tai.loadPiece(shogi,"sg","p1","bb;13")
+tai.loadPiece(shogi,"sg","p1","bb;24")
+
+//gb
 tai.loadPiece(shogi,"gb","p1","y;11")
 tai.loadPiece(shogi,"gb","p1","y;26")
+//rook
+tai.loadPiece(shogi,"r","p1","ff;33")
+tai.loadPiece(shogi,"r","p1","ff;4")
 
 
 
@@ -481,7 +489,7 @@ tai.loadPiece(shogi,"p","p2","k;10")
 tai.loadPiece(shogi,"p","p2","k;11")
 tai.loadPiece(shogi,"p","p2","k;12")
 tai.loadPiece(shogi,"p","p2","k;13")
-tai.loadPiece(shogi,"p","p2","k;13")
+
 tai.loadPiece(shogi,"p","p2","k;14")
 tai.loadPiece(shogi,"p","p2","k;15")
 tai.loadPiece(shogi,"p","p2","k;16")
@@ -511,11 +519,20 @@ tai.loadPiece(shogi,"p","p2","k;36")
 tai.loadPiece(shogi,"ea","p2","i;11")
 tai.loadPiece(shogi,"ea","p2","i;26")
 
+//sg
+
+tai.loadPiece(shogi,"sg","p2","i;13")
+tai.loadPiece(shogi,"sg","p2","i;24")
+
 //gb
 
 tai.loadPiece(shogi,"gb","p2","l;11")
 tai.loadPiece(shogi,"gb","p2","l;26")
 
+
+//Rook
+tai.loadPiece(shogi,"r","p2","e;33")
+tai.loadPiece(shogi,"r","p2","e;4")
 
 //  tai.loadPiece(shogi,"k","p2","a;2")
   //  tai.loadPiece(shogi,"k","p1","c;1")

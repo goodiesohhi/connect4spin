@@ -104,6 +104,26 @@
 
 
     },
+
+    "r":{
+    name:"Rook",
+    movementData: {
+    type:"step",
+    left:1000,
+    right:1000,
+    up:1000,
+    down:1000,
+    upleft:0,
+    upright:0,
+    downleft:0,
+    downright:0
+
+  },
+    promote:"dk"
+
+
+
+    },
     }
 
     if (typeof module === "object" && module && typeof module.exports === "object") {

@@ -1062,6 +1062,8 @@ if(gameN!=null) {
   for(var key in pieceSprites) {
   var p= pieceSprites[key];
 
+
+ p.parRef.dat=gameN.gamestate.board[key];
   if(gameN.gamestate.board[key]!=null) {
 
   p.parRef.x=getPX(gameN.gamestate.board[key])
