@@ -430,6 +430,63 @@
 
 
                 },
+
+
+                //kirin
+
+                "kr":{
+                name:"Kirin",
+                movementData:{
+
+                  type:"h",
+
+                  fusion: {
+                    0:{
+                    movementData: {
+                    type:"jump",
+                    jumps:{},
+                    jumps: {
+                  0:{
+                      x:-2,
+                      y:0,
+                  },
+                    1:{
+                      x:2,
+                      y:0,
+                    },
+
+                  }
+                },
+              },
+              1:{
+                movementData: {
+                type:"step",
+                left:0,
+                right:0,
+                up:0,
+                down:0,
+                upleft:1,
+                upright:1,
+                downleft:1,
+                downright:1
+
+              },
+            }
+
+
+
+
+
+                  }
+
+
+
+                },
+
+
+
+                promote:"go"
+                },
     }
 
     if (typeof module === "object" && module && typeof module.exports === "object") {

@@ -130,6 +130,30 @@ getValidMoves=function(o) {
  if(o.movementData.type=="h") {
 
 
+   results=[]
+for (var u in o.movementData.fusion) {
+  k={}
+
+  k=o.movementData.fusion[u]
+  k.owner=o.owner;
+  k.tile=o.tile;
+  console.log(o.movementData.fusion[u])
+  if(k.movementData.type=="jump") {
+
+ results=results.concat(getValidJumps(k))
+  console.log(results)
+
+
+} else if (k.movementData.type=="step") {
+
+
+results=results.concat(getValidSteps(k))
+console.log(results)
+  }
+}
+
+return results;
+
  } else {
  if(o.movementData.type=="jump") {
 

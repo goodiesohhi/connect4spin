@@ -284,7 +284,28 @@ getValidMoves=function(o) {
 
 
    if(o.movementData.type=="h") {
+     results=[]
+  for (var u in o.movementData.fusion) {
+     k={}
+     k=o.movementData.fusion[u]
+     k.owner=o.owner;
+     k.roomID=o.roomID
 
+     k.tile=o.tile;
+    if(k.movementData.type=="jump") {
+
+   results=results.concat(getValidJumps(k))
+
+
+
+  } else if (k.movementData.type=="step") {
+
+
+  results=results.concat(getValidSteps(k))
+    }
+  }
+
+  return results;
 
    } else {
    if(o.movementData.type=="jump") {
@@ -584,7 +605,13 @@ tai.loadPiece(shogi,"n","p1","gg;34")
 //Flying Dragon
 tai.loadPiece(shogi,"fd","p1","ee;28")
 tai.loadPiece(shogi,"fd","p1","ee;9")
+
+
+//Kirin
+
+tai.loadPiece(shogi,"kr","p1","ee;16")
 //p2
+
 
 
 
@@ -716,14 +743,8 @@ tai.loadPiece(shogi,"wh","p2","f;35")
 tai.loadPiece(shogi,"fd","p2","f;28")
 tai.loadPiece(shogi,"fd","p2","f;9")
 
-
-//  tai.loadPiece(shogi,"k","p2","a;2")
-  //  tai.loadPiece(shogi,"k","p1","c;1")
-  //tai.loadPiece(shogi,"k","p2","b;3")
-  //tai.loadPiece(shogi,"k","p2","b;5")
-
-
-
+//
+tai.loadPiece(shogi,"kr","p2","f;21")
 
 
 
