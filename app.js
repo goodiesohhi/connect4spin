@@ -192,6 +192,8 @@ mongoose=require('./shared/middleware/mongoose')()
   //doc.save();
 
       socket.join(tRoom.id)
+      socket.emit('reload', {});
+      console.log("please reload1")
     })
 
     socket.on('joinRoom', (j) => {
@@ -212,6 +214,8 @@ mongoose=require('./shared/middleware/mongoose')()
               });
 
                 socket.join(j.roomName)
+                socket.emit('reload', {});
+                console.log("please reload2")
         } else {
             tRoom.spectators["sp"+Object.keys(tRoom.spectators).length]=socket.username
               socket.join(j.roomName)

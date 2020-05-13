@@ -428,23 +428,28 @@ Extends: Phaser.Scene,
 })
 var createRoom=function(roomNAME) {
   var txt = $('#roomtxt').val();
+    if (/\S/.test(txt)) {
+
 socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"taikyoku" });
   $('#roomtxt').val("");
-  window.location.reload();
+  $('#startGameNow').trigger('click')
+}
 }
 
 var joinClick=function(txt) {
 
 socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
   $('#roomtxt').val("");
-  window.location.reload();
+  $('#startGameNow').trigger('click')
+
 }
 
 var joinRoom=function() {
   var txt = $('#roomtxt').val();
 socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
   $('#roomtxt').val("");
-  window.location.reload();
+  $('#startGameNow').trigger('click')
+
 }
 
 $('#create').click(function(){
