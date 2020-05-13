@@ -466,10 +466,13 @@ tai.loadPiece(shogi,"gb","p1","y;26")
 //rook
 tai.loadPiece(shogi,"r","p1","ff;33")
 tai.loadPiece(shogi,"r","p1","ff;4")
+//Bishop
 tai.loadPiece(shogi,"b","p1","ff;34")
 tai.loadPiece(shogi,"b","p1","ff;3")
+//Queen
 
-
+tai.loadPiece(shogi,"q","p1","jj;14")
+tai.loadPiece(shogi,"q","p1","jj;23")
 
 
 
@@ -532,6 +535,7 @@ tai.loadPiece(shogi,"gb","p2","l;11")
 tai.loadPiece(shogi,"gb","p2","l;26")
 
 
+
 //Rook
 tai.loadPiece(shogi,"r","p2","e;33")
 tai.loadPiece(shogi,"r","p2","e;4")
@@ -539,6 +543,9 @@ tai.loadPiece(shogi,"r","p2","e;4")
 tai.loadPiece(shogi,"b","p2","e;34")
 tai.loadPiece(shogi,"b","p2","e;3")
 
+// Queen
+tai.loadPiece(shogi,"q","p2","a;14")
+tai.loadPiece(shogi,"q","p2","a;23")
 
 //  tai.loadPiece(shogi,"k","p2","a;2")
   //  tai.loadPiece(shogi,"k","p1","c;1")

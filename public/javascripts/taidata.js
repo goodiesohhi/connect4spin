@@ -145,6 +145,26 @@
 
 
         },
+
+        "q":{
+        name:"Queen",
+        movementData: {
+        type:"step",
+        left:1000,
+        right:1000,
+        up:1000,
+        down:1000,
+        upleft:1000,
+        upright:1000,
+        downleft:1000,
+        downright:1000
+
+      },
+        promote:"gg"
+
+
+
+        },
     }
 
     if (typeof module === "object" && module && typeof module.exports === "object") {
