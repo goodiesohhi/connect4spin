@@ -221,14 +221,18 @@ return parseInt(x.split(";")[1]);
 }
 
 checkSpace =function(space,board) {
+
 var re=null
     for(var key in board) {
         var value = board[key];
+        if(value==null) {
 
+        } else {
         if(value.tile==space){
           re=value
 
         }
+      }
     }
 
 return re;
@@ -269,20 +273,32 @@ getValidMoves=function(o) {
 
 
                     var value = item
+                  //    console.log(value.dat)
+                  var i;
 
-                    for(var key2 in value.path) {
-                      var value2 = value.path[key2];
+                    for(i=0;i<value.path.length;i++) {
+                      var value2 = value.path[i];
 
 
+
+
+
+
+                      //console.log(value)
 
                       possible=value.dat[value2]
+                    //  console.log(value2)
+                  //  console.log(possible)
 
                       if(possible!=null) {
                         if(o.owner==possible.owner) {
-                          break
+
+
+                        break
                         } else {
+                        //  console.log("should take")
                           validMoves.push(value2)
-                          break
+                        break
 
                         }
 
@@ -293,6 +309,8 @@ getValidMoves=function(o) {
                     }
                   });
 
+
+
 return validMoves;
 
 }
@@ -300,7 +318,7 @@ return validMoves;
 traverse=function(o,distance, x,y,board) {
 
  var result={}
-  result.dat=null
+    result.dat={}
 
  result.path=[]
 
@@ -353,18 +371,19 @@ var cancel=false
   if(!cancel) {
 
   result.path[i-1]=ar
-  result.dat={}
-  result.dat[ar]={
-  }
+
+
 
   space=checkSpace(ar,tai.app.lib.rooms[o.roomID].gamestate.board)
-  if(space!=null) {
-  result.dat={}
-  result.dat[ar]=space;
-}
-}
-}
 
+  if(space!=null) {
+
+  result.dat[ar]=space;
+} else {
+  result.dat[ar]=null;
+}
+}
+}
 
 
 
@@ -394,10 +413,10 @@ return sho.board[temp.pUUID];
 }
 
 tai.makeBoard=function(shogi) {
-test=  tai.loadPiece(shogi,"k","p1","b;1")
+ tai.loadPiece(shogi,"k","p1","b;1")
  tai.loadPiece(shogi,"k","p1","b;2")
   tai.loadPiece(shogi,"k","p1","b;3")
-   tai.loadPiece(shogi,"k","p1","b;4")
+  test=  tai.loadPiece(shogi,"k","p1","b;4")
     tai.loadPiece(shogi,"k","p1","b;5")
      tai.loadPiece(shogi,"k","p1","b;6")
 
@@ -425,6 +444,7 @@ tai.makeroom=function(theID) {
   shogi.players=[];
   shogi.turn=0;
   shogi.turnOwner="p1";
+  shogi.turnSwitch=-50;
   shogi.board={};
 
 
@@ -454,16 +474,32 @@ start=function(app) {
 
 
   socket.on('makeMove', (data) => {
+
+
+    console.log("try ")
+    if(tai.app.lib.rooms[data.room].gamestate.turnSwitch==-50) {
+      console.log("try 1")
 if(data.player==  tai.app.lib.rooms[data.room].gamestate.turnOwner) {
-
+console.log("try 2")
   if(tai.app.lib.rooms[data.room].gamestate.board[data.piece].owner==data.player) {
-
+console.log("try 3")
 
       var valid=getValidMoves(tai.app.lib.rooms[data.room].gamestate.board[data.piece])
 
       if(valid.includes(data.location)) {
-  tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile=data.location;
+
+var K=checkSpace(data.location,  tai.app.lib.rooms[data.room].gamestate.board)
+
+if(K!=null) {
+  tai.app.lib.rooms[data.room].gamestate.board[K.pUUID]=null;
+  p=tai.app.lib.rooms[data.room].gamestate.board[K.pUUID];
+ //console.log("take "+ data.location)
+ //console.log(p)
+ delete p;
 }
+  tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile=data.location;
+  tai.app.lib.rooms[data.room].gamestate.turnSwitch=5;
+}}
 }
 }
 
@@ -520,8 +556,24 @@ setInterval(function(){
   if(!runOnce) {
     runOnce=true;
 
+  //console.log(  getValidMoves(test))
 
 
+
+  }
+
+  if(value.gamestate.turnSwitch>0) {
+    value.gamestate.turnSwitch-=1;
+    if(value.gamestate.turnSwitch<=0) {
+      value.gamestate.turnSwitch=-50;
+
+      if(value.gamestate.turnOwner=="p1") {
+        value.gamestate.turnOwner="p2"
+      } else {
+
+        value.gamestate.turnOwner="p1"
+      }
+    }
   }
 
 if(value.players["p1"]!=null && value.players["p2"]!=null) {
@@ -533,10 +585,11 @@ if(value.players["p1"]!=null && value.players["p2"]!=null) {
     //console.log(value.gamestate.board)
 
 
+
     tai.app.lib.io.to(value.id).emit('update', { state:JSON.stringify(value)
     });
 }
 
 
 
-  }, 500);
+}, 200);

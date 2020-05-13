@@ -307,7 +307,7 @@ onObjectClicked=function(pointer,object)
     } else {
 
       locationP=revPY(pointer)+";"+revPX(pointer)
-      socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id});
+      socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id,player:  localPlayer});
       SelectedPiece=null;
 
 
@@ -509,7 +509,11 @@ create:function ()
 input=this.input;
 input.on('gameobjectdown',onObjectClicked);
 var textConfig={fontSize:'80px',color:'#ffffff',fontFamily: 'Arial'};
+if(gameN.players[gameN.gamestate.turnOwner]!=null) {
 turntext = this.add.text(-575,-200, gameN.players[gameN.gamestate.turnOwner].name+"'s turn.",textConfig).setScrollFactor(0);
+} else {
+turntext = this.add.text(-575,-200, "undefined's turn.",textConfig).setScrollFactor(0);
+}
 
 //  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels+2050);
   this.cameras.main.zoom =0.5;
@@ -560,12 +564,14 @@ maxSpeed: 1.0
 
   for(var key in gameN.gamestate.board) {
   var p= gameN.gamestate.board[key];
-
+if(p!=null) {
   pieceSprites[key]  = makePiece(p,this);
 
-    SelectBox=this.add.sprite( -4000,-4000, 'select');
+
+  }
 
 }
+SelectBox=this.add.sprite( -4000,-4000, 'select');
 
 
 
@@ -631,12 +637,23 @@ update:function(time, delta) {
     this.cameras.main.scrollY=  Phaser.Math.Clamp(this.cameras.main.scrollY, 0, 2850);
 
 if(gameN!=null) {
+  if(gameN.players[gameN.gamestate.turnOwner]!=null) {
+  turntext.text= gameN.players[gameN.gamestate.turnOwner].name+"'s turn."
+}
 
   for(var key in pieceSprites) {
   var p= pieceSprites[key];
 
+  if(gameN.gamestate.board[key]!=null) {
+
   p.parRef.x=getPX(gameN.gamestate.board[key])
   p.parRef.y=getPY(gameN.gamestate.board[key])
+} else {
+  pieceSprites[key].parRef.text.destroy()
+  pieceSprites[key].destroy()
+
+  delete pieceSprites[key];
+}
 
 }
 
