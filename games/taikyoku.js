@@ -669,7 +669,8 @@ tai.makeroom=function(theID) {
   shogi.turnOwner="p1";
   shogi.turnSwitch=-50;
   shogi.board={};
-  shogi.movelog=[]
+  shogi.movelog=[];
+  shogi.started=false;
 
   tai.makeBoard(shogi)
 
@@ -695,7 +696,17 @@ start=function(app) {
 
   tai.app.lib.io.on('connection', (socket) => {
 
+  socket.on('startGame', (data) => {
+  
 
+    if(socket.username==tai.app.lib.rooms[data.id].players["p1"].name) {
+
+    if(tai.app.lib.rooms[data.id].players["p1"]!=null&&tai.app.lib.rooms[data.id].players["p2"]!=null) {
+
+      tai.app.lib.rooms[data.id].gamestate.started=true;
+    }
+  }
+  })
   socket.on('makeMove', (data) => {
 
 

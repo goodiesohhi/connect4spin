@@ -23,7 +23,7 @@ start=function(appz) {
 
     res.render('taikyoku', {
       user: req.user,
-      rooms: app.lib.rooms
+      //work: app.lib.rooms[req.user.roomlock]
       //rooms:
 
     });

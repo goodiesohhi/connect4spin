@@ -39,6 +39,7 @@ a {
 }
 /* The sidepanel menu */
 .sidepanel {
+      border-radius: 12px;
   height: 1050px; /* Specify a height */
   width: 0; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
@@ -56,6 +57,77 @@ a {
 
   right:0
 }
+#create {
+
+}
+.container3{
+
+  opacity: 0.90;
+    border-radius: 12px;
+    background: #ffffff;
+    position: absolute;
+left:1140px;
+    height: 2000px;
+    width:350px;
+    top: 100px;
+
+
+
+}
+.slightM{
+  left:20px;
+  position: relative;
+}
+
+.topZero{
+top:0;
+position: absolute;
+left:0;
+width: 95%;
+display:flex;
+
+}
+
+
+.blackbox{
+
+   background-image: url("../images/blackbox.png");
+   background-repeat: no-repeat;
+background-size: 140px 50px;
+background-position: left;
+background-origin: inherit;
+background-attachment:local;
+}
+.logo{
+top:0;
+  width: 300px;
+ height: 70px;
+ object-fit: scale-down;
+}
+.login{
+
+  width: 80px;
+ height: 70px;
+ object-fit: scale-down;
+}
+
+  .opa{
+    background:rgba(255,255,255,1);
+  }
+.container2{
+
+    background:rgba(255,255,255,0.9);
+    border-radius: 12px;
+    background: #ffffff;
+    position: absolute;
+left:20px;
+
+    height: auto;
+    width:1130px;
+
+
+
+}
 .absH{
   position:absolute;
   left:0;
@@ -65,8 +137,8 @@ a {
 .absL{
   position:absolute;
   right:0;
-  top:115px;
-  width:400px;
+  top:55px;
+  width:350px;
   height:700px;
 
 }
@@ -87,6 +159,10 @@ a {
   transition: 0.3s;
 }
 
+.styleNav {
+
+
+}
 /* When you mouse over the navigation links, change their color */
 .sidepanel a:hover {
   color: #f1f1f1;

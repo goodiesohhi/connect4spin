@@ -1,6 +1,6 @@
 <section class="section">
   {{#if user}}
-  Welcome back, {{user.username}}!
+  <p class="slightM">Welcome back, {{user.username}}!</p>
 
   <ul class="collection">
     <li class="collection-item">  <a href="/games">Games</a></li>
@@ -8,6 +8,6 @@
   </ul>
   {{/if}}
   {{#unless user}}
-  Login to play some ebic games
+<p class="slightM">  Login to play some ebic games </p>
   {{/unless}}
 </section>

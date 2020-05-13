@@ -2,6 +2,17 @@
 <html>
 
 <head>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+<link rel="manifest" href="./images/site.webmanifest">
+<link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+
   <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js.map">
@@ -30,6 +41,7 @@
 </head>
 
 <body>
+    <a href="/" class="brand-logo topZero "><img class="logo" src="./images/banner.png"></a>
   {{#if user}}
 
     <ul id="presence" class="dropdown-content">
@@ -40,23 +52,25 @@
       </li>
     </ul>
   {{/if}}
-  <nav>
+  <nav class="styleNav">
     <div class="container">
-      <div class="nav-wrapper">
-        <a href="/" class="brand-logo">EbicGames</a>
+      <div class="nav-wrapper ">
+
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           {{#unless user}}
           <li>
-            <a href="/login">Log In</a>
+            <a href="/login"><img class="login" src="./images/login.png"></a>
           </li>
           {{/unless}}
           {{#if user}}
 
             <li>
-              <a class="dropdown-trigger" href="#!" data-target="presence">
+
+              <a class="blackbox  dropdown-trigger" href="#!" data-target="presence">
                 {{user.username}}
                 <i class="material-icons right">arrow_drop_down</i>
               </a>
+
             </li>
           {{/if}}
         </ul>
@@ -70,7 +84,7 @@
 <form action="#chat">
 <button class="openbtn"  onclick="openNav()">&#9776; Chat</button>
 </form>
-<div id="content">
+<div id="content" class="container2">
 {{{body}}}
 
 </div>
@@ -79,7 +93,7 @@
 <div class="container">
 
   <ul class="nav nav-tabs">
-    <li ><a data-toggle="tab" href="#chat">Chat</a></li>
+    <li ><a id="publicChat"data-toggle="tab" href="#chat">Chat</a></li>
     <li><a data-toggle="tab" class= "smaller" href="#menu1">Menu 1</a></li>
     <li><a data-toggle="tab" class= "smaller" href="#menu2">Menu 2</a></li>
 
@@ -126,7 +140,43 @@
   <!-- Materialize JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
   <script type="text/javascript">
+  var images=['images/bg/blue.png',
+              'images/bg/green.png',
+              'images/bg/orange.png',
+              'images/bg/purple.png',
+              'images/bg/black.png',
+              'images/bg/red.png',
+              'images/bg/greyRed.png',
+            'images/bg/greyPurple.png',
+          'images/bg/pink.png',
+        'images/bg/pitch.png',
+      'images/bg/haze.png',
+    'images/bg/yellowBAD.png',
+  'images/bg/abort.png',
+'images/bg/tile.png',];
+var randomNumber;
+  $(document).ready(function(){
+
+
+randomNumber = Math.floor(Math.random() * images.length);
+var bgImg = 'url(' + images[randomNumber] + ')';
+
+$('body').css({'background':bgImg, 'background-size':'tile', });
+
+
+images.splice(randomNumber,1);
+randomNumber = Math.floor(Math.random() * images.length);
+ bgImg = 'url(' + images[randomNumber] + ')';
+
+$('.styleNav').css({'background':bgImg, 'background-size':'tile', });
+
+});
+
+
+
     $(function() {
+
+
       $(".dropdown-trigger").dropdown();
 
       $('button.openbtn').click(function(e)
@@ -232,7 +282,7 @@ socket.on('chatMessage', function (data) {
 
 socket.on('reload', function (data) {
   console.log("please reload")
-  window.location.reload();
+  window.location.reload(true);
 });
 
 
@@ -273,6 +323,7 @@ socket.on('roomList',function(data){
 
 function openNav() {
   document.getElementById("mySidepanel").style.width = "500px";
+  $(".publicChat").trigger("click");
 
 }
 

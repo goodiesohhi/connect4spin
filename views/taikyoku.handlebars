@@ -55,7 +55,10 @@ var body = document.body,
 //  owner:null,
 //  space:"none",
 RecRooms=0;
-
+var startGame=function(){
+  console.log("s1")
+  socket.emit('startGame',{id:gameN.id})
+}
 var SelectedPiece=null;
 var SelectedRange=null;
 var Selects=[]
@@ -762,6 +765,8 @@ return piece.sprite;
 
 
 }
+
+
 /*
 var locationz=""
 if(window.location.hostname.includes("localhost")) {
@@ -807,7 +812,40 @@ Extends: Phaser.Scene,
 
     },
 
-    update:function() {
+    update:function()
+
+    {
+
+if(gameN!=null) {
+      $( "#lobby" ).empty();
+      $( "#lobby" ).append( "<p>Players: </p>" );
+      for (var lo in gameN.players) {
+
+          var opu=gameN.players[lo].name
+
+          $( "#lobby" ).append( "<p>"+opu+"</p>" );
+      }
+
+
+      $( "#lobby" ).append( "<p>Spectators: </p>" );
+        for (var lo in gameN.spectators) {
+
+            var opu=gameN.spectators[lo].name
+
+            $( "#lobby" ).append( "<p>"+opu+"</p>" );
+        }
+
+        if(gameN.gamestate.started) {
+        $('#startGameNow').trigger('click')
+
+        this.scene.start('gameScene');
+      }
+      }
+
+
+
+
+
 
       if(!loaded) {
 
@@ -828,9 +866,6 @@ Extends: Phaser.Scene,
             }
           }
 
-            $('#startGameNow').trigger('click')
-
-            this.scene.start('gameScene');
           }
 
 
@@ -841,6 +876,7 @@ Extends: Phaser.Scene,
 
 
 })
+
 var createRoom=function(roomNAME) {
   var txt = $('#roomtxt').val();
     if (/\S/.test(txt)) {
@@ -848,6 +884,8 @@ var createRoom=function(roomNAME) {
 socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"taikyoku" });
   $('#roomtxt').val("");
   $('#startGameNow').trigger('click')
+
+window.location.reload(true);
 }
 }
 
@@ -857,6 +895,8 @@ socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"ta
   $('#roomtxt').val("");
   $('#startGameNow').trigger('click')
 
+    window.location.reload(true);
+
 }
 
 var joinRoom=function() {
@@ -865,16 +905,32 @@ socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"ta
   $('#roomtxt').val("");
   $('#startGameNow').trigger('click')
 
+    window.location.reload(true);
+
 }
 
 $('#create').click(function(){
 
   createRoom();
+  $('#startGameNow').trigger('click')
+
+  window.location.reload(true);
+})
+
+$('#sg').click(function(){
+
+  startGame();
+  $('#startGameNow').trigger('click')
+
+  window.location.reload(true);
 })
 
 $('#joinC').click(function(){
 
   joinClick($(this).attr("value"));
+  $('#startGameNow').trigger('click')
+
+  window.location.reload(true);
 })
 
 
@@ -882,6 +938,9 @@ $('#joinC').click(function(){
 $('#join').click(function(){
 
   joinRoom();
+  $('#startGameNow').trigger('click')
+
+  window.location.reload(true);
 })
 
 
@@ -947,7 +1006,7 @@ turntext = this.add.text(-575,-200, gameN.players[gameN.gamestate.turnOwner].nam
 turntext.scale=1-this.cameras.main.zoom
 } else {
 turntext = this.add.text(-575-this.cameras.main.zoom*500,-200-this.cameras.main.zoom*500, "undefined's turn.",textConfig).setScrollFactor(0);
-turntext.scale=50/(this.cameras.main.zoom*50)
+turntext.scale=20/(this.cameras.main.zoom*50)
 }
 console.log(this.cameras.main.zoom)
 //  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels+2050);
@@ -1075,7 +1134,10 @@ if(gameN!=null) {
 
   if(gameN.players[gameN.gamestate.turnOwner]!=null) {
   turntext.text= gameN.players[gameN.gamestate.turnOwner].name+"'s turn."
-  turntext.scale=50/(this.cameras.main.zoom*50)
+  turntext.x=-2500+(this.cameras.main.zoom)*4200
+    turntext.y=-1400+(this.cameras.main.zoom)*1200
+
+  turntext.scale=(1/this.cameras.main.zoom)/2
   console.log(this.cameras.main.zoom)
 } else {
   turntext.x=-2500+(this.cameras.main.zoom)*4200
@@ -1084,6 +1146,30 @@ if(gameN!=null) {
   turntext.scale=(1/this.cameras.main.zoom)/2
   console.log(this.cameras.main.zoom)
 }
+
+$( "#lobby" ).empty();
+$( "#lobby" ).append( "<p>Players: </p>" );
+for (var lo in gameN.players) {
+
+    var opu=gameN.players[lo].name
+
+    $( "#lobby" ).append( "<p>"+opu+"</p>" );
+}
+
+
+$( "#lobby" ).append( "<p>Spectators: </p>" );
+  for (var lo in gameN.spectators) {
+
+      var opu=gameN.spectators[lo].name
+
+      $( "#lobby" ).append( "<p>"+opu+"</p>" );
+  }
+
+
+
+
+
+
   $( "#log" ).empty();
 $( "#log" ).append( "<br>" );
   for (var lo in gameN.gamestate.movelog) {
@@ -1254,7 +1340,7 @@ var game = new Phaser.Game(config);
 
 
 
-<div class="container absH col-xs-6" id="theGame">
+<div class="container2 container absH col-xs-6" id="theGame">
 
   <ul class="nav nav-tabs">
     <li ><a data-toggle="tab" id="startGameNow" href="#game">Game</a></li>
@@ -1266,7 +1352,7 @@ var game = new Phaser.Game(config);
   <div class="tab-content">
     <div id="game" class="tab-pane fade">
 
-<div id="gameCanvasDiv"></div>
+<div class="opa" id="gameCanvasDiv"></div>
 
 
 
@@ -1279,13 +1365,30 @@ var game = new Phaser.Game(config);
 
 <div id="menu1g" class="tab-pane fade in active show">
   {{#unless (inGame user.roomlock) }}
+
+  {{user.roomlock}}
+  <script type="text/javascript">
+
+
+
+  
+    setInterval(function(){
+console.log("reload1")
+      if(gameN!=null) {
+      console.log("reload2")
+window.location.reload(true);
+}
+     }, 100);
+//
+
+</script>
   <h3>RoomList</h3>
-  <div class="input-group mb-3">
+  <div class="mb-3">
      <input type="text" class="form-control" placeholder="Room" id="roomtxt" />
     <div class="input-group-append">
-<button id ="create" type="button" class="input-group-append btn btn-success right">Create</button>
+<button id ="create" type="button" class=" btn btn-success right">Create</button>
 
-   <button  id ="join" type="button" class="input-group-append btn btn-success right">Join</button>
+   <button  id ="join" type="button" class=" btn btn-success right">Join</button>
 </div>
 
 
@@ -1309,7 +1412,13 @@ Room name:  {{roomname}}  id: {{id}} <button id= "joinC" class="input-group-appe
 
 {{/unless}}
 {{#if (inGame user.roomlock) }}
-<h1> Can't view rooms while ingame</h1>
+<h1> Lobby</h1>
+<button id ="sg" type="button" class=" btn btn-success right">Start Game</button>
+<div id="lobby">
+</div>
+
+
+
 {{/if}}
 
 
@@ -1320,7 +1429,7 @@ Room name:  {{roomname}}  id: {{id}} <button id= "joinC" class="input-group-appe
 </div></div>
 
 </div>
-<div class="col-xs-6 absL border">
+<div class="col-xs-6 container3 absL border">
 
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
