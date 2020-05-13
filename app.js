@@ -168,13 +168,11 @@ mongoose=require('./shared/middleware/mongoose')()
       socket.join('public')
 
         socket.on('createRoom', (j) => {
+          console.log("wanna create room")
           var lock
-            var doc = db.User.findOne({username: socket.username}, function(err,obj) {
-              lock=doc.roomlock
 
-            })
 
-            if(lock=="") {
+
         tRoom=  addRoom( app.lib.roomstuff.createRoom(j.roomName,j.game));
         tRoom.players["p1"]= {
         name: socket.username,
@@ -202,17 +200,13 @@ mongoose=require('./shared/middleware/mongoose')()
       socket.join(tRoom.id)
       socket.emit('reload', {});
       console.log("please reload1")
-    }
+
     })
 
     socket.on('joinRoom', (j) => {
-      var lock
-        var doc = db.User.findOne({username: socket.username}, function(err,obj) {
-          lock=doc.roomlock
 
-        })
 
-        if(lock=="") {
+
       tRoom=app.lib.rooms[j.roomName];
       if(tRoom!=null) {
         if(tRoom.players["p2"]==null) {
@@ -238,7 +232,7 @@ mongoose=require('./shared/middleware/mongoose')()
       } else {
         console.log("Invalid Room")
       }
-    }
+    
 
 
 })

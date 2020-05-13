@@ -10,7 +10,7 @@ const dat= require ("../public/javascripts/taidata")
 
 var fs = require('fs');
 const tai={}
-
+const testing=false;
 
 
 
@@ -238,80 +238,134 @@ var re=null
 return re;
 }
 
+getValidJumps=function(o) {
+
+    jumps=[]
+    x=0;
+    y=0;
+
+  for (var i in o.movementData.jumps) {
+
+
+      if(o.owner=="p1") {
+   x=-o.movementData.jumps[i].x
+   y=-o.movementData.jumps[i].y
+  } else {
+    x=o.movementData.jumps[i].x
+    y=o.movementData.jumps[i].y
+  }
+
+
+  z=(getX(o.tile)+x)
+
+   var destination= coordStr( coordInt(o.tile)+y) +";"+ z;
+
+   test=checkSpace(destination, tai.app.lib.rooms[o.roomID].gamestate.board);
+
+   if(test==null) {
+      jumps.push(destination)
+   } else {
+
+  if(test.owner==o.owner) {
+
+  } else {
+   jumps.push(destination)
+  }
+  }
+  }
+
+
+
+  return jumps;
+
+}
 
 getValidMoves=function(o) {
 
-  var validMoves=[]
- var travelled=[]
- if(o.owner=="p2") {
-  travelled[0]=traverse(o,o.movementData.up,0,1)
-    travelled[1]=traverse(o,o.movementData.down,0,-1)
-      travelled[2]=traverse(o,o.movementData.left,-1,0)
-        travelled[3]=traverse(o,o.movementData.right,1,0)
-          travelled[4]=traverse(o,o.movementData.downleft,-1,-1)
-            travelled[5]=traverse(o,o.movementData.downright,1,-1)
-              travelled[6]=traverse(o,o.movementData.upleft,-1,1)
-                travelled[7]=traverse(o,o.movementData.upright,1,1)
-              } else {
 
-                travelled[0]=traverse(o,o.movementData.up,0,-1)
-                  travelled[1]=traverse(o,o.movementData.down,0,1)
-                    travelled[2]=traverse(o,o.movementData.left,1,0)
-                      travelled[3]=traverse(o,o.movementData.right,-1,0)
-                        travelled[4]=traverse(o,o.movementData.downleft,1,1)
-                          travelled[5]=traverse(o,o.movementData.downright,-1,1)
-                            travelled[6]=traverse(o,o.movementData.upleft,1,-1)
-                              travelled[7]=traverse(o,o.movementData.upright,-1,-1)
+   if(o.movementData.type=="h") {
 
 
-              }
+   } else {
+   if(o.movementData.type=="jump") {
+
+  return getValidJumps(o)
 
 
 
-            travelled.forEach((item, i) => {
+  } else if (o.movementData.type=="step") {
+
+
+  return getValidSteps(o)
+   }
+  }
+
+
+}
+
+
+getValidSteps=function(o) {
+
+
+    var validMoves=[]
+   var travelled=[]
+   if(o.owner=="p2") {
+    travelled[0]=traverse(o,o.movementData.up,0,1)
+      travelled[1]=traverse(o,o.movementData.down,0,-1)
+        travelled[2]=traverse(o,o.movementData.left,-1,0)
+          travelled[3]=traverse(o,o.movementData.right,1,0)
+            travelled[4]=traverse(o,o.movementData.downleft,-1,-1)
+              travelled[5]=traverse(o,o.movementData.downright,1,-1)
+                travelled[6]=traverse(o,o.movementData.upleft,-1,1)
+                  travelled[7]=traverse(o,o.movementData.upright,1,1)
+                } else {
+
+                  travelled[0]=traverse(o,o.movementData.up,0,-1)
+                    travelled[1]=traverse(o,o.movementData.down,0,1)
+                      travelled[2]=traverse(o,o.movementData.left,1,0)
+                        travelled[3]=traverse(o,o.movementData.right,-1,0)
+                          travelled[4]=traverse(o,o.movementData.downleft,1,1)
+                            travelled[5]=traverse(o,o.movementData.downright,-1,1)
+                              travelled[6]=traverse(o,o.movementData.upleft,1,-1)
+                                travelled[7]=traverse(o,o.movementData.upright,-1,-1)
+
+
+                }
 
 
 
-                    var value = item
-                  //    console.log(value.dat)
-                  var i;
+              travelled.forEach((item, i) => {
+                      var value = item
+                    //    console.log(value.dat)
+                    var i;
 
-                    for(i=0;i<value.path.length;i++) {
-                      var value2 = value.path[i];
-
-
-
-
-
-
-                      //console.log(value)
-
-                      possible=value.dat[value2]
-                    //  console.log(value2)
-                  //  console.log(possible)
-
-                      if(possible!=null) {
-                        if(o.owner==possible.owner) {
+                      for(i=0;i<value.path.length;i++) {
+                        var value2 = value.path[i];
+                        possible=value.dat[value2]
+                        if(possible!=null) {
+                          if(o.owner==possible.owner) {
 
 
-                        break
+                          break
+                          } else {
+                          //  console.log("should take")
+                            validMoves.push(value2)
+                          break
+
+                          }
+
                         } else {
-                        //  console.log("should take")
+
                           validMoves.push(value2)
-                        break
-
                         }
-
-                      } else {
-
-                        validMoves.push(value2)
                       }
-                    }
-                  });
+
+                    });
 
 
 
-return validMoves;
+
+  return validMoves;
 
 }
 
@@ -524,6 +578,12 @@ tai.loadPiece(shogi,"wh","p1","ee;2")
 tai.loadPiece(shogi,"wh","p1","ee;35")
 
 
+//knight
+tai.loadPiece(shogi,"n","p1","gg;3")
+tai.loadPiece(shogi,"n","p1","gg;34")
+//Flying Dragon
+tai.loadPiece(shogi,"fd","p1","ee;28")
+tai.loadPiece(shogi,"fd","p1","ee;9")
 //p2
 
 
@@ -532,6 +592,10 @@ tai.loadPiece(shogi,"wh","p1","ee;35")
 tai.loadPiece(shogi,"k","p2","a;18")
 //prince
 tai.loadPiece(shogi,"cp","p2","a;19")
+
+//knight
+tai.loadPiece(shogi,"n","p2","d;3")
+tai.loadPiece(shogi,"n","p2","d;34")
 
 //pawnwall
 
@@ -648,6 +712,10 @@ tai.loadPiece(shogi,"si","p2","c;35")
 tai.loadPiece(shogi,"wh","p2","f;2")
 tai.loadPiece(shogi,"wh","p2","f;35")
 
+//Flying Dragon
+tai.loadPiece(shogi,"fd","p2","f;28")
+tai.loadPiece(shogi,"fd","p2","f;9")
+
 
 //  tai.loadPiece(shogi,"k","p2","a;2")
   //  tai.loadPiece(shogi,"k","p1","c;1")
@@ -697,15 +765,19 @@ start=function(app) {
   tai.app.lib.io.on('connection', (socket) => {
 
   socket.on('startGame', (data) => {
-  
 
-    if(socket.username==tai.app.lib.rooms[data.id].players["p1"].name) {
+if(testing) {
+  tai.app.lib.rooms[data.id].gamestate.started=true;
+
+} else {
+     if(socket.username==tai.app.lib.rooms[data.id].players["p1"].name) {
 
     if(tai.app.lib.rooms[data.id].players["p1"]!=null&&tai.app.lib.rooms[data.id].players["p2"]!=null) {
 
       tai.app.lib.rooms[data.id].gamestate.started=true;
     }
   }
+}
   })
   socket.on('makeMove', (data) => {
 
@@ -809,6 +881,10 @@ setInterval(function(){
       } else {
 
         value.gamestate.turnOwner="p1"
+      }
+
+      if(testing) {
+          value.gamestate.turnOwner="p1"
       }
 
     value.gamestate.turn+=1;

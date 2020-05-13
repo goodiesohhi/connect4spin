@@ -367,6 +367,69 @@
 
 
         },
+
+        "n":{
+        name:"Knight",
+        movementData: {
+        type:"jump",
+        jumps:{},
+        jumps: {
+      0:{
+          x:-1,
+          y:2,
+      },
+        1:{
+          x:1,
+          y:2,
+
+        }
+      }
+
+
+      },
+
+        promote:"sl"
+
+
+
+        },
+
+
+                "fd":{
+                name:"Flying Dragon",
+                movementData: {
+                type:"jump",
+                jumps:{},
+                jumps: {
+              0:{
+                  x:-2,
+                  y:2,
+              },
+                1:{
+                  x:-2,
+                  y:-2,
+
+                },
+                2:{
+                  x:2,
+                  y:2,
+
+                },
+                3:{
+                  x:2,
+                  y:-2,
+
+                },
+              }
+
+
+              },
+
+                promote:"dk"
+
+
+
+                },
     }
 
     if (typeof module === "object" && module && typeof module.exports === "object") {
