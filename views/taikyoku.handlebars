@@ -89,7 +89,7 @@ getValidJumps=function(o) {
   jumps=[]
   x=0;
   y=0;
-  console.log(o)
+
 for (var i in o.movementData.jumps) {
 
     if(o.owner=="p1") {
@@ -137,18 +137,18 @@ for (var u in o.movementData.fusion) {
   k=o.movementData.fusion[u]
   k.owner=o.owner;
   k.tile=o.tile;
-  console.log(o.movementData.fusion[u])
+
   if(k.movementData.type=="jump") {
 
  results=results.concat(getValidJumps(k))
-  console.log(results)
+
 
 
 } else if (k.movementData.type=="step") {
 
 
 results=results.concat(getValidSteps(k))
-console.log(results)
+
   }
 }
 
@@ -569,7 +569,9 @@ var makeSelection=function(p) {
     piece.x=getPX(dat)
     piece.y=getPY(dat)
 
-    Selects.push(p.add.sprite( piece.x,piece.y, 'box'));
+    temp=p.add.sprite( piece.x,piece.y, 'box')
+    temp.alpha=0.5;
+    Selects.push(temp);
 }
 }
 
@@ -1363,6 +1365,8 @@ p.y=p.parRef.dy;
 
 
   if(SelectedPiece!=null) {
+    SelectBox.destroy()
+    SelectBox=this.add.sprite( -4000,-4000, 'select');
     SelectBox.x=SelectedPiece.x;
     SelectBox.y=SelectedPiece.y;
     if(SelectedPiece.parRef.dat.owner=="p2") {

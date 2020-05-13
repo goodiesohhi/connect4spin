@@ -285,6 +285,66 @@
 
         },
 
+        "or":{
+        name:"Old Rat",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:1,
+        down:0,
+        upleft:0,
+        upright:0,
+        downleft:1,
+        downright:1
+
+      },
+        promote:"bp"
+
+
+
+        },
+
+        "ow":{
+        name:"Swooping Owl",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:1,
+        down:0,
+        upleft:0,
+        upright:0,
+        downleft:1,
+        downright:1
+
+      },
+        promote:"ce"
+
+
+
+        },
+
+        "st":{
+        name:"Strutting Crow",
+        movementData: {
+        type:"step",
+        left:0,
+        right:0,
+        up:1,
+        down:0,
+        upleft:0,
+        upright:0,
+        downleft:1,
+        downright:1
+
+      },
+        promote:"fa"
+
+
+
+        },
+
         "si":{
         name:"Side Dragon",
         movementData: {

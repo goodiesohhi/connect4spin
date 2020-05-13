@@ -478,6 +478,7 @@ function create_UUID(){
 tai.loadPiece=function(sho,p,player,tile) {
 
   var temp=cloneDeep (dat[p])
+  temp.startTile=tile;
   temp.owner=player;
   temp.tile=tile;
   temp.pID=p;
@@ -610,6 +611,18 @@ tai.loadPiece(shogi,"fd","p1","ee;9")
 //Kirin
 
 tai.loadPiece(shogi,"kr","p1","ee;16")
+
+//swooping Owl
+tai.loadPiece(shogi,"ow","p1","cc;5")
+tai.loadPiece(shogi,"ow","p1","cc;32")
+//old rat
+
+tai.loadPiece(shogi,"or","p1","cc;14")
+tai.loadPiece(shogi,"or","p1","cc;23")
+
+//strutting crow
+tai.loadPiece(shogi,"st","p1","ee;12")
+tai.loadPiece(shogi,"st","p1","ee;25")
 //p2
 
 
@@ -743,9 +756,20 @@ tai.loadPiece(shogi,"wh","p2","f;35")
 tai.loadPiece(shogi,"fd","p2","f;28")
 tai.loadPiece(shogi,"fd","p2","f;9")
 
-//
+//kirin
 tai.loadPiece(shogi,"kr","p2","f;21")
 
+
+//swooping Owl
+tai.loadPiece(shogi,"ow","p2","h;5")
+tai.loadPiece(shogi,"ow","p2","h;32")
+
+//old Rat
+tai.loadPiece(shogi,"or","p2","h;14")
+tai.loadPiece(shogi,"or","p2","h;23")
+//strutting crow
+tai.loadPiece(shogi,"st","p2","f;12")
+tai.loadPiece(shogi,"st","p2","f;25")
 
 
 
@@ -803,7 +827,7 @@ if(testing) {
   socket.on('makeMove', (data) => {
 
 
-
+if(tai.app.lib.rooms[data.room]!=null) {
     if(tai.app.lib.rooms[data.room].gamestate.turnSwitch==-50) {
 
 if(data.player==  tai.app.lib.rooms[data.room].gamestate.turnOwner) {
@@ -833,7 +857,7 @@ if(K!=null) {
 }
 }
 
-
+}
   });
 
   });
