@@ -4,11 +4,11 @@
 <head>
 
 
-<link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
-<link rel="manifest" href="./images/site.webmanifest">
-<link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+<link rel="manifest" href="/images/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
 
@@ -41,7 +41,7 @@
 </head>
 
 <body>
-    <a href="/" class="brand-logo topZero "><img class="logo" src="./images/banner.png"></a>
+    <a href="/" id="logo" class="brand-logo topZero "><img id="logo" class="logo" src="/images/banner.png"></a>
   {{#if user}}
 
     <ul id="presence" class="dropdown-content">
@@ -59,7 +59,7 @@
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           {{#unless user}}
           <li>
-            <a href="/login"><img class="login" src="./images/login.png"></a>
+            <a href="/login"><img class="login" src="/images/login.png"></a>
           </li>
           {{/unless}}
           {{#if user}}
@@ -140,23 +140,44 @@
   <!-- Materialize JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
   <script type="text/javascript">
-  var images=['images/bg/blue.png',
-              'images/bg/green.png',
-              'images/bg/orange.png',
-              'images/bg/purple.png',
-              'images/bg/black.png',
-              'images/bg/red.png',
-              'images/bg/greyRed.png',
-            'images/bg/greyPurple.png',
-          'images/bg/pink.png',
-        'images/bg/pitch.png',
-      'images/bg/haze.png',
-    'images/bg/yellowBAD.png',
-  'images/bg/abort.png',
-'images/bg/tile.png',];
+  var images=['/images/bg/blue.png',
+              '/images/bg/green.png',
+              '/images/bg/orange.png',
+              '/images/bg/purple.png',
+              '/images/bg/black.png',
+              '/images/bg/red.png',
+              '/images/bg/greyRed.png',
+            '/images/bg/greyPurple.png',
+          '/images/bg/pink.png',
+        '/images/bg/pitch.png',
+      '/images/bg/haze.png',
+    '/images/bg/yellowBAD.png',
+  '/images/bg/abort.png',
+'/images/bg/tile.png',];
 var randomNumber;
+
+window.onload = function() {
+  if (window.location.href.indexOf("games") > -1) {
+
+  if( window.localStorage )
+ {
+   if( !localStorage.getItem('firstLoad') )
+   {
+     localStorage['firstLoad'] = true;
+     window.location.reload();
+   }
+   else
+     localStorage.removeItem('firstLoad');
+ }
+ }
+}
+
   $(document).ready(function(){
 
+if(gameN!=null) {
+  window.location.reload(true);
+
+}
 
 randomNumber = Math.floor(Math.random() * images.length);
 var bgImg = 'url(' + images[randomNumber] + ')';
@@ -192,6 +213,97 @@ $('.styleNav').css({'background':bgImg, 'background-size':'tile', });
   </script>
 
   <script>
+
+  var leaveGame=function(){
+  //  console.log("s1")
+
+    socket.emit('disconnectGame',{p:localPlayer})
+    gameN={leave:true}
+  }
+  var startGame=function(){
+  //  console.log("s1")
+    socket.emit('startGame',{id:gameN.id})
+  }
+
+
+  var createRoom=function(roomNAME) {
+    var txt = $('#roomtxt').val();
+      if (/\S/.test(txt)&&txt.length<20) {
+
+  socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"taikyoku" });
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+  window.location.reload(true);
+  }
+  }
+
+  var joinClick=function(txt) {
+
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+
+  }
+
+  var startGame=function(){
+  //  console.log("s1")
+    socket.emit('startGame',{id:gameN.id})
+  }
+  var joinRoom=function() {
+    var txt = $('#roomtxt').val();
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+
+  }
+
+  $('#create').click(function(){
+
+    createRoom();
+    $('#startGameNow').trigger('click')
+
+    window.location.reload(true);
+  })
+
+  $('#leaveBTN').click(function(){
+
+    leaveGame();
+    $('#logo').trigger('click')
+
+   window.location.reload(true);
+  })
+
+  $('#sg').click(function(){
+
+    startGame();
+    $('#startGameNow').trigger('click')
+
+    window.location.reload(true);
+  })
+
+  $('#joinC').click(function(){
+
+    joinClick($(this).attr("value"));
+    $('#startGameNow').trigger('click')
+
+    window.location.reload(true);
+  })
+
+
+
+  $('#join').click(function(){
+
+    joinRoom();
+    $('#startGameNow').trigger('click')
+
+    window.location.reload(true);
+  })
+
 
   var body = document.body,
     overlay = document.querySelector('.overlay'),
@@ -283,6 +395,11 @@ socket.on('chatMessage', function (data) {
 socket.on('reload', function (data) {
   console.log("please reload")
   window.location.reload(true);
+});
+
+
+socket.on('hasWon', function (data) {
+localHasWon=true;
 });
 
 

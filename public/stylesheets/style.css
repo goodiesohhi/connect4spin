@@ -37,7 +37,25 @@ a {
     z-index: 1;
     opacity: 1;
 }
+
+.roomEntry{
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  width:1000px;
+
+  color: white;
+
+  font-size: 15px;
+  height:35px;
+
+}
 /* The sidepanel menu */
+
+#joinC {
+
+  float:right;
+  position:relative;
+}
 .sidepanel {
       border-radius: 12px;
   height: 1050px; /* Specify a height */

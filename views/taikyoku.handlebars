@@ -21,7 +21,7 @@
 
 
 <link rel="stylesheet" href="/stylesheets/style.css">
-<script src="./javascripts/taidata.js"></script>
+<script src="/javascripts/taidata.js"></script>
 
 <script type="text/javascript">
 var body = document.body,
@@ -55,16 +55,16 @@ var body = document.body,
 //  owner:null,
 //  space:"none",
 RecRooms=0;
-var startGame=function(){
-//  console.log("s1")
-  socket.emit('startGame',{id:gameN.id})
-}
+
 var SelectedPiece=null;
 var SelectedRange=null;
 var Selects=[]
-
+var winText=null;
 var localPlayer;
+var makeMove=true;
 
+var localHasWon=false;
+var wintimer=200;
 var revPX=function(p) {
   z=p.worldX;
 
@@ -785,10 +785,9 @@ x=36
 return 100*x-50;
 
 }
-onObjectClicked=function(pointer,object)
-    {
+onObjectClicked=function(pointer,object) {
 
-
+if(makeMove) {
       if(object.isTilemap) {
         locationP=revPY(pointer)+";"+revPX(pointer)
         socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id,player:  localPlayer});
@@ -822,7 +821,7 @@ onObjectClicked=function(pointer,object)
 
     }
   }
-
+}
     }
 
 
@@ -837,6 +836,7 @@ piece.dx=piece.x
 piece.dy=piece.y
 piece.sprite=p.add.sprite( piece.dx,piece.dy, 'piece');
 piece.sprite.parRef=piece;
+piece.sprite.track=false
 piece.sprite.setInteractive({ useHandCursor: true })
 
 
@@ -905,11 +905,15 @@ Extends: Phaser.Scene,
     {
 
 if(gameN!=null) {
+
       $( "#lobby" ).empty();
       $( "#lobby" ).append( "<p>Players: </p>" );
       for (var lo in gameN.players) {
-
           var opu=gameN.players[lo].name
+          if(lo=="p1") {
+            opu+= " (Room Owner)"
+          }
+
 
           $( "#lobby" ).append( "<p>"+opu+"</p>" );
       }
@@ -923,7 +927,7 @@ if(gameN!=null) {
             $( "#lobby" ).append( "<p>"+opu+"</p>" );
         }
 
-        if(gameN.gamestate.started) {
+        if(gameN.started) {
         $('#startGameNow').trigger('click')
 
         this.scene.start('gameScene');
@@ -953,6 +957,20 @@ if(gameN!=null) {
               localPlayer="p2"
             }
           }
+          if(localPlayer!="p1") {
+              $( "#sg" ).remove();
+              startGame=null;
+
+          }
+          if (gameN.started) {
+
+
+                $( "#sg" ).remove();
+                startGame=null;
+
+
+          }
+
 
           }
 
@@ -963,72 +981,6 @@ if(gameN!=null) {
     }
 
 
-})
-
-var createRoom=function(roomNAME) {
-  var txt = $('#roomtxt').val();
-    if (/\S/.test(txt)) {
-
-socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"taikyoku" });
-  $('#roomtxt').val("");
-  $('#startGameNow').trigger('click')
-
-window.location.reload(true);
-}
-}
-
-var joinClick=function(txt) {
-
-socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
-  $('#roomtxt').val("");
-  $('#startGameNow').trigger('click')
-
-    window.location.reload(true);
-
-}
-
-var joinRoom=function() {
-  var txt = $('#roomtxt').val();
-socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
-  $('#roomtxt').val("");
-  $('#startGameNow').trigger('click')
-
-    window.location.reload(true);
-
-}
-
-$('#create').click(function(){
-
-  createRoom();
-  $('#startGameNow').trigger('click')
-
-  window.location.reload(true);
-})
-
-$('#sg').click(function(){
-
-  startGame();
-  $('#startGameNow').trigger('click')
-
-  window.location.reload(true);
-})
-
-$('#joinC').click(function(){
-
-  joinClick($(this).attr("value"));
-  $('#startGameNow').trigger('click')
-
-  window.location.reload(true);
-})
-
-
-
-$('#join').click(function(){
-
-  joinRoom();
-  $('#startGameNow').trigger('click')
-
-  window.location.reload(true);
 })
 
 
@@ -1049,11 +1001,11 @@ function GameScene ()
 
 preload:function ()
 {
-  this.load.image('tile','images/taikyoku/tile.png');
-  this.load.image('piece','images/taikyoku/piece.png');
-  this.load.image('select','images/taikyoku/select.png');
-  this.load.image('box','images/taikyoku/box.png');
-  this.load.tilemapTiledJSON('map', 'javascripts/board.json');
+  this.load.image('tile','/images/taikyoku/tile.png');
+  this.load.image('piece','/images/taikyoku/piece.png');
+  this.load.image('select','/images/taikyoku/select.png');
+  this.load.image('box','/images/taikyoku/box.png');
+  this.load.tilemapTiledJSON('map', '/javascripts/board.json');
   if (this.game.canvas!=null) {
   this.game.canvas.id = 'game';
   }
@@ -1067,6 +1019,15 @@ preload:function ()
 
 create:function ()
 {
+  SelectedPiece=null;
+    SelectedRange=null;
+    Selects=[]
+    winText=null;
+    localPlayer;
+    makeMove=true;
+
+    localHasWon=false;
+    wintimer=200;
   //this.add.image(400, 300, 'sky');
   var map = this.make.tilemap({ key: 'map' });
    tiles = map.addTilesetImage('tile', 'tile');
@@ -1119,12 +1080,15 @@ drag: 0.0005,
 maxSpeed: 1.0
   };
 
+
+
   var pieces=   0;
   pieceSprites={}
 
   cam = this.cameras.main;
 
-
+  this.cameras.main.setLerp(0.1,0.1);
+    this.cameras.main.setZoom(0.2);
      gui = new dat.GUI( { autoPlace: false });
      gui.domElement.id = 'gui';
 
@@ -1219,6 +1183,25 @@ update:function(time, delta) {
     this.cameras.main.scrollY=  Phaser.Math.Clamp(this.cameras.main.scrollY, 0, 2850);
 
 if(gameN!=null) {
+if(localHasWon&&gameN.winner!=null) {
+
+  if(winText==null) {
+    var textConfig={fontSize:'120px',color:'#FFFFFF',fontFamily: 'Arial'};
+    winText=this.add.text(2000,800,gameN.players[gameN.winner].name+" has won!",textConfig);
+    this.cameras.main.startFollow(winText);
+  }
+wintimer-=1;
+if(wintimer<=0) {
+  wintimer=200
+
+  $("#toLobby").trigger('click')
+  window.location.reload();
+
+
+
+}
+}
+
 
   if(gameN.players[gameN.gamestate.turnOwner]!=null) {
   turntext.text= gameN.players[gameN.gamestate.turnOwner].name+"'s turn."
@@ -1294,7 +1277,10 @@ if(gameN.players["p2"]!=null){
   }
 
 }
-
+$( "#info" ).append( "<br>" );
+$( "#info" ).append( "<p> Taikyoku (Ultimate) Shogi is a game.</p>" );
+$( "#info" ).append( "<p> It is a ridiculously large variant of Shogi (Japanese Chess)</p>" );
+$( "#info" ).append( "<p> Objective of the game is to kill your oppenent's Kings and Princes</p>" );
 $( "#info" ).append( "<br>" );
 $( "#info" ).append( "<p> Arrow Keys to move around </p>" );
 $( "#info" ).append( "<p>Q and E to zoom </p>" );
@@ -1326,10 +1312,30 @@ $( "#info" ).append( "<p> Promotes to "+SelectedPiece.parRef.dat.promote+"</p>" 
 for(var key in pieceSprites) {
 
 var p= pieceSprites[key];
+
+if(!p.track) {
+
+if(p.parRef.x!=p.parRef.dx||p.parRef.y!=p.parRef.dy) {
+  p.track=true;
+  makeMove=false
+  this.cameras.main.startFollow(p,true,0.5,0.5,0,0)
+}
+} else {
+  if(p.parRef.x==p.parRef.dx&&p.parRef.y==p.parRef.dy) {
+    p.track=false
+    makeMove=true
+    this.cameras.main.stopFollow()
+  }
+}
+
+
+
+
 if(p.parRef.x>p.parRef.dx) {
 p.parRef.dx+=10;
 p.parRef.dx=Phaser.Math.Clamp(p.parRef.dx,p.parRef.dx,p.parRef.x)
 
+this.cameras.main.zoom=0.3;
 
 }
 
@@ -1337,11 +1343,15 @@ if(p.parRef.x<p.parRef.dx) {
 p.parRef.dx-=10;
 p.parRef.dx=Phaser.Math.Clamp(p.parRef.dx,p.parRef.x,p.parRef.dx)
 
+  this.cameras.main.zoom=0.3;
+
 
 }
 if(p.parRef.y>p.parRef.dy) {
 p.parRef.dy+=10;
 p.parRef.dy=Phaser.Math.Clamp(p.parRef.dy,p.parRef.dy,p.parRef.y)
+
+this.cameras.main.zoom=0.3;
 
 
 }
@@ -1349,6 +1359,7 @@ if(p.parRef.y<p.parRef.dy) {
 p.parRef.dy-=10;
 p.parRef.dy=Phaser.Math.Clamp(p.parRef.dy,p.parRef.y,p.parRef.dy)
 
+this.cameras.main.zoom=0.3;
 
 }
 if (p.parRef.text._text.length==1) {
@@ -1361,6 +1372,7 @@ p.parRef.text.y=p.parRef.dy-25
 p.x=p.parRef.dx;
 p.y=p.parRef.dy;
 }
+
 
 
 
@@ -1434,7 +1446,7 @@ var game = new Phaser.Game(config);
 
   <ul class="nav nav-tabs">
     <li ><a data-toggle="tab" id="startGameNow" href="#game">Game</a></li>
-    <li class="active"><a class="active" data-toggle="tab" href="#menu1g" aria-expanded="true">Menu 1</a></li>
+    <li class="active"><a class="active" id="toLobby" data-toggle="tab" href="#menu1g" aria-expanded="true">Rooms</a></li>
     <li><a data-toggle="tab" href="#menu2g">KSOSML</a></li>
 
   </ul>
@@ -1456,7 +1468,7 @@ var game = new Phaser.Game(config);
 <div id="menu1g" class="tab-pane fade in active show">
   {{#unless (inGame user.roomlock) }}
 
-  {{user.roomlock}}
+
   <script type="text/javascript">
 
 
@@ -1464,15 +1476,17 @@ var game = new Phaser.Game(config);
 
     setInterval(function(){
 
-      if(gameN!=null) {
+
+      if(gameN!=null ||localHasWon) {
+
 $("#menu1g").empty()
 window.location.reload(true);
 }
-     }, 100);
+}, 500);
 //
 
 </script>
-  <h3>RoomList</h3>
+  <h3>Create/Join Room</h3>
   <div class="mb-3">
      <input type="text" class="form-control" placeholder="Room" id="roomtxt" />
     <div class="input-group-append">
@@ -1486,12 +1500,13 @@ window.location.reload(true);
 
 <button class="input-group-append btn btn-success" onClick="window.location.reload();">Refresh</button>
 <hr>
+<h3>Room List</h3>
 <div class="container">
 
 
 {{#each (rooms)}}
-<div>
-Room name:  {{roomname}}  id: {{id}} <button id= "joinC" class="input-group-append btn btn-success" value="{{id}}">Join</button>
+<div class="roomEntry">
+Room name:  {{roomname}}  id: {{id}}  started:{{started}} <button id= "joinC" class="input-group-append btn btn-success" value="{{id}}">Join</button>
 </div>
 
 {{/each}}
@@ -1504,6 +1519,7 @@ Room name:  {{roomname}}  id: {{id}} <button id= "joinC" class="input-group-appe
 {{#if (inGame user.roomlock) }}
 <h1> Lobby</h1>
 <button id ="sg" type="button" class=" btn btn-success right">Start Game</button>
+<button id ="leaveBTN" type="button" class=" btn btn-success right">Leave Room</button>
 <div id="lobby">
 </div>
 

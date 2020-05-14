@@ -547,6 +547,153 @@
 
                 promote:"go"
                 },
+
+                "fp":{
+                name:"Free Pup",
+                movementData: {
+                type:"step",
+                left:2,
+                right:2,
+                up:1000,
+                down:1000,
+                upleft:1000,
+                upright:1000,
+                downleft:1,
+                downright:1
+
+              },
+              //dd= Free Dog
+                promote:"dd"
+
+
+
+                },
+                "cn":{
+                name:"Center Standard",
+                movementData: {
+                type:"step",
+                left:1000,
+                right:1000,
+                up:1000,
+                down:1000,
+                upleft:3,
+                upright:3,
+                downleft:3,
+                downright:3
+
+              },
+              //dd= Free Dog
+                promote:"sd"
+
+
+
+                },
+                "sd":{
+                name:"Front Standard",
+                movementData: {
+                type:"step",
+                left:1000,
+                right:1000,
+                up:1000,
+                down:1000,
+                upleft:3,
+                upright:3,
+                downleft:3,
+                downright:3
+
+              },
+              //dd= Free Dog
+                promote:"ge"
+
+
+
+                },
+
+                "rs":{
+                name:"Rear Standard",
+                movementData: {
+                type:"step",
+                left:1000,
+                right:1000,
+                up:1000,
+                down:1000,
+                upleft:2,
+                upright:2,
+                downleft:2,
+                downright:2
+
+              },
+
+                promote:"cn"
+
+
+
+                },
+
+
+                                "ls":{
+                                name:"Little Standard",
+                                movementData: {
+                                type:"step",
+                                left:1000,
+                                right:1000,
+                                up:1000,
+                                down:1000,
+                                upleft:2,
+                                upright:2,
+                                downleft:1,
+                                downright:1
+
+                              },
+
+                                promote:"rs"
+
+
+
+                                },
+
+                "ge":{
+                name:"Great Standard",
+                movementData: {
+                type:"step",
+                left:1000,
+                right:1000,
+                up:1000,
+                down:1000,
+                upleft:1000,
+                upright:1000,
+                downleft:3,
+                downright:3
+
+              },
+              //dd= Free Dog
+                promote:"ge"
+
+
+
+                },
+
+                "wf":{
+                name:"Side Wolf",
+                movementData: {
+                type:"step",
+                left:1000,
+                right:1000,
+                up:0,
+                down:0,
+                upleft:1,
+                upright:0,
+                downleft:0,
+                downright:1
+
+              },
+
+//fw: free wolf
+                promote:"fw"
+
+
+
+                },
     }
 
     if (typeof module === "object" && module && typeof module.exports === "object") {

@@ -25,6 +25,7 @@ app.lib = {
 
 
  };
+ app.testing=false;
 
  var addRoom=function(r){
 app.lib.rooms[r.id]=r;
@@ -126,6 +127,104 @@ app.lib.handlebars=handlebars
 
 // WARNING: app.listen(80) will NOT work here!
 
+setInterval(function(){
+
+//tai.app.lib.io.emit('roomList', { state:JSON.stringify()});
+
+  for(var key in app.lib.rooms) {
+
+  var value = app.lib.rooms[key];
+  if(!runOnce) {
+    runOnce=true;
+
+  //console.log(  getValidMoves(test))
+
+
+
+  }
+
+  if(Object.keys(value.players).length==0) {
+ delete app.lib.rooms[value.id];
+
+
+  }
+if(value.gamename=="taikyoku") {
+if(!app.testing) {
+  if(value.players["p2"]==null) {
+
+    if(value.started)
+    {
+      value.started=false
+      value.gamestate =  app.lib.games["tai"].makeroom(value.id);
+        app.lib.io.to(value.id).emit('reload', {});
+    }
+
+  }
+}
+
+  if(value.gamestate.turnSwitch>0) {
+    value.gamestate.turnSwitch-=1;
+    if(value.gamestate.turnSwitch<=0) {
+      value.gamestate.turnSwitch=-50;
+
+      if(value.gamestate.turnOwner=="p1") {
+        value.gamestate.turnOwner="p2"
+      } else {
+
+        value.gamestate.turnOwner="p1"
+      }
+      if(app.testing) {
+
+          value.gamestate.turnOwner="p1"
+      }
+
+      p1R= app.lib.games["tai"].getRoyals("p1" ,value.gamestate.board)
+      p2R= app.lib.games["tai"].getRoyals("p2" ,value.gamestate.board)
+      if(p1R==0) {
+        value.winner="p2"
+      }
+      if(p2R==0) {
+        value.winner="p1"
+      }
+
+      if(value.winner==null) {
+    value.gamestate.turn+=1;
+  } else {
+
+    app.lib.io.to(value.id).emit('hasWon', { winner: value.winner});
+    /*app.lib.io.in(value.id).clients(function(error, clients){
+         if (error) throw error;
+         for(var i=0; i <clients.length; i++){
+            app.lib.io.sockets.connected[clients[i]].disconnect(true)
+        }
+      })
+      delete app.lib.rooms[value.id];
+      */
+
+       app.lib.rooms[value.id].gamestate=app.lib.games["tai"].makeroom(value.id);
+         app.lib.rooms[value.id].started=false;
+
+
+  }
+    }
+  }
+}
+
+
+    //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
+    //console.log(value.gamestate.board)
+
+
+
+    app.lib.io.to(value.id).emit('update', { state:JSON.stringify(value)
+    });
+}
+
+
+
+}, 200);
+
+
 
 
 mongoose=require('./shared/middleware/mongoose')()
@@ -139,8 +238,44 @@ mongoose=require('./shared/middleware/mongoose')()
 
 
     app.lib.io.on('connection', (socket) => {
+      socket.on('startGame', (data) => {
+
+    if(app.testing) {
+      app.lib.rooms[data.id].started=true;
+
+    } else {
+         if(socket.username==app.lib.rooms[data.id].players["p1"].name) {
+
+        if(app.lib.rooms[data.id].players["p1"]!=null&&app.lib.rooms[data.id].players["p2"]!=null) {
+
+          app.lib.rooms[data.id].started=true;
+        }
+      }
+    }
+  });
+
+      socket.on('disconnectGame',function(data) {
+          room=""
+          var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+            room=obj.roomlock;
+            obj.roomlock="";
+            if(app.lib.rooms[room]!=null){
+              if(app.lib.rooms[room].players[data.p]!=null) {
+
+              delete app.lib.rooms[room].players[data.p];
+              socket.leave(room)
+            }
+
+            }
+
+            obj.save();
+
+             socket.emit('reload', {});
+          })
 
 
+
+        });
         socket.on('connectZ', function (username) {
             if(username.username!="") {
           socket.username=username.username
@@ -178,6 +313,10 @@ mongoose=require('./shared/middleware/mongoose')()
         name: socket.username,
 
         }
+        tRoom.playerNames["p1"]= {
+          name: socket.username,
+
+          }
 
 
 
@@ -188,7 +327,10 @@ mongoose=require('./shared/middleware/mongoose')()
 
 
      obj.roomlock=tRoom.id;
-     obj.save()
+
+     socket.join(tRoom.id)
+     socket.emit('reload', {});
+      obj.save()
 
     });
 
@@ -197,11 +339,12 @@ mongoose=require('./shared/middleware/mongoose')()
 
   //doc.save();
 
-      socket.join(tRoom.id)
-      socket.emit('reload', {});
-      console.log("please reload1")
+
+
 
     })
+
+
 
     socket.on('joinRoom', (j) => {
 
@@ -214,17 +357,22 @@ mongoose=require('./shared/middleware/mongoose')()
             name: socket.username,
 
             }
+            tRoom.playerNames["p2"]={
+            name: socket.username,
+
+            }
             var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 
                obj.roomlock=tRoom.id;
+
+               socket.join(j.roomName)
+               socket.emit('reload', {});
                obj.save()
 
               });
 
-                socket.join(j.roomName)
-                socket.emit('reload', {});
-                console.log("please reload2")
+
         } else {
             tRoom.spectators["sp"+Object.keys(tRoom.spectators).length]=socket.username
               socket.join(j.roomName)
@@ -232,23 +380,19 @@ mongoose=require('./shared/middleware/mongoose')()
       } else {
         console.log("Invalid Room")
       }
-    
+
 
 
 })
   socket.on('chatMessage', (msg) => {
 
-  socket.to('public').emit('chatMessage', { username:msg.username,
+    app.lib.io.to('public').emit('chatMessage', { username:msg.username,
 message:msg.message
 
 
    });
 
-   socket.emit('chatMessage', { username:msg.username,
- message:msg.message
 
-
-    });
   });
 });
 
@@ -274,5 +418,6 @@ app.lib.roomstuff=roomstuff;
   console.error('Unable to connect to mongo.')
   console.error(err);
 });
+
 
 module.exports= app;

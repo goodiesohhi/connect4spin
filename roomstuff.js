@@ -22,10 +22,13 @@ gs=roomstuff.app.lib.games["tai"].makeroom(theID);
 var room={
   id:theID,
   roomname:name,
-  gamename:name,
+  gamename:game,
   players: {},
   gamestate:gs,
-  spectators:{}
+  spectators:{},
+  started:false,
+  playerNames:{},
+  winner:null,
 
 
 

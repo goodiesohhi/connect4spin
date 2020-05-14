@@ -10,8 +10,9 @@ const dat= require ("../public/javascripts/taidata")
 
 var fs = require('fs');
 const tai={}
-const testing=false;
 
+const positionJson=require("../public/javascripts/positions.json")
+const positions=positionJson
 
 
 coordInt=function(strx) {
@@ -217,6 +218,20 @@ return str;
 
 getX= function(x) {
 return parseInt(x.split(";")[1]);
+
+}
+
+getRoyals =function(player,board) {
+count=0
+  for(x in board) {
+    if(board[x]!=null) {
+    if((board[x].pID=="cp"||board[x].pID=="k")&&board[x].owner==player) {
+      count++;
+    }
+  }
+  }
+
+  return count;
 
 }
 
@@ -465,6 +480,52 @@ var cancel=false
   return result;
 }
 
+invertPos=function(v) {
+v=v.split(";")
+x=parseInt(v[1])
+y=v[0]
+x=37-x;
+
+if(y=="a") {
+  y="jj"
+} else
+if(y=="b") {
+  y="ii"
+} else
+if(y=="c") {
+  y="hh"
+} else
+if(y=="d") {
+  y="gg"
+} else
+if(y=="e") {
+  y="ff"
+} else
+if(y=="f") {
+  y="ee"
+} else
+if(y=="g") {
+  y="dd"
+} else
+if(y=="h") {
+  y="cc"
+} else
+if(y=="i") {
+  y="bb"
+} else
+if(y=="j") {
+  y="aa"
+} else
+if(y=="k") {
+  y="z"
+} else
+if(y=="l") {
+  y="y"
+}
+
+return y+";"+x
+
+}
 function create_UUID(){
     var dt = new Date().getTime();
     var uuid = 'xxxxx-xxxx-4xxx-yxxx-xxxxx'.replace(/[xy]/g, function(c) {
@@ -489,288 +550,27 @@ return sho.board[temp.pUUID];
 }
 
 tai.makeBoard=function(shogi) {
-  //king
- tai.loadPiece(shogi,"k","p1","jj;19")
- //prince
-  tai.loadPiece(shogi,"cp","p1","jj;18")
 
-
-
-   tai.loadPiece(shogi,"p","p1","z;1")
-  tai.loadPiece(shogi,"p","p1","z;2")
-  tai.loadPiece(shogi,"p","p1","z;3")
-  tai.loadPiece(shogi,"p","p1","z;4")
-  tai.loadPiece(shogi,"p","p1","z;5")
-  tai.loadPiece(shogi,"p","p1","z;6")
-  tai.loadPiece(shogi,"p","p1","z;7")
-  tai.loadPiece(shogi,"p","p1","z;8")
-  tai.loadPiece(shogi,"p","p1","z;9")
-  tai.loadPiece(shogi,"p","p1","z;10")
-  tai.loadPiece(shogi,"p","p1","z;11")
-  tai.loadPiece(shogi,"p","p1","z;12")
-  tai.loadPiece(shogi,"p","p1","z;13")
-
-  tai.loadPiece(shogi,"p","p1","z;14")
-  tai.loadPiece(shogi,"p","p1","z;15")
-  tai.loadPiece(shogi,"p","p1","z;16")
-  tai.loadPiece(shogi,"p","p1","z;17")
-  tai.loadPiece(shogi,"p","p1","z;18")
-  tai.loadPiece(shogi,"p","p1","z;19")
-  tai.loadPiece(shogi,"p","p1","z;20")
-  tai.loadPiece(shogi,"p","p1","z;21")
-  tai.loadPiece(shogi,"p","p1","z;22")
-  tai.loadPiece(shogi,"p","p1","z;23")
-  tai.loadPiece(shogi,"p","p1","z;24")
-  tai.loadPiece(shogi,"p","p1","z;25")
-  tai.loadPiece(shogi,"p","p1","z;26")
-  tai.loadPiece(shogi,"p","p1","z;27")
-  tai.loadPiece(shogi,"p","p1","z;28")
-  tai.loadPiece(shogi,"p","p1","z;29")
-  tai.loadPiece(shogi,"p","p1","z;30")
-  tai.loadPiece(shogi,"p","p1","z;31")
-  tai.loadPiece(shogi,"p","p1","z;32")
-  tai.loadPiece(shogi,"p","p1","z;33")
-  tai.loadPiece(shogi,"p","p1","z;34")
-  tai.loadPiece(shogi,"p","p1","z;35")
-  tai.loadPiece(shogi,"p","p1","z;36")
-
-//ea
-tai.loadPiece(shogi,"ea","p1","bb;11")
-tai.loadPiece(shogi,"ea","p1","bb;26")
-//sg
-
-tai.loadPiece(shogi,"sg","p1","bb;13")
-tai.loadPiece(shogi,"sg","p1","bb;24")
-
-//gb
-tai.loadPiece(shogi,"gb","p1","y;11")
-tai.loadPiece(shogi,"gb","p1","y;26")
-
-
-//rook and clones
-tai.loadPiece(shogi,"r","p1","ff;33")
-tai.loadPiece(shogi,"r","p1","ff;4")
-//soldier
-tai.loadPiece(shogi,"so","p1","ff;28")
-tai.loadPiece(shogi,"so","p1","ff;9")
-//running Chariot
-tai.loadPiece(shogi,"rh","p1","ff;24")
-tai.loadPiece(shogi,"rh","p1","ff;13")
-//square mover
-tai.loadPiece(shogi,"sq","p1","cc;15")
-tai.loadPiece(shogi,"sq","p1","cc;22")
-
-
-//Bishop
-tai.loadPiece(shogi,"b","p1","ff;34")
-tai.loadPiece(shogi,"b","p1","ff;3")
-//Queen
-
-tai.loadPiece(shogi,"q","p1","jj;14")
-tai.loadPiece(shogi,"q","p1","jj;23")
-
-//iron General
-tai.loadPiece(shogi,"i","p1","bb;17")
-tai.loadPiece(shogi,"i","p1","bb;20")
-
-
-
-
-//dog
-
-//6//15//22//31
-tai.loadPiece(shogi,"d","p1","y;6")
-tai.loadPiece(shogi,"d","p1","y;15")
-tai.loadPiece(shogi,"d","p1","y;22")
-tai.loadPiece(shogi,"d","p1","y;31")
-
-
-
-//ranging
-//side Dragon
-tai.loadPiece(shogi,"si","p1","hh;2")
-tai.loadPiece(shogi,"si","p1","hh;35")
-
-
-
-//white horse
-
-
-tai.loadPiece(shogi,"wh","p1","ee;2")
-tai.loadPiece(shogi,"wh","p1","ee;35")
-
-
-//knight
-tai.loadPiece(shogi,"n","p1","gg;3")
-tai.loadPiece(shogi,"n","p1","gg;34")
-//Flying Dragon
-tai.loadPiece(shogi,"fd","p1","ee;28")
-tai.loadPiece(shogi,"fd","p1","ee;9")
-
-
-//Kirin
-
-tai.loadPiece(shogi,"kr","p1","ee;16")
-
-//swooping Owl
-tai.loadPiece(shogi,"ow","p1","cc;5")
-tai.loadPiece(shogi,"ow","p1","cc;32")
-//old rat
-
-tai.loadPiece(shogi,"or","p1","cc;14")
-tai.loadPiece(shogi,"or","p1","cc;23")
-
-//strutting crow
-tai.loadPiece(shogi,"st","p1","ee;12")
-tai.loadPiece(shogi,"st","p1","ee;25")
-//p2
-
-
-
-
-//king
-tai.loadPiece(shogi,"k","p2","a;18")
-//prince
-tai.loadPiece(shogi,"cp","p2","a;19")
-
-//knight
-tai.loadPiece(shogi,"n","p2","d;3")
-tai.loadPiece(shogi,"n","p2","d;34")
-
-//pawnwall
-
-tai.loadPiece(shogi,"p","p2","k;1")
-tai.loadPiece(shogi,"p","p2","k;2")
-tai.loadPiece(shogi,"p","p2","k;3")
-tai.loadPiece(shogi,"p","p2","k;4")
-tai.loadPiece(shogi,"p","p2","k;5")
-tai.loadPiece(shogi,"p","p2","k;6")
-tai.loadPiece(shogi,"p","p2","k;7")
-tai.loadPiece(shogi,"p","p2","k;8")
-tai.loadPiece(shogi,"p","p2","k;9")
-tai.loadPiece(shogi,"p","p2","k;10")
-tai.loadPiece(shogi,"p","p2","k;11")
-tai.loadPiece(shogi,"p","p2","k;12")
-tai.loadPiece(shogi,"p","p2","k;13")
-
-tai.loadPiece(shogi,"p","p2","k;14")
-tai.loadPiece(shogi,"p","p2","k;15")
-tai.loadPiece(shogi,"p","p2","k;16")
-tai.loadPiece(shogi,"p","p2","k;17")
-tai.loadPiece(shogi,"p","p2","k;18")
-tai.loadPiece(shogi,"p","p2","k;19")
-tai.loadPiece(shogi,"p","p2","k;20")
-tai.loadPiece(shogi,"p","p2","k;21")
-tai.loadPiece(shogi,"p","p2","k;22")
-tai.loadPiece(shogi,"p","p2","k;23")
-tai.loadPiece(shogi,"p","p2","k;24")
-tai.loadPiece(shogi,"p","p2","k;25")
-tai.loadPiece(shogi,"p","p2","k;26")
-tai.loadPiece(shogi,"p","p2","k;27")
-tai.loadPiece(shogi,"p","p2","k;28")
-tai.loadPiece(shogi,"p","p2","k;29")
-tai.loadPiece(shogi,"p","p2","k;30")
-tai.loadPiece(shogi,"p","p2","k;31")
-tai.loadPiece(shogi,"p","p2","k;32")
-tai.loadPiece(shogi,"p","p2","k;33")
-tai.loadPiece(shogi,"p","p2","k;34")
-tai.loadPiece(shogi,"p","p2","k;35")
-tai.loadPiece(shogi,"p","p2","k;36")
-
-//ea
-
-tai.loadPiece(shogi,"ea","p2","i;11")
-tai.loadPiece(shogi,"ea","p2","i;26")
-
-//sg
-
-tai.loadPiece(shogi,"sg","p2","i;13")
-tai.loadPiece(shogi,"sg","p2","i;24")
-
-//gb
-
-tai.loadPiece(shogi,"gb","p2","l;11")
-tai.loadPiece(shogi,"gb","p2","l;26")
-
-
-
-//Rook and clones
-tai.loadPiece(shogi,"r","p2","e;33")
-tai.loadPiece(shogi,"r","p2","e;4")
-//soldier
-tai.loadPiece(shogi,"so","p2","e;28")
-tai.loadPiece(shogi,"so","p2","e;9")
-//running Chariot
-tai.loadPiece(shogi,"rh","p2","e;24")
-tai.loadPiece(shogi,"rh","p2","e;13")
-//square mover
-tai.loadPiece(shogi,"sq","p2","h;15")
-tai.loadPiece(shogi,"sq","p2","h;22")
-
-
-
-
-
-
-
-
-
-//Bishop
-tai.loadPiece(shogi,"b","p2","e;34")
-tai.loadPiece(shogi,"b","p2","e;3")
-
-// Queen
-tai.loadPiece(shogi,"q","p2","a;14")
-tai.loadPiece(shogi,"q","p2","a;23")
-
-//Iron General
-tai.loadPiece(shogi,"i","p2","i;17")
-tai.loadPiece(shogi,"i","p2","i;20")
-//dog
-
-//6//15//22//31
-tai.loadPiece(shogi,"d","p2","l;6")
-tai.loadPiece(shogi,"d","p2","l;15")
-tai.loadPiece(shogi,"d","p2","l;22")
-tai.loadPiece(shogi,"d","p2","l;31")
-
-
-
-
-
-
-
-
-
-
-//ranging
-//side dragon
-
-tai.loadPiece(shogi,"si","p2","c;2")
-tai.loadPiece(shogi,"si","p2","c;35")
-//white horse
-tai.loadPiece(shogi,"wh","p2","f;2")
-tai.loadPiece(shogi,"wh","p2","f;35")
-
-//Flying Dragon
-tai.loadPiece(shogi,"fd","p2","f;28")
-tai.loadPiece(shogi,"fd","p2","f;9")
-
-//kirin
-tai.loadPiece(shogi,"kr","p2","f;21")
-
-
-//swooping Owl
-tai.loadPiece(shogi,"ow","p2","h;5")
-tai.loadPiece(shogi,"ow","p2","h;32")
-
-//old Rat
-tai.loadPiece(shogi,"or","p2","h;14")
-tai.loadPiece(shogi,"or","p2","h;23")
-//strutting crow
-tai.loadPiece(shogi,"st","p2","f;12")
-tai.loadPiece(shogi,"st","p2","f;25")
-
+  for(x in positions.pos) {
+    code=positions.pos[x].toLowerCase()
+    if(code!="") {
+      if(dat[code]!=null) {
+        tai.loadPiece(shogi,code,"p2",x)
+      }
+    }
+
+  }
+
+
+    for(x in positions.pos) {
+      code=positions.pos[x].toLowerCase()
+      if(code!="") {
+        if(dat[code]!=null) {
+          tai.loadPiece(shogi,code,"p1",invertPos(x))
+        }
+      }
+
+    }
 
 
 }
@@ -783,7 +583,7 @@ tai.makeroom=function(theID) {
   shogi.turnSwitch=-50;
   shogi.board={};
   shogi.movelog=[];
-  shogi.started=false;
+
 
   tai.makeBoard(shogi)
 
@@ -798,7 +598,7 @@ tai.makeroom=function(theID) {
 
 start=function(app) {
   tai.app=app
-
+ tai.getRoyals=getRoyals
 
 
 
@@ -809,24 +609,12 @@ start=function(app) {
 
   tai.app.lib.io.on('connection', (socket) => {
 
-  socket.on('startGame', (data) => {
 
-if(testing) {
-  tai.app.lib.rooms[data.id].gamestate.started=true;
-
-} else {
-     if(socket.username==tai.app.lib.rooms[data.id].players["p1"].name) {
-
-    if(tai.app.lib.rooms[data.id].players["p1"]!=null&&tai.app.lib.rooms[data.id].players["p2"]!=null) {
-
-      tai.app.lib.rooms[data.id].gamestate.started=true;
-    }
-  }
-}
-  })
   socket.on('makeMove', (data) => {
 
-
+if(tai.app.lib.rooms[data.room].winner!=null&&tai.app.lib.rooms[data.room].gamestate.turn<3) {
+  tai.app.lib.rooms[data.room].winner=null;
+}
 if(tai.app.lib.rooms[data.room]!=null) {
     if(tai.app.lib.rooms[data.room].gamestate.turnSwitch==-50) {
 
@@ -900,56 +688,3 @@ nsp.on('connection', function(socket){
 */
 
 runOnce=false
-setInterval(function(){
-
-//tai.app.lib.io.emit('roomList', { state:JSON.stringify()});
-
-  for(var key in tai.app.lib.rooms) {
-
-  var value = tai.app.lib.rooms[key];
-  if(!runOnce) {
-    runOnce=true;
-
-  //console.log(  getValidMoves(test))
-
-
-
-  }
-
-  if(value.gamestate.turnSwitch>0) {
-    value.gamestate.turnSwitch-=1;
-    if(value.gamestate.turnSwitch<=0) {
-      value.gamestate.turnSwitch=-50;
-
-      if(value.gamestate.turnOwner=="p1") {
-        value.gamestate.turnOwner="p2"
-      } else {
-
-        value.gamestate.turnOwner="p1"
-      }
-
-      if(testing) {
-          value.gamestate.turnOwner="p1"
-      }
-
-    value.gamestate.turn+=1;
-    }
-  }
-
-if(value.players["p1"]!=null && value.players["p2"]!=null) {
-
-
-
-}
-    //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
-    //console.log(value.gamestate.board)
-
-
-
-    tai.app.lib.io.to(value.id).emit('update', { state:JSON.stringify(value)
-    });
-}
-
-
-
-}, 200);

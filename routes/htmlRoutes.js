@@ -19,7 +19,7 @@ start=function(appz) {
   });
 
 
-  router.get('/taikyoku', (req, res) => {
+  router.get('/games/taikyoku', (req, res) => {
 
     res.render('taikyoku', {
       user: req.user,
