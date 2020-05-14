@@ -287,7 +287,7 @@ mongoose=require('./shared/middleware/mongoose')()
 
               if(app.lib.rooms[obj.roomlock]!=null) {
               socket.join(obj.roomlock)
-              socket.to(obj.roomlock).emit('reload', {});
+            //  socket.to(obj.roomlock).emit('reload', {});
             } else {
 
               obj.roomlock="";
