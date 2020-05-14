@@ -24,6 +24,7 @@
 <script src="/javascripts/taidata.js"></script>
 
 <script type="text/javascript">
+
 var body = document.body,
     overlay = document.querySelector('.overlay'),
     overlayBtts = document.querySelectorAll('button[class$="overlay"]');
@@ -55,14 +56,15 @@ var body = document.body,
 //  owner:null,
 //  space:"none",
 RecRooms=0;
-
+var GameScene;
+var testing=false;
 var SelectedPiece=null;
 var SelectedRange=null;
 var Selects=[]
 var winText=null;
 var localPlayer;
 var makeMove=true;
-
+var following=null;
 var localHasWon=false;
 var wintimer=200;
 var revPX=function(p) {
@@ -175,77 +177,276 @@ return getValidSteps(o)
 
 
 getValidSteps=function(o) {
-  var validMoves=[]
- var travelled=[]
-  if(o.owner=="p2") {
+var amounts=1;
+var initJump;
 
-   travelled[0]=traverse(o,o.movementData.up,0,1)
-     travelled[1]=traverse(o,o.movementData.down,0,-1)
-       travelled[2]=traverse(o,o.movementData.left,-1,0)
-         travelled[3]=traverse(o,o.movementData.right,1,0)
-           travelled[4]=traverse(o,o.movementData.downleft,-1,-1)
-             travelled[5]=traverse(o,o.movementData.downright,1,-1)
-               travelled[6]=traverse(o,o.movementData.upleft,-1,1)
-                 travelled[7]=traverse(o,o.movementData.upright,1,1)
-               } else {
-
-                 travelled[0]=traverse(o,o.movementData.up,0,-1)
-                   travelled[1]=traverse(o,o.movementData.down,0,1)
-                     travelled[2]=traverse(o,o.movementData.left,1,0)
-                       travelled[3]=traverse(o,o.movementData.right,-1,0)
-                         travelled[4]=traverse(o,o.movementData.downleft,1,1)
-                           travelled[5]=traverse(o,o.movementData.downright,-1,1)
-                             travelled[6]=traverse(o,o.movementData.upleft,1,-1)
-                               travelled[7]=traverse(o,o.movementData.upright,-1,-1)
+var initJumpUp;
+var initJumpDown;
+var initJumpLeft;
+var initJumpRight;
+var initJumpUpRight
+var initJumpUpLeft;
+var initJumpDownLeft;
+var initJumpDownRight;
+    if(o.movementData.initJump==null) {
+initJump=1
 
 
-               }
+initJumpUp = initJump;
+initJumpDown = initJump;
+initJumpLeft = initJump;
+initJumpRight = initJump;
+initJumpUpRight = initJump
+initJumpUpLeft = initJump;
+initJumpDownLeft = initJump;
+initJumpDownRight = initJump;
+} else{
+
+  initJump=o.movementData.initJump
+  if(o.movementData.upto!=null) {
+  amounts=initJump;
+  }
+}
+
+if(o.movementData.initJumpUp==null) {
+initJumpUp=1
+} else{
+  initJumpUp=o.movementData.initJump
+}
+if(o.movementData.initJumpDown==null) {
+initJumpDown=1
+} else{
+  initJumpDown=o.movementData.initJump
+}
+if(o.movementData.initJumpLeft==null) {
+initJumpLeft=1
+} else{
+  initJumpLeft=o.movementData.initJump
+}
+if(o.movementData.initJumpRight==null) {
+initJumpRight=1
+} else{
+  initJumpRight=o.movementData.initJump
+}
+if(o.movementData.initJumpDownLeft==null) {
+initJumpDownLeft=1
+} else{
+  initJumpDownLeft=o.movementData.initJump
+}
+if(o.movementData.initJumpUpLeft==null) {
+initJumpUpLeft=1
+} else{
+  initJumpUpLeft=o.movementData.initJump
+}
+if(o.movementData.initJumpUpRight==null) {
+initJumpUpRight=1
+} else{
+  initJumpUpRight=o.movementData.initJump
+}
+if(o.movementData.initJumpDownRight==null) {
+initJumpDownRight=1
+} else{
+  initJumpDownRight=o.movementData.initJump
+}
+
+if(o.movementData.initJump==null) {
+initJump=1
+
+} else{
+  initJumpUp = initJump;
+  initJumpDown = initJump;
+  initJumpLeft = initJump;
+  initJumpRight = initJump;
+  initJumpUpRight = initJump
+  initJumpUpLeft = initJump;
+  initJumpDownLeft = initJump;
+  initJumpDownRight = initJump;
+
+
+}
+    var validMoves=[]
+   var travelled=[]
+  if(o.movementData.upto!=null) {
+   if(o.owner=="p2") {
+    for(i=0;i<initJumpUp;i++){
+    travelled[0+10*i]=traverse(o,o.movementData.up,0,1,initJumpUp-i)}
+        for(i=0;i<initJumpDown;i++){
+      travelled[1+10*i]=traverse(o,o.movementData.down,0,-1,initJumpDown-i)}
+          for(i=0;i<initJumpLeft;i++){
+        travelled[2+10*i]=traverse(o,o.movementData.left,-1,0,initJumpLeft-i)}
+            for(i=0;i<initJumpRight;i++){
+          travelled[3+10*i]=traverse(o,o.movementData.right,1,0,initJumpRight-i)}
+              for(i=0;i<initJumpDownLeft;i++){
+            travelled[4+10*i]=traverse(o,o.movementData.downleft,-1,-1,initJumpDownLeft-i)}
+                for(i=0;i<initJumpDownRight;i++){
+              travelled[5+10*i]=traverse(o,o.movementData.downright,1,-1,initJumpDownRight-i)}
+                  for(i=0;i<initJumpUpLeft;i++){
+                travelled[6+10*i]=traverse(o,o.movementData.upleft,-1,1,initJumpUpLeft-i)
+              }
+                    for(i=0;i<initJumpUpRight;i++){
+                  travelled[7+10*i]=traverse(o,o.movementData.upright,1,1,initJumpUpRight-i)
+                }
+                } else {
+
+                  for(i=0;i<initJumpUp;i++){
+                  travelled[0+10*i]=traverse(o,o.movementData.up,0,-1,initJumpUp-i)}
+                      for(i=0;i<initJumpDown;i++){
+                    travelled[1+10*i]=traverse(o,o.movementData.down,0,1,initJumpDown-i)}
+                        for(i=0;i<initJumpLeft;i++){
+                      travelled[2+10*i]=traverse(o,o.movementData.left,1,0,initJumpLeft-i)}
+                          for(i=0;i<initJumpRight;i++){
+                        travelled[3+10*i]=traverse(o,o.movementData.right,-1,0,initJumpRight-i)}
+                            for(i=0;i<initJumpDownLeft;i++){
+                          travelled[4+10*i]=traverse(o,o.movementData.downleft,1,1,initJumpDownLeft-i)}
+                              for(i=0;i<initJumpDownRight;i++){
+                            travelled[5+10*i]=traverse(o,o.movementData.downright,-1,1,initJumpDownRight-i)}
+                                for(i=0;i<initJumpUpLeft;i++){
+                              travelled[6+10*i]=traverse(o,o.movementData.upleft,1,-1,initJumpUpLeft-i)
+                            }
+                                  for(i=0;i<initJumpUpRight;i++){
+                                travelled[7+10*i]=traverse(o,o.movementData.upright,-1,-1,initJumpUpRight-i)
+                              }
+                }
+}       else {
+
+
+   if(o.owner=="p2") {
+    travelled[0+10]=traverse(o,o.movementData.up,0,1,initJumpUp)
+      travelled[1+10]=traverse(o,o.movementData.down,0,-1,initJumpDown)
+        travelled[2+10]=traverse(o,o.movementData.left,-1,0,initJumpLeft)
+          travelled[3+10]=traverse(o,o.movementData.right,1,0,initJumpRight)
+            travelled[4+10]=traverse(o,o.movementData.downleft,-1,-1,initJumpDownLeft)
+              travelled[5+10]=traverse(o,o.movementData.downright,1,-1,initJumpDownRight)
+                travelled[6+10]=traverse(o,o.movementData.upleft,-1,1,initJumpUpLeft)
+                  travelled[7+10]=traverse(o,o.movementData.upright,1,1,initJumpUpRight)
+                } else {
+
+                  travelled[0+10]=traverse(o,o.movementData.up,0,-1,initJumpUp)
+                    travelled[1+10]=traverse(o,o.movementData.down,0,1,initJumpDown)
+                      travelled[2+10]=traverse(o,o.movementData.left,1,0,initJumpLeft)
+                        travelled[3+10]=traverse(o,o.movementData.right,-1,0,initJumpRight)
+                          travelled[4+10]=traverse(o,o.movementData.downleft,1,1,initJumpDownLeft)
+                            travelled[5+10]=traverse(o,o.movementData.downright,-1,1,initJumpDownRight)
+                              travelled[6+10]=traverse(o,o.movementData.upleft,1,-1,initJumpUpLeft)
+                                travelled[7+10]=traverse(o,o.movementData.upright,-1,-1,initJumpUpRight)
+
+
+                }
+}
 
 
 
-             travelled.forEach((item, i) => {
+              travelled.forEach((item, i) => {
+                      var value = item
+                    //    console.log(value.dat)
+                    var i;
+
+                      for(i=0;i<value.path.length;i++) {
+                        var value2 = value.path[i];
+                          if (value2!=null){
+                        possible=value.dat[value2]
+                        if(possible!=null) {
+                          if(o.owner==possible.owner) {
+
+
+                          break
+                          } else {
+                          //  console.log("should take")
+                            validMoves.push(value2)
+                          break
+
+                          }
+
+                        } else {
+
+                          validMoves.push(value2)
+                        }
+                      }
+                    }
+
+                    });
 
 
 
-                     var value = item
-                   //    console.log(value.dat)
-                   var i;
 
-                     for(i=0;i<value.path.length;i++) {
-                       var value2 = value.path[i];
+  return validMoves;
 
+}
 
+traverse=function(o,distance, x,y,initJump) {
 
+ var result={}
+    result.dat={}
 
+ result.path=[]
 
-
-                       //console.log(value)
-
-                       possible=value.dat[value2]
-                     //  console.log(value2)
-                   //  console.log(possible)
-
-                       if(possible!=null) {
-                         if(o.owner==possible.owner) {
+ var xdir =1;
+ var ydir =1;
 
 
-                         break
-                         } else {
-                         //  console.log("should take")
-                           validMoves.push(value2)
-                         break
+ var xStr;
+ var yStr;
+ var stop=false
+var cancel=false
+  for (var i = initJump; i <= distance; i++) {
+    cancel=false
 
-                         }
+    c=(coordInt( o.tile)+(i)*y)
 
-                       } else {
+    if(c<1) {
+      c=900
+      stop=true;
+        cancel=true;
+    }
 
-                         validMoves.push(value2)
-                       }
-                     }
-                   });
+    if(c>36){
+      stop=true;
+      cancel=true;
+      c=900
+    }
+    if(c>0 && c<37) {
+      yStr=coordStr (c);
+    }
 
-return validMoves
-                 }
+    d=getX(o.tile)+(i)*x
+    if(d<1) {
+      d=900
+        stop=true;
+          cancel=true;
+    }
+    if(d>36) {
+      d=3900
+        stop=true;
+          cancel=true;
+    }
+
+    if(d>0&&d<37) {
+  xStr= d
+
+}
+  var ar= yStr+";"+xStr;
+
+  if(!cancel) {
+
+  result.path[i-1]=ar
+
+
+
+  space=checkSpace(ar,gameN.gamestate.board)
+
+  if(space!=null) {
+
+  result.dat[ar]=space;
+} else {
+  result.dat[ar]=null;
+}
+}
+}
+
+
+
+  return result;
+}
 
 
 coordInt=function(strx) {
@@ -474,81 +675,6 @@ return re;
 }
 
 
-traverse=function(o,distance, x,y,board) {
-
- var result={}
-    result.dat={}
-
- result.path=[]
-
- var xdir =1;
- var ydir =1;
-
-
- var xStr;
- var yStr;
- var stop=false
-var cancel=false
-  for (var i = 1; i <= distance; i++) {
-    cancel=false
-
-    c=(coordInt( o.tile)+(i)*y)
-
-    if(c<1) {
-      c=900
-      stop=true;
-        cancel=true;
-    }
-
-    if(c>36){
-      stop=true;
-      cancel=true;
-      c=900
-    }
-    if(c>0 && c<37) {
-      yStr=coordStr (c);
-    }
-
-    d=getX(o.tile)+(i)*x
-    if(d<1) {
-      d=900
-        stop=true;
-          cancel=true;
-    }
-    if(d>36) {
-      d=3900
-        stop=true;
-          cancel=true;
-    }
-
-    if(d>0&&d<37) {
-  xStr= d
-
-}
-  var ar= yStr+";"+xStr;
-
-  if(!cancel) {
-
-  result.path[i-1]=ar
-
-
-
-  space=checkSpace(ar,gameN.gamestate.board)
-
-  if(space!=null) {
-
-  result.dat[ar]=space;
-} else {
-  result.dat[ar]=null;
-}
-}
-}
-
-
-
-  return result;
-}
-
 var removeSelection=function() {
 for (var x in Selects) {
 //  console.log(x)
@@ -558,7 +684,9 @@ for (var x in Selects) {
 }
 
 }
-var makeSelection=function(p) {
+var makeSelection=function(pt) {
+
+
 
   for (var x in SelectedRange) {
     var dat={}
@@ -569,7 +697,7 @@ var makeSelection=function(p) {
     piece.x=getPX(dat)
     piece.y=getPY(dat)
 
-    temp=p.add.sprite( piece.x,piece.y, 'box')
+    temp=pt.add.sprite( piece.x,piece.y, 'box')
     temp.alpha=0.5;
     Selects.push(temp);
 }
@@ -788,6 +916,8 @@ return 100*x-50;
 onObjectClicked=function(pointer,object) {
 
 if(makeMove) {
+
+
       if(object.isTilemap) {
         locationP=revPY(pointer)+";"+revPX(pointer)
         socket.emit('makeMove', { location: locationP,piece:SelectedPiece.parRef.dat.pUUID ,room: gameN.id,player:  localPlayer});
@@ -815,9 +945,28 @@ if(makeMove) {
 
 
     }
-    }
+  }   if(objectName === "promote") {
+      following=null;
+  socket.emit('yesPromote', { room: gameN.id,player:  localPlayer});
+  promoteBTN.destroy()
+    endBTN.destroy();
+      endBTN=null;
+  promoteBTN=null;
+  this.cameras.main.stopFollow()
 
-    if(objectName === "") {
+
+
+  }
+
+    if(objectName === "end") {
+
+        following=null;
+        socket.emit('endTurn', { room: gameN.id,player:  localPlayer});
+        endBTN.destroy();
+        promoteBTN.destroy();
+        promoteBTN=null;
+        endBTN=null;
+        this.cameras.main.stopFollow();
 
     }
   }
@@ -829,6 +978,17 @@ if(makeMove) {
 var makePiece=function(dat,p) {
 var piece={}
 piece.dat=dat
+
+if(pieceSprites[dat.pUUID]!=null) {
+
+  if(pieceSprites[dat.pUUID].text!=null) {
+    pieceSprites[dat.pUUID].text.destroy()
+    pieceSprites[dat.pUUID].text=null;
+  }
+    pieceSprites[dat.pUUID].destroy();
+    pieceSprites[dat.pUUID]=null;
+}
+
 
 piece.x=getPX(dat)
 piece.y=getPY(dat)
@@ -863,11 +1023,14 @@ if(window.location.hostname.includes("localhost")) {
   locationz=window.location.hostname
 }
 */
+var game;
 var layer =null
 var tiles =null;
 var taiSocket=0
 var gameState={};
 var pieceSprites;
+var promoteBTN=null;
+var endBTN=null;
 jQuery(function ($) {
 $( document ).ready(function() {
   $( "#info" ).trigger('click')
@@ -971,9 +1134,11 @@ if(gameN!=null) {
 
           }
           if(gameN.players["p2"]==null) {
-
+              if(!testing) {
             $( "#sg" ).remove();
+
             startGame=null;
+          }
           }
 
 
@@ -989,7 +1154,7 @@ if(gameN!=null) {
 })
 
 
-var GameScene = new Phaser.Class({
+GameScene = new Phaser.Class({
 
 
 Extends: Phaser.Scene,
@@ -1010,6 +1175,8 @@ preload:function ()
   this.load.image('piece','/images/taikyoku/piece.png');
   this.load.image('select','/images/taikyoku/select.png');
   this.load.image('box','/images/taikyoku/box.png');
+    this.load.image('promote','/images/taikyoku/promote.png');
+      this.load.image('end','/images/taikyoku/END.png');
   this.load.tilemapTiledJSON('map', '/javascripts/board.json');
   if (this.game.canvas!=null) {
   this.game.canvas.id = 'game';
@@ -1030,6 +1197,8 @@ create:function ()
     winText=null;
     localPlayer;
     makeMove=true;
+    promoteBTN=null;
+    endBTN=null;
 
     localHasWon=false;
     wintimer=200;
@@ -1094,21 +1263,7 @@ maxSpeed: 1.0
 
   this.cameras.main.setLerp(0.1,0.1);
     this.cameras.main.setZoom(0.2);
-     gui = new dat.GUI( { autoPlace: false });
-     gui.domElement.id = 'gui';
 
-     var help = {
-         line1: 'Cursors to move',
-         line2: 'Q & E to zoom'
-     }
-
-     var f1 = gui.addFolder('Camera');
-     f1.add(cam, 'x').listen();
-     f1.add(cam, 'y').listen();
-     f1.add(cam, 'scrollX').listen();
-     f1.add(cam, 'scrollY').listen();
-
-     f1.add(cam, 'zoom', 0.2, 2).step(0.1).listen();
      //f1.add(help, 'line1');
     // f1.add(help, 'line2');
      //f1.open();
@@ -1188,12 +1343,40 @@ update:function(time, delta) {
     this.cameras.main.scrollY=  Phaser.Math.Clamp(this.cameras.main.scrollY, 0, 2850);
 
 if(gameN!=null) {
+
+if(following==null){
+
+  if(gameN.gamestate.needPromo!=null) {
+  if(gameN.gamestate.board[gameN.gamestate.needPromo].owner==localPlayer) {
+    var lPiece=pieceSprites[gameN.gamestate.needPromo];
+
+    if(lPiece!=null){
+    if(endBTN==null) {
+      this.cameras.main.startFollow(lPiece)
+
+      this.cameras.main.zoom=0.8;
+      endBTN=this.add.sprite( lPiece.x-200,lPiece.y+100, 'end')
+        endBTN.setInteractive({ useHandCursor: true })
+    }
+    if(promoteBTN ==null) {
+      this.cameras.main.startFollow(lPiece)
+
+      promoteBTN=this.add.sprite( lPiece.x+200,lPiece.y+100, 'promote')
+      promoteBTN.setInteractive({ useHandCursor: true })
+      this.cameras.main.zoom=0.8;
+    }
+  }
+}
+}
+
+  }
 if(localHasWon&&gameN.winner!=null) {
 
   if(winText==null) {
     var textConfig={fontSize:'120px',color:'#FFFFFF',fontFamily: 'Arial'};
     winText=this.add.text(2000,800,gameN.players[gameN.winner].name+" has won!",textConfig);
     this.cameras.main.startFollow(winText);
+      //following=true;
   }
 wintimer-=1;
 if(wintimer<=0) {
@@ -1282,6 +1465,7 @@ if(gameN.players["p2"]!=null){
   }
 
 }
+$( "#info" ).append( "<p> P1 faces up, P2 faces down</p>" );
 $( "#info" ).append( "<br>" );
 $( "#info" ).append( "<p> Taikyoku (Ultimate) Shogi is a game.</p>" );
 $( "#info" ).append( "<p> It is a ridiculously large variant of Shogi (Japanese Chess)</p>" );
@@ -1299,7 +1483,7 @@ $( "#info" ).append( "<p> Promotes to "+SelectedPiece.parRef.dat.promote+"</p>" 
   for(var key in pieceSprites) {
   var p= pieceSprites[key];
 
-
+if(p!=null) {
  p.parRef.dat=gameN.gamestate.board[key];
   if(gameN.gamestate.board[key]!=null) {
 
@@ -1311,33 +1495,46 @@ $( "#info" ).append( "<p> Promotes to "+SelectedPiece.parRef.dat.promote+"</p>" 
 
   delete pieceSprites[key];
 }
-
+}
 }
 
 for(var key in pieceSprites) {
 
 var p= pieceSprites[key];
-
+if(p!=null){
 if(!p.track) {
 
 if(p.parRef.x!=p.parRef.dx||p.parRef.y!=p.parRef.dy) {
   p.track=true;
   makeMove=false
   this.cameras.main.startFollow(p,true,0.5,0.5,0,0)
-}
+    following=p;
+
 } else {
   if(p.parRef.x==p.parRef.dx&&p.parRef.y==p.parRef.dy) {
     p.track=false
     makeMove=true
-    this.cameras.main.stopFollow()
+
+
   }
+}
+}
+
+if(following!=null)  {
+  if(following.parRef.x==following.parRef.dx&&following.parRef.y==following.parRef.dy) {
+
+    this.cameras.main.stopFollow()
+    following.track=false;
+      following=null;
+  }
+
 }
 
 
 
 
 if(p.parRef.x>p.parRef.dx) {
-p.parRef.dx+=10;
+p.parRef.dx+=30;
 p.parRef.dx=Phaser.Math.Clamp(p.parRef.dx,p.parRef.dx,p.parRef.x)
 
 this.cameras.main.zoom=0.3;
@@ -1345,7 +1542,7 @@ this.cameras.main.zoom=0.3;
 }
 
 if(p.parRef.x<p.parRef.dx) {
-p.parRef.dx-=10;
+p.parRef.dx-=30;
 p.parRef.dx=Phaser.Math.Clamp(p.parRef.dx,p.parRef.x,p.parRef.dx)
 
   this.cameras.main.zoom=0.3;
@@ -1353,7 +1550,7 @@ p.parRef.dx=Phaser.Math.Clamp(p.parRef.dx,p.parRef.x,p.parRef.dx)
 
 }
 if(p.parRef.y>p.parRef.dy) {
-p.parRef.dy+=10;
+p.parRef.dy+=30;
 p.parRef.dy=Phaser.Math.Clamp(p.parRef.dy,p.parRef.dy,p.parRef.y)
 
 this.cameras.main.zoom=0.3;
@@ -1361,7 +1558,7 @@ this.cameras.main.zoom=0.3;
 
 }
 if(p.parRef.y<p.parRef.dy) {
-p.parRef.dy-=10;
+p.parRef.dy-=30;
 p.parRef.dy=Phaser.Math.Clamp(p.parRef.dy,p.parRef.y,p.parRef.dy)
 
 this.cameras.main.zoom=0.3;
@@ -1378,7 +1575,7 @@ p.x=p.parRef.dx;
 p.y=p.parRef.dy;
 }
 
-
+}
 
 
   if(SelectedPiece!=null) {
@@ -1425,8 +1622,15 @@ var config = {
 };
 
 
-var game = new Phaser.Game(config);
+game = new Phaser.Game(config);
 
+socket.on('upDatePiece', function (data) {
+   console.log("please update")
+
+   gameN.gamestate=data.state;
+      console.log(gameN.gamestate.board[data.piece])
+   pieceSprites[data.piece]  = makePiece(gameN.gamestate.board[data.piece],pieceSprites[data.piece].scene);
+});
 
 });
 })

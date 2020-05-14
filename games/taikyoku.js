@@ -216,6 +216,10 @@ coordStr=function(x) {
 return str;
 }
 
+getY= function(x) {
+return x.split(";")[0];
+
+}
 getX= function(x) {
 return parseInt(x.split(";")[1]);
 
@@ -235,6 +239,34 @@ count=0
 
 }
 
+
+checkPromo =function(piece) {
+Y=getY(piece.tile)
+if(piece.promoted){
+   return false;
+ } else {
+if(piece.owner=="p1") {
+
+  if(Y=="g"||Y=="f"||Y=="e"||Y=="d"||Y=="c"||Y=="b"||Y=="a") {
+    return true
+  } else {
+    return false
+  }
+
+} else {
+
+  if(Y=="dd"||Y=="ee"||Y=="ff"||Y=="gg"||Y=="hh"||Y=="ii"||Y=="jj") {
+    return true
+  } else {
+    return false
+  }
+
+
+}
+
+ }
+
+}
 checkSpace =function(space,board) {
 
 var re=null
@@ -318,6 +350,7 @@ getValidMoves=function(o) {
 
   results=results.concat(getValidSteps(k))
     }
+
   }
 
   return results;
@@ -341,32 +374,163 @@ getValidMoves=function(o) {
 
 
 getValidSteps=function(o) {
+var amounts=1;
+var initJump;
 
+var initJumpUp;
+var initJumpDown;
+var initJumpLeft;
+var initJumpRight;
+var initJumpUpRight
+var initJumpUpLeft;
+var initJumpDownLeft;
+var initJumpDownRight;
+    if(o.movementData.initJump==null) {
+initJump=1
+
+
+initJumpUp = initJump;
+initJumpDown = initJump;
+initJumpLeft = initJump;
+initJumpRight = initJump;
+initJumpUpRight = initJump
+initJumpUpLeft = initJump;
+initJumpDownLeft = initJump;
+initJumpDownRight = initJump;
+} else{
+
+  initJump=o.movementData.initJump
+  if(o.movementData.upto!=null) {
+  amounts=initJump;
+  }
+}
+
+if(o.movementData.initJumpUp==null) {
+initJumpUp=1
+} else{
+  initJumpUp=o.movementData.initJump
+}
+if(o.movementData.initJumpDown==null) {
+initJumpDown=1
+} else{
+  initJumpDown=o.movementData.initJump
+}
+if(o.movementData.initJumpLeft==null) {
+initJumpLeft=1
+} else{
+  initJumpLeft=o.movementData.initJump
+}
+if(o.movementData.initJumpRight==null) {
+initJumpRight=1
+} else{
+  initJumpRight=o.movementData.initJump
+}
+if(o.movementData.initJumpDownLeft==null) {
+initJumpDownLeft=1
+} else{
+  initJumpDownLeft=o.movementData.initJump
+}
+if(o.movementData.initJumpUpLeft==null) {
+initJumpUpLeft=1
+} else{
+  initJumpUpLeft=o.movementData.initJump
+}
+if(o.movementData.initJumpUpRight==null) {
+initJumpUpRight=1
+} else{
+  initJumpUpRight=o.movementData.initJump
+}
+if(o.movementData.initJumpDownRight==null) {
+initJumpDownRight=1
+} else{
+  initJumpDownRight=o.movementData.initJump
+}
+
+if(o.movementData.initJump==null) {
+initJump=1
+
+} else{
+  initJumpUp = initJump;
+  initJumpDown = initJump;
+  initJumpLeft = initJump;
+  initJumpRight = initJump;
+  initJumpUpRight = initJump
+  initJumpUpLeft = initJump;
+  initJumpDownLeft = initJump;
+  initJumpDownRight = initJump;
+
+
+}
 
     var validMoves=[]
    var travelled=[]
+  if(o.movementData.upto!=null) {
    if(o.owner=="p2") {
-    travelled[0]=traverse(o,o.movementData.up,0,1)
-      travelled[1]=traverse(o,o.movementData.down,0,-1)
-        travelled[2]=traverse(o,o.movementData.left,-1,0)
-          travelled[3]=traverse(o,o.movementData.right,1,0)
-            travelled[4]=traverse(o,o.movementData.downleft,-1,-1)
-              travelled[5]=traverse(o,o.movementData.downright,1,-1)
-                travelled[6]=traverse(o,o.movementData.upleft,-1,1)
-                  travelled[7]=traverse(o,o.movementData.upright,1,1)
+    for(i=0;i<initJumpUp;i++){
+    travelled[0+10*i]=traverse(o,o.movementData.up,0,1,initJumpUp-i)}
+        for(i=0;i<initJumpDown;i++){
+      travelled[1+10*i]=traverse(o,o.movementData.down,0,-1,initJumpDown-i)}
+          for(i=0;i<initJumpLeft;i++){
+        travelled[2+10*i]=traverse(o,o.movementData.left,-1,0,initJumpLeft-i)}
+            for(i=0;i<initJumpRight;i++){
+          travelled[3+10*i]=traverse(o,o.movementData.right,1,0,initJumpRight-i)}
+              for(i=0;i<initJumpDownLeft;i++){
+            travelled[4+10*i]=traverse(o,o.movementData.downleft,-1,-1,initJumpDownLeft-i)}
+                for(i=0;i<initJumpDownRight;i++){
+              travelled[5+10*i]=traverse(o,o.movementData.downright,1,-1,initJumpDownRight-i)}
+                  for(i=0;i<initJumpUpLeft;i++){
+                travelled[6+10*i]=traverse(o,o.movementData.upleft,-1,1,initJumpUpLeft-i)
+              }
+                    for(i=0;i<initJumpUpRight;i++){
+                  travelled[7+10*i]=traverse(o,o.movementData.upright,1,1,initJumpUpRight-i)
+                }
                 } else {
 
-                  travelled[0]=traverse(o,o.movementData.up,0,-1)
-                    travelled[1]=traverse(o,o.movementData.down,0,1)
-                      travelled[2]=traverse(o,o.movementData.left,1,0)
-                        travelled[3]=traverse(o,o.movementData.right,-1,0)
-                          travelled[4]=traverse(o,o.movementData.downleft,1,1)
-                            travelled[5]=traverse(o,o.movementData.downright,-1,1)
-                              travelled[6]=traverse(o,o.movementData.upleft,1,-1)
-                                travelled[7]=traverse(o,o.movementData.upright,-1,-1)
+                  for(i=0;i<initJumpUp;i++){
+                  travelled[0+10*i]=traverse(o,o.movementData.up,0,-1,initJumpUp-i)}
+                      for(i=0;i<initJumpDown;i++){
+                    travelled[1+10*i]=traverse(o,o.movementData.down,0,1,initJumpDown-i)}
+                        for(i=0;i<initJumpLeft;i++){
+                      travelled[2+10*i]=traverse(o,o.movementData.left,1,0,initJumpLeft-i)}
+                          for(i=0;i<initJumpRight;i++){
+                        travelled[3+10*i]=traverse(o,o.movementData.right,-1,0,initJumpRight-i)}
+                            for(i=0;i<initJumpDownLeft;i++){
+                          travelled[4+10*i]=traverse(o,o.movementData.downleft,1,1,initJumpDownLeft-i)}
+                              for(i=0;i<initJumpDownRight;i++){
+                            travelled[5+10*i]=traverse(o,o.movementData.downright,-1,1,initJumpDownRight-i)}
+                                for(i=0;i<initJumpUpLeft;i++){
+                              travelled[6+10*i]=traverse(o,o.movementData.upleft,1,-1,initJumpUpLeft-i)
+                            }
+                                  for(i=0;i<initJumpUpRight;i++){
+                                travelled[7+10*i]=traverse(o,o.movementData.upright,-1,-1,initJumpUpRight-i)
+                              }
+                }
+}       else {
+
+
+   if(o.owner=="p2") {
+    travelled[0+10]=traverse(o,o.movementData.up,0,1,initJumpUp)
+      travelled[1+10]=traverse(o,o.movementData.down,0,-1,initJumpDown)
+        travelled[2+10]=traverse(o,o.movementData.left,-1,0,initJumpLeft)
+          travelled[3+10]=traverse(o,o.movementData.right,1,0,initJumpRight)
+            travelled[4+10]=traverse(o,o.movementData.downleft,-1,-1,initJumpDownLeft)
+              travelled[5+10]=traverse(o,o.movementData.downright,1,-1,initJumpDownRight)
+                travelled[6+10]=traverse(o,o.movementData.upleft,-1,1,initJumpUpLeft)
+                  travelled[7+10]=traverse(o,o.movementData.upright,1,1,initJumpUpRight)
+                } else {
+
+                  travelled[0+10]=traverse(o,o.movementData.up,0,-1,initJumpUp)
+                    travelled[1+10]=traverse(o,o.movementData.down,0,1,initJumpDown)
+                      travelled[2+10]=traverse(o,o.movementData.left,1,0,initJumpLeft)
+                        travelled[3+10]=traverse(o,o.movementData.right,-1,0,initJumpRight)
+                          travelled[4+10]=traverse(o,o.movementData.downleft,1,1,initJumpDownLeft)
+                            travelled[5+10]=traverse(o,o.movementData.downright,-1,1,initJumpDownRight)
+                              travelled[6+10]=traverse(o,o.movementData.upleft,1,-1,initJumpUpLeft)
+                                travelled[7+10]=traverse(o,o.movementData.upright,-1,-1,initJumpUpRight)
 
 
                 }
+}
 
 
 
@@ -377,6 +541,7 @@ getValidSteps=function(o) {
 
                       for(i=0;i<value.path.length;i++) {
                         var value2 = value.path[i];
+                          if (value2!=null){
                         possible=value.dat[value2]
                         if(possible!=null) {
                           if(o.owner==possible.owner) {
@@ -395,6 +560,7 @@ getValidSteps=function(o) {
                           validMoves.push(value2)
                         }
                       }
+                    }
 
                     });
 
@@ -405,7 +571,7 @@ getValidSteps=function(o) {
 
 }
 
-traverse=function(o,distance, x,y,board) {
+traverse=function(o,distance, x,y,initJump) {
 
  var result={}
     result.dat={}
@@ -420,7 +586,7 @@ traverse=function(o,distance, x,y,board) {
  var yStr;
  var stop=false
 var cancel=false
-  for (var i = 1; i <= distance; i++) {
+  for (var i = initJump; i <= distance; i++) {
     cancel=false
 
     c=(coordInt( o.tile)+(i)*y)
@@ -545,11 +711,15 @@ tai.loadPiece=function(sho,p,player,tile) {
   temp.pID=p;
   temp.pUUID=p+create_UUID()
   temp.roomID=sho.id;
+  temp.promoted=false;
 sho.board[temp.pUUID]=temp
 return sho.board[temp.pUUID];
 }
 
 tai.makeBoard=function(shogi) {
+
+//tai.loadPiece(shogi,"tk","p1","jj;1")
+
 
   for(x in positions.pos) {
     code=positions.pos[x].toLowerCase()
@@ -583,6 +753,7 @@ tai.makeroom=function(theID) {
   shogi.turnSwitch=-50;
   shogi.board={};
   shogi.movelog=[];
+  shogi.needPromo=null;
 
 
   tai.makeBoard(shogi)
@@ -609,8 +780,54 @@ start=function(app) {
 
   tai.app.lib.io.on('connection', (socket) => {
 
+  socket.on('endTurn', (data) => {
+    if(data.player==tai.app.lib.rooms[data.room].gamestate.turnOwner) {
+    tai.app.lib.rooms[data.room].gamestate.turnSwitch=7;
+      tai.app.lib.rooms[data.room].gamestate.needPromo=null;
+  }
+  })
+
+
+  socket.on('yesPromote', (data) => {
+
+if(data.player==tai.app.lib.rooms[data.room].gamestate.turnOwner) {
+
+
+
+    if(tai.app.lib.rooms[data.room].gamestate.board[tai.app.lib.rooms[data.room].gamestate.needPromo]!=null) {
+
+      if(dat[tai.app.lib.rooms[data.room].gamestate.board[tai.app.lib.rooms[data.room].gamestate.needPromo].promote]!=null) {
+      var temp=cloneDeep(tai.app.lib.rooms[data.room].gamestate.board[tai.app.lib.rooms[data.room].gamestate.needPromo])
+      var temp2=cloneDeep (dat[tai.app.lib.rooms[data.room].gamestate.board[tai.app.lib.rooms[data.room].gamestate.needPromo].promote])
+      temp2.startTile=temp.startTile;
+      temp2.owner=temp.owner;
+      temp2.tile=temp.tile;
+      temp2.pID=tai.app.lib.rooms[data.room].gamestate.board[tai.app.lib.rooms[data.room].gamestate.needPromo].promote;
+      temp2.pUUID=temp.pUUID;
+      temp2.roomID=temp.roomID;
+      temp2.promoted=true;
+      temp2.promote=null;
+
+      tai.app.lib.rooms[data.room].gamestate.board[tai.app.lib.rooms[data.room].gamestate.needPromo]=temp2;
+
+      socket.emit('upDatePiece', { piece:  tai.app.lib.rooms[data.room].gamestate.needPromo,state:  tai.app.lib.rooms[data.room].gamestate });
+      tai.app.lib.rooms[data.room].gamestate.needPromo=null;
+      tai.app.lib.rooms[data.room].gamestate.turnSwitch=7;
+
+
+    } else {
+
+
+      tai.app.lib.rooms[data.room].gamestate.needPromo=null;
+      tai.app.lib.rooms[data.room].gamestate.turnSwitch=7;
+    }
+
+    }}
+  })
 
   socket.on('makeMove', (data) => {
+
+    if(tai.app.lib.rooms[data.room].gamestate.needPromo==null) {
 
 if(tai.app.lib.rooms[data.room].winner!=null&&tai.app.lib.rooms[data.room].gamestate.turn<3) {
   tai.app.lib.rooms[data.room].winner=null;
@@ -638,11 +855,16 @@ if(K!=null) {
 
   tai.app.lib.rooms[data.room].gamestate.movelog.push(tai.app.lib.rooms[data.room].gamestate.board[data.piece].owner+"'s " +tai.app.lib.rooms[data.room].gamestate.board[data.piece].name+" moves "+tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile+" --> "+data.location)
   tai.app.lib.rooms[data.room].gamestate.board[data.piece].tile=data.location;
+
+if(checkPromo(tai.app.lib.rooms[data.room].gamestate.board[data.piece])) {
+tai.app.lib.rooms[data.room].gamestate.needPromo=data.piece;
+} else {
   tai.app.lib.rooms[data.room].gamestate.turnSwitch=7;
+}
 
 
 }}
-}
+}}
 }
 
 }

@@ -1,1 +1,24 @@
  SET DEBUG=taikyoku & npm start
+
+   if(o.owner=="p2") {
+    travelled[0+10*i]=traverse(o,o.movementData.up,0,1,initJumpUp-i)
+      travelled[1+10*i]=traverse(o,o.movementData.down,0,-1,initJumpDown-i)
+        travelled[2+10*i]=traverse(o,o.movementData.left,-1,0,initJumpLeft-i)
+          travelled[3+10*i]=traverse(o,o.movementData.right,1,0,initJumpRight-i)
+            travelled[4+10*i]=traverse(o,o.movementData.downleft,-1,-1,initJumpDownLeft-i)
+              travelled[5+10*i]=traverse(o,o.movementData.downright,1,-1,initJumpDownRight-i)
+                travelled[6+10*i]=traverse(o,o.movementData.upleft,-1,1,initJumpUpLeft-i)
+                  travelled[7+10*i]=traverse(o,o.movementData.upright,1,1,initJumpUpRight-i)
+                } else {
+
+                  travelled[0+10*i]=traverse(o,o.movementData.up,0,-1,initJumpUp-i)
+                    travelled[1+10*i]=traverse(o,o.movementData.down,0,1,initJumpDown-i)
+                      travelled[2+10*i]=traverse(o,o.movementData.left,1,0,initJumpLeft-i)
+                        travelled[3+10*i]=traverse(o,o.movementData.right,-1,0,initJumpRight-i)
+                          travelled[4+10*i]=traverse(o,o.movementData.downleft,1,1,initJumpDownLeft-i)
+                            travelled[5+10*i]=traverse(o,o.movementData.downright,-1,1,initJumpDownRight-i)
+                              travelled[6+10*i]=traverse(o,o.movementData.upleft,1,-1,initJumpUpLeft-i)
+                                travelled[7+10*i]=traverse(o,o.movementData.upright,-1,-1,initJumpUpRight-i)
+
+
+                }
