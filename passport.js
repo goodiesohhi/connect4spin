@@ -26,6 +26,7 @@ module.exports = (app) => {
     cookie: {
       httpOnly: true,
       sameSite:'Lax',
+      expires: false,
       // the duration in milliseconds that the cookie is valid
       maxAge: 20 * 60 * 1000, // 20 minutes
       // recommended you use this setting in production if you have a well-known domain you want to restrict the cookies to.

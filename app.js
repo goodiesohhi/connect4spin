@@ -25,7 +25,7 @@ app.lib = {
 
 
  };
- app.testing=false;
+ app.testing=true;
 
  var addRoom=function(r){
 app.lib.rooms[r.id]=r;

@@ -40,11 +40,596 @@
     downright:1
 
   },
-  promote:null
+promote:"k"
+},
+  "lg":{
+  name:"Left General",
+  movementData: {
+  type:"step",
+  left:1,
+  right:1,
+  up:1,
+  down:1,
+  upleft:1,
+  upright:1,
+  downleft:1,
+  downright:1
+
+},
+  promote:"la"
 
 
 
     },
+    "mk":{
+    name:"Side Monkey",
+    movementData: {
+    type:"step",
+    left:40,
+    right:40,
+    up:0,
+    down:1,
+    upleft:1,
+    upright:1,
+    downleft:0,
+    downright:0
+
+  },
+    promote:"sl"
+
+
+
+      },
+
+      "vm":{
+      name:"Vertical Mover",
+      movementData: {
+      type:"step",
+      left:1,
+      right:1,
+      up:40,
+      down:40,
+      upleft:0,
+      upright:0,
+      downleft:0,
+      downright:0
+
+    },
+      promote:"ox"
+
+
+
+        },
+
+        "lb":{
+        name:"Longbow Soldier",
+        movementData: {
+        type:"step",
+        left:2,
+        right:2,
+        up:40,
+        down:1,
+        upleft:3,
+        upright:3,
+        downleft:0,
+        downright:0
+
+      },
+      //longbow general lw
+        promote:"lw"
+
+
+
+          },
+
+          "vp":{
+          name:"Vertical Pup",
+          movementData: {
+          type:"step",
+          left:0,
+          right:0,
+          up:40,
+          down:1,
+          upleft:0,
+          upright:0,
+          downleft:1,
+          downright:1
+
+        },
+        //leopard king lk
+          promote:"lk"
+
+
+
+            },
+
+                      "vh":{
+                      name:"Vertical Horse",
+                      movementData: {
+                      type:"step",
+                      left:0,
+                      right:0,
+                      up:40,
+                      down:1,
+                      upleft:1,
+                      upright:1,
+                      downleft:0,
+                      downright:0
+
+                    },
+                    //leopard king lk
+                      promote:"dh"
+
+
+
+                        },
+
+                          "dh":{
+                          name:"Dragon Horse",
+                          movementData: {
+                          type:"step",
+                          left:1,
+                          right:1,
+                          up:1,
+                          down:1,
+                          upleft:40,
+                          upright:40,
+                          downleft:40,
+                          downright:40
+
+                        },
+
+                          promote:"hf"
+
+
+
+                            },
+                            "dk":{
+                            name:"Dragon king",
+                            movementData: {
+                            type:"step",
+                            left:40,
+                            right:40,
+                            up:40,
+                            down:40,
+                            upleft:1,
+                            upright:1,
+                            downleft:1,
+                            downright:1
+
+                          },
+
+                            promote:"el"
+
+
+
+                              },
+                              "sp":{
+                              name:"Spear Soldier",
+                              movementData: {
+                              type:"step",
+                              left:1,
+                              right:1,
+                              up:40,
+                              down:1,
+                              upleft:0,
+                              upright:0,
+                              downleft:0,
+                              downright:0
+
+                            },
+
+                              promote:"sz"
+
+
+
+                                },
+
+                                "vl":{
+                                name:"Vertical Leopard",
+                                movementData: {
+                                type:"step",
+                                left:1,
+                                right:1,
+                                up:40,
+                                down:1,
+                                upleft:1,
+                                upright:1,
+                                downleft:0,
+                                downright:0
+
+                              },
+                                //ga great leopard
+                                promote:"ga"
+
+
+
+                                  },
+                                  "tg":{
+                                  name:"Vertical Leopard",
+                                  movementData: {
+                                  type:"step",
+                                  left:0,
+                                  right:0,
+                                  up:40,
+                                  down:0,
+                                  upleft:0,
+                                  upright:0,
+                                  downleft:0,
+                                  downright:0
+
+                                },
+                                  //ga great leopard
+                                  promote:"gy"
+
+
+
+                                    },
+
+                                    "sb":{
+                                    name:"Crossbow Soldier",
+                                    movementData: {
+                                    type:"step",
+                                    left:3,
+                                    right:3,
+                                    up:5,
+                                    down:1,
+                                    upleft:3,
+                                    upright:3,
+                                    downleft:0,
+                                    downright:0
+
+                                  },
+                                    //xg crossbow general
+                                    promote:"xg"
+
+
+
+                                      },
+
+
+
+    "rc":{
+    name:"Right Chariot",
+    movementData: {
+    type:"step",
+    left:0,
+    right:1,
+    up:40,
+    down:0,
+    upleft:0,
+    upright:40,
+    downleft:40,
+    downright:0
+
+  },
+  promote:"xr"
+  //right army
+
+
+
+    },
+
+    "lc":{
+    name:"Left Chariot",
+    movementData: {
+    type:"step",
+    left:1,
+    right:0,
+    up:40,
+    down:0,
+    upleft:40,
+    upright:0,
+    downleft:0,
+    downright:40
+
+  },
+  promote:"xl"
+  //right army
+
+
+
+    },
+
+    "se":{
+    name:"Sword General",
+    movementData: {
+    type:"step",
+    left:0,
+    right:0,
+    up:0,
+    down:1,
+    upleft:1,
+    upright:1,
+    downleft:0,
+    downright:0
+
+  },
+  //sword general
+  promote:"xs"
+
+
+
+
+    },
+
+
+    "la":{
+    name:"Left Army",
+    movementData: {
+    type:"step",
+    left:40,
+    right:1,
+    up:1,
+    down:1,
+    upleft:40,
+    upright:1,
+    downleft:40,
+    downright:1
+
+  },
+  promote:null
+  //right army
+
+
+
+    },
+
+
+
+  "ry":{
+  name:"Right Army",
+  movementData: {
+  type:"step",
+  left:1,
+  right:40,
+  up:1,
+  down:1,
+  upleft:1,
+  upright:40,
+  downleft:1,
+  downright:40
+
+},
+promote:null
+//right army
+
+
+
+  },
+
+
+
+
+      "rr":{
+      name:"Running Rabbit",
+      movementData: {
+      type:"step",
+      left:0,
+      right:0,
+      up:40,
+      down:1,
+      upleft:40,
+      upright:40,
+      downleft:1,
+      downright:1
+
+    },
+      promote:"tf"
+
+
+
+      },
+
+      "bn":{
+      name:"Burning Soldier",
+      movementData: {
+      type:"step",
+      left:3,
+      right:3,
+      up:7,
+      down:1,
+      upleft:5,
+      upright:5,
+      downleft:0,
+      downright:0
+
+    },
+      promote:"br"
+
+//burning general
+
+      },
+
+      "br":{
+      name:"Burning General",
+      movementData: {
+      type:"step",
+      left:3,
+      right:3,
+      up:40,
+      down:2,
+      upleft:40,
+      upright:40,
+      downleft:0,
+      downright:0
+
+    },
+      promote:null
+
+//burning general
+
+      },
+
+
+      "fo":{
+      name:"Forest Demon",
+      movementData: {
+      type:"step",
+      left:3,
+      right:3,
+      up:3,
+      down:40,
+      upleft:40,
+      upright:40,
+      downleft:0,
+      downright:0
+
+    },
+      promote:"tr"
+
+  //burning general
+
+      },
+
+      "tr":{
+      name:"Thunder Runner",
+      movementData: {
+      type:"step",
+      left:4,
+      right:4,
+      up:40,
+      down:4,
+      upleft:40,
+      upright:40,
+      downleft:0,
+      downright:0
+
+    },
+      promote:null
+
+  //burning general
+
+      },
+
+      "m":{
+      name:"Mountain General",
+      movementData: {
+      type:"step",
+      left:0,
+      right:0,
+      up:1,
+      down:1,
+      upleft:3,
+      upright:3,
+      downleft:0,
+      downright:0
+
+    },
+      promote:"em"
+//peaceful mountain
+
+
+      },
+
+      "wg":{
+      name:"Water General",
+      movementData: {
+      type:"step",
+      left:0,
+      right:0,
+      up:1,
+      down:1,
+      upleft:3,
+      upright:3,
+      downleft:0,
+      downright:0
+
+    },
+      promote:"vg"
+
+
+
+      },
+
+      "em":{
+      name:"Peaceful Mountain",
+      movementData: {
+      type:"step",
+      left:5,
+      right:5,
+      up:5,
+      down:0,
+      upleft:40,
+      upright:40,
+      downleft:40,
+      downright:40
+
+    },
+      promote:null
+
+
+
+      },
+
+      "vg":{
+        //flier
+      name:"Vice General",
+      movementData:{
+
+        type:"h",
+
+        fusion: {
+          0:{
+          movementData: {
+          type:"jump",
+          jumps:{},
+          jumps: {
+        0:{
+            x:-2,
+            y:0,
+        },
+          1:{
+            x:2,
+            y:0,
+          },
+
+          2:{
+              x:0,
+              y:2,
+          },
+            3:{
+              x:0,
+              y:-2,
+            },
+
+        }
+      },
+    },
+    1:{
+      movementData: {
+      type:"step",
+      left:0,
+      right:0,
+      up:0,
+      down:0,
+      upleft:40,
+      upright:40,
+      downleft:40,
+      downright:40
+
+    },
+    }
+
+
+
+
+
+        }
+
+
+
+      },
+      promote:"gg"
+
+
+
+      },
+
+
+
+
+
 
     "p":{
     name:"Pawn",
@@ -285,6 +870,50 @@
 
         },
 
+        "we":{
+        name:"White Elephant",
+        movementData: {
+        type:"step",
+        left:2,
+        right:2,
+        up:2,
+        down:2,
+        upleft:2,
+        upright:2,
+        downleft:2,
+        downright:2
+
+      },
+
+      //ek =elephant king
+      promote:"ek"
+
+
+
+        },
+
+        "fg":{
+        name:"Fragrant Elephant",
+        movementData: {
+        type:"step",
+        left:2,
+        right:2,
+        up:2,
+        down:2,
+        upleft:2,
+        upright:2,
+        downleft:2,
+        downright:2
+
+      },
+
+      //ek =elephant king
+      promote:"ek"
+
+
+
+        },
+
         "or":{
         name:"Old Rat",
         movementData: {
@@ -428,6 +1057,109 @@
 
         },
 
+        "ox":{
+        name:"Flying Ox",
+        movementData: {
+        type:"step",
+        left: 0,
+        right: 0,
+        up: 40,
+        down:40,
+        upleft:40,
+        upright:40,
+        downleft:40,
+        downright:40
+
+      },
+      //fx= fire ox
+        promote:"fx"
+
+
+
+        },
+
+        "fb":{
+        name:"Free Bear",
+        movementData: {
+        type:"step",
+        left: 0,
+        right: 0,
+        up: 40,
+        down:40,
+        upleft:40,
+        upright:40,
+        downleft:40,
+        downright:40
+
+      },
+      //fx= fire ox
+        promote:null
+
+
+
+        },
+        "rl":{
+        name:"Free Leopard",
+        movementData: {
+        type:"step",
+        left: 0,
+        right: 0,
+        up: 40,
+        down:40,
+        upleft:40,
+        upright:40,
+        downleft:40,
+        downright:40
+
+      },
+      //fx= fire ox
+        promote:"fx"
+
+
+
+        },
+        "gw":{
+        name:"Great Whale",
+        movementData: {
+        type:"step",
+        left: 0,
+        right: 0,
+        up: 40,
+        down:40,
+        upleft:40,
+        upright:40,
+        downleft:40,
+        downright:40
+
+      },
+      //fx= fire ox
+        promote:null
+
+
+
+        },
+
+        "tf":{
+        name:"Treacherous Fox",
+        movementData: {
+        type:"step",
+        left: 0,
+        right: 0,
+        up: 40,
+        down:40,
+        upleft:40,
+        upright:40,
+        downleft:40,
+        downright:40
+
+      },
+      //fx= fire ox
+        promote:"pt"
+
+
+
+        },
+
         "n":{
         name:"Knight",
         movementData: {
@@ -548,6 +1280,112 @@
                 promote:"go"
                 },
 
+
+                                                "el":{
+                                                name:"Soaring Eagle",
+                                                movementData:{
+
+                                                  type:"h",
+
+                                                  fusion: {
+                                                    0:{
+                                                    movementData: {
+                                                    type:"jump",
+                                                    jumps:{},
+                                                    jumps: {
+                                                  0:{
+                                                      x:2,
+                                                      y:2,
+                                                  },
+                                                  1:{
+                                                      x:-2,
+                                                      y:2,
+                                                  },
+
+
+                                                  }
+                                                },
+                                              },
+                                              1:{
+                                                movementData: {
+                                                type:"step",
+                                                left:40,
+                                                right:40,
+                                                up:40,
+                                                down:40,
+                                                upleft:40,
+                                                upright:40,
+                                                downleft:40,
+                                                downright:40
+
+                                              },
+                                            }
+
+
+
+
+
+                                                  }
+
+
+
+                                                },
+
+
+                                                //xl great
+                                                promote:"xl"
+                                                },
+
+                                "hf":{
+                                name:"Horned Falcon",
+                                movementData:{
+
+                                  type:"h",
+
+                                  fusion: {
+                                    0:{
+                                    movementData: {
+                                    type:"jump",
+                                    jumps:{},
+                                    jumps: {
+                                  0:{
+                                      x:0,
+                                      y:2,
+                                  },
+
+
+                                  }
+                                },
+                              },
+                              1:{
+                                movementData: {
+                                type:"step",
+                                left:40,
+                                right:40,
+                                up:40,
+                                down:40,
+                                upleft:40,
+                                upright:40,
+                                downleft:40,
+                                downright:40
+
+                              },
+                            }
+
+
+
+
+
+                                  }
+
+
+
+                                },
+
+
+                                //great falcon
+                                promote:"xf"
+                                },
                 "fp":{
                 name:"Free Pup",
                 movementData: {
