@@ -279,7 +279,7 @@ mongoose=require('./shared/middleware/mongoose')()
         socket.on('connectZ', function (username) {
             if(username.username!="") {
           socket.username=username.username
-
+          console.log(username.username)
          var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 
@@ -375,8 +375,20 @@ mongoose=require('./shared/middleware/mongoose')()
 
 
         } else {
-            tRoom.spectators["sp"+Object.keys(tRoom.spectators).length]=socket.username
-              socket.join(j.roomName)
+          var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+
+
+             obj.roomlock=tRoom.id;
+
+             socket.join(j.roomName)
+             socket.to(tRoom.id).emit('reload', {});
+             tRoom.spectators[socket.username]=socket.username
+             console.log(socket.username)
+               socket.join(j.roomName)
+             obj.save()
+
+            });
+
         }
       } else {
         console.log("Invalid Room")
