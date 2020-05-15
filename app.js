@@ -56,8 +56,8 @@ app.engine("handlebars", hbs({
     helpers: {
 
         inGame: function (id, g) {
-          //comsole.log("g: "+g)
-          //comsole.log(id)
+          //console.log("g: "+g)
+          //console.log(id)
           if(id[g]==null) {
             return false
           }
@@ -150,7 +150,7 @@ setInterval(function(){
   if(!runOnce) {
     runOnce=true;
 
-  ////comsole.log(  getValidMoves(test))
+  ////console.log(  getValidMoves(test))
 
 
 
@@ -225,7 +225,7 @@ if(!app.testing) {
 
 
     //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
-    ////comsole.log(value.gamestate.board)
+    ////console.log(value.gamestate.board)
 
 
 
@@ -244,7 +244,7 @@ mongoose=require('./shared/middleware/mongoose')()
 .then(() => {
   app.lib.io = require('socket.io')(server);
   // mongo is connected, so now we can start the express server.
-  server.listen(PORT, () => //comsole.log(`Server up and running on ${PORT}.`));
+  server.listen(PORT, () => console.log(`Server up and running on ${PORT}.`));
 
 
 
@@ -318,7 +318,7 @@ obj.save();
 
            });
 
-          //comsole.log("Connected "+socket.username)
+          //console.log("Connected "+socket.username)
         }
 
          })
@@ -349,11 +349,11 @@ obj.save();
 
 
      obj.roomlock.set(j.game,tRoom.id);
-     //comsole.log("yes "+socket.username)
-     //comsole.log(obj.roomlock.get(j.game))
+     //console.log("yes "+socket.username)
+     //console.log(obj.roomlock.get(j.game))
 
      socket.join(tRoom.id)
-     //comsole.log("joined"+tRoom.id);
+     //console.log("joined"+tRoom.id);
      socket.emit('reload', {});
       obj.save()
 
@@ -417,7 +417,7 @@ obj.save();
 
         }
       } else {
-        //comsole.log("Invalid Room")
+        //console.log("Invalid Room")
       }
 
 
@@ -454,8 +454,8 @@ app.lib.roomstuff=roomstuff;
 .catch(err => {
   // an error occurred connecting to mongo!
   // log the error and exit
-  console.error('Unable to connect to mongo.')
-  console.error(err);
+  //console.error('Unable to connect to mongo.')
+  //console.error(err);
 });
 
 
