@@ -214,98 +214,6 @@ $('.styleNav').css({'background':bgImg, 'background-size':'tile', });
   </script>
 
   <script>
-
-  var leaveGame=function(){
-  //  console.log("s1")
-
-    socket.emit('disconnectGame',{p:localPlayer})
-    gameN={leave:true}
-  }
-  var startGame=function(){
-  //  console.log("s1")
-    socket.emit('startGame',{id:gameN.id})
-  }
-
-
-  var createRoom=function(roomNAME) {
-    var txt = $('#roomtxt').val();
-      if (/\S/.test(txt)&&txt.length<20) {
-
-  socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"taikyoku" });
-    $('#roomtxt').val("");
-    $('#startGameNow').trigger('click')
-
-  window.location.reload(true);
-  }
-  }
-
-  var joinClick=function(txt) {
-
-  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
-    $('#roomtxt').val("");
-    $('#startGameNow').trigger('click')
-
-      window.location.reload(true);
-
-  }
-
-  var startGame=function(){
-  //  console.log("s1")
-    socket.emit('startGame',{id:gameN.id})
-  }
-  var joinRoom=function() {
-    var txt = $('#roomtxt').val();
-  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
-    $('#roomtxt').val("");
-    $('#startGameNow').trigger('click')
-
-      window.location.reload(true);
-
-  }
-
-  $('#create').click(function(){
-
-    createRoom();
-    $('#startGameNow').trigger('click')
-
-    window.location.reload(true);
-  })
-
-  $('#leaveBTN').click(function(){
-
-    leaveGame();
-    $('#logo').trigger('click')
-
-   window.location.reload(true);
-  })
-
-  $('#sg').click(function(){
-
-    startGame();
-    $('#startGameNow').trigger('click')
-
-    window.location.reload(true);
-  })
-
-  $('#joinC').click(function(){
-
-    joinClick($(this).attr("value"));
-    $('#startGameNow').trigger('click')
-
-    window.location.reload(true);
-  })
-
-
-
-  $('#join').click(function(){
-
-    joinRoom();
-    $('#startGameNow').trigger('click')
-
-    window.location.reload(true);
-  })
-
-
   var body = document.body,
     overlay = document.querySelector('.overlay'),
     overlayBtts = document.querySelectorAll('button[class$="overlay"]');
@@ -409,6 +317,8 @@ localHasWon=true;
 
 socket.on('update',function(data){
 
+  console.log("updating")
+  console.log(data);
   gameN=JSON.parse(data.state)
 
 })

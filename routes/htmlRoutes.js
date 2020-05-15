@@ -30,6 +30,17 @@ start=function(appz) {
 
   });
 
+  router.get('/games/htg', (req, res) => {
+
+    res.render('htg', {
+      user: req.user,
+      //work: app.lib.rooms[req.user.roomlock]
+      //rooms:
+
+    });
+
+  });
+
   // simply shows the login view.
   router.get('/login', (req, res) => {
     res.render('login', {

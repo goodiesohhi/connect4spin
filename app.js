@@ -17,7 +17,7 @@ const fs = require('fs');
 const app = require('express')();
 const db = require('./shared/models');
 var hbs=require('express-handlebars');
-const x=0;
+
 app.lib = {
   io: null,
   games:null,
@@ -55,16 +55,29 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine("handlebars", hbs({
     helpers: {
 
-        inGame: function (id) {
-          if(id!="") {
+        inGame: function (id, g) {
+          //comsole.log("g: "+g)
+          //comsole.log(id)
+          if(id[g]==null) {
+            return false
+          }
+          if(id[g]!="") {
           return true
           } else {
             return false
           }
         },
 
-        rooms: function () {
-          return app.lib.rooms;
+        rooms: function (gameN) {
+          rooms=[]
+          for (var x in app.lib.rooms) {
+            y=app.lib.rooms[x]
+            if (y.gamename==gameN) {
+              rooms.push(y)
+            }
+          }
+
+          return rooms;
         },
 
 
@@ -137,7 +150,7 @@ setInterval(function(){
   if(!runOnce) {
     runOnce=true;
 
-  //console.log(  getValidMoves(test))
+  ////comsole.log(  getValidMoves(test))
 
 
 
@@ -212,7 +225,7 @@ if(!app.testing) {
 
 
     //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
-    //console.log(value.gamestate.board)
+    ////comsole.log(value.gamestate.board)
 
 
 
@@ -231,7 +244,7 @@ mongoose=require('./shared/middleware/mongoose')()
 .then(() => {
   app.lib.io = require('socket.io')(server);
   // mongo is connected, so now we can start the express server.
-  server.listen(PORT, () => console.log(`Server up and running on ${PORT}.`));
+  server.listen(PORT, () => //comsole.log(`Server up and running on ${PORT}.`));
 
 
 
@@ -257,8 +270,8 @@ mongoose=require('./shared/middleware/mongoose')()
       socket.on('disconnectGame',function(data) {
           room=""
           var doc = db.User.findOne({username: socket.username}, function(err,obj) {
-            room=obj.roomlock;
-            obj.roomlock="";
+            room=obj.roomlock.get(data.game)
+            obj.roomlock.set(data.game,"");
             if(app.lib.rooms[room]!=null){
               if(app.lib.rooms[room].players[data.p]!=null) {
 
@@ -279,32 +292,40 @@ mongoose=require('./shared/middleware/mongoose')()
         socket.on('connectZ', function (username) {
             if(username.username!="") {
           socket.username=username.username
-          console.log(username.username)
+
          var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 
-            if(obj.roomlock!="") {
+            if(obj.roomlock!=null) {
+              for (let keys of obj.roomlock.keys()){
 
-              if(app.lib.rooms[obj.roomlock]!=null) {
-              socket.join(obj.roomlock)
+              if(app.lib.rooms[obj.roomlock.get(keys)]!=null) {
+
+              socket.join(obj.roomlock.get(keys))
             //  socket.to(obj.roomlock).emit('reload', {});
             } else {
 
-              obj.roomlock="";
-              obj.save();
+              obj.roomlock.set(keys,"");
+
             }
-            }
+          }
+
+} else {
+
+  obj.roomlock=new Map()
+}
+obj.save();
 
            });
 
-          console.log("Connected "+socket.username)
+          //comsole.log("Connected "+socket.username)
         }
 
          })
       socket.join('public')
 
         socket.on('createRoom', (j) => {
-          console.log("wanna create room")
+
           var lock
 
 
@@ -327,13 +348,17 @@ mongoose=require('./shared/middleware/mongoose')()
   var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 
-     obj.roomlock=tRoom.id;
+     obj.roomlock.set(j.game,tRoom.id);
+     //comsole.log("yes "+socket.username)
+     //comsole.log(obj.roomlock.get(j.game))
 
      socket.join(tRoom.id)
+     //comsole.log("joined"+tRoom.id);
      socket.emit('reload', {});
       obj.save()
 
     });
+
 
 
   //const update = { roomlock: tRoom.id };
@@ -365,7 +390,7 @@ mongoose=require('./shared/middleware/mongoose')()
             var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 
-               obj.roomlock=tRoom.id;
+               obj.roomlock.set(j.game,tRoom.id);
 
                socket.join(j.roomName)
                socket.to(tRoom.id).emit('reload', {});
@@ -378,12 +403,13 @@ mongoose=require('./shared/middleware/mongoose')()
           var doc = db.User.findOne({username: socket.username}, function(err,obj) {
 
 
-             obj.roomlock=tRoom.id;
+
+            obj.roomlock.set(j.game,tRoom.id);
 
              socket.join(j.roomName)
              socket.to(tRoom.id).emit('reload', {});
              tRoom.spectators[socket.username]=socket.username
-             console.log(socket.username)
+
                socket.join(j.roomName)
              obj.save()
 
@@ -391,7 +417,7 @@ mongoose=require('./shared/middleware/mongoose')()
 
         }
       } else {
-        console.log("Invalid Room")
+        //comsole.log("Invalid Room")
       }
 
 

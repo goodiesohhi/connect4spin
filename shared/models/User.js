@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const MongooseMap = require('mongoose-map')(mongoose);
 
 // bcrypt is the hashing algorithm we'll use to protect stored credentials.
 // NEVER STORE PASSWORDS OR OTHER SENSITIVE DATA AS PLAIN TEXT!!!
@@ -27,7 +28,7 @@ const UserSchema = new Schema({
     type:String
   },
   roomlock:{
-    type:String
+    type: Map
   }
 });
 

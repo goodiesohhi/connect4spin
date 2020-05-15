@@ -1033,6 +1033,55 @@ var promoteBTN=null;
 var endBTN=null;
 jQuery(function ($) {
 $( document ).ready(function() {
+
+
+    $('#create').click(function(){
+
+      createRoom();
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+
+    $('#leaveBTN').click(function(){
+
+      leaveGame();
+      $('#logo').trigger('click')
+
+     window.location.reload(true);
+    })
+
+    $('#sg').click(function(){
+
+      startGame();
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+
+    $('#joinC').click(function(){
+
+      joinClick($(this).attr("value"));
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+
+
+
+    $('#join').click(function(){
+
+      joinRoom();
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+
+
+
+
+
+
   $( "#info" ).trigger('click')
 
 
@@ -1639,8 +1688,53 @@ socket.on('upDatePiece', function (data) {
 
 
 
+  var leaveGame=function(){
+  //  console.log("s1")
+
+    socket.emit('disconnectGame',{p:localPlayer})
+    gameN={leave:true}
+  }
+  var startGame=function(){
+  //  console.log("s1")
+    socket.emit('startGame',{id:gameN.id})
+  }
 
 
+  var createRoom=function(roomNAME) {
+    var txt = $('#roomtxt').val();
+      if (/\S/.test(txt)&&txt.length<20) {
+
+  socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"taikyoku" });
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+  window.location.reload(true);
+  }
+  }
+
+  var joinClick=function(txt) {
+
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+
+  }
+
+  var startGame=function(){
+  //  console.log("s1")
+    socket.emit('startGame',{id:gameN.id})
+  }
+  var joinRoom=function() {
+    var txt = $('#roomtxt').val();
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"taikyoku"});
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+
+  }
 
 
 </script>
@@ -1675,7 +1769,7 @@ socket.on('upDatePiece', function (data) {
 
 
 <div id="menu1g" class="tab-pane fade in active show">
-  {{#unless (inGame user.roomlock) }}
+  {{#unless (inGame user.roomlock "taikyoku") }}
 
 
   <script type="text/javascript">
@@ -1713,7 +1807,7 @@ window.location.reload(true);
 <div class="container">
 
 
-{{#each (rooms)}}
+{{#each (rooms "taikyoku")}}
 <div class="roomEntry">
 Room name:  {{roomname}}  id: {{id}}  started:{{started}} <button id= "joinC" class="input-group-append btn btn-success" value="{{id}}">Join</button>
 </div>
@@ -1725,7 +1819,7 @@ Room name:  {{roomname}}  id: {{id}}  started:{{started}} <button id= "joinC" cl
 </div>
 
 {{/unless}}
-{{#if (inGame user.roomlock) }}
+{{#if (inGame user.roomlock "taikyoku") }}
 <h1> Lobby</h1>
 <button id ="sg" type="button" class=" btn btn-success right">Start Game</button>
 <button id ="leaveBTN" type="button" class=" btn btn-success right">Leave Room</button>
