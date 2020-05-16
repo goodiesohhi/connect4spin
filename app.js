@@ -18,6 +18,7 @@ const app = require('express')();
 const db = require('./shared/models');
 var hbs=require('express-handlebars');
 
+
 app.lib = {
   io: null,
   games:null,
@@ -25,7 +26,7 @@ app.lib = {
 
 
  };
- app.testing=true;
+ app.testing=false;
 
  var addRoom=function(r){
 app.lib.rooms[r.id]=r;
@@ -135,113 +136,18 @@ app.lib.io=0
 
 app.lib.handlebars=handlebars
 
-//Xtq2663BdpFeugE
+
 
 
 // WARNING: app.listen(80) will NOT work here!
 
-setInterval(function(){
-
-//tai.app.lib.io.emit('roomList', { state:JSON.stringify()});
-
-  for(var key in app.lib.rooms) {
-
-  var value = app.lib.rooms[key];
-  if(!runOnce) {
-    runOnce=true;
-
-  ////console.log(  getValidMoves(test))
-
-
-
-  }
-
-  if(Object.keys(value.players).length==0) {
- delete app.lib.rooms[value.id];
-
-
-  }
-if(value.gamename=="taikyoku") {
-if(!app.testing) {
-  if(value.players["p2"]==null) {
-
-    if(value.started)
-    {
-      value.started=false
-      value.gamestate =  app.lib.games["tai"].makeroom(value.id);
-        app.lib.io.to(value.id).emit('reload', {});
-    }
-
-  }
-}
-
-  if(value.gamestate.turnSwitch>0) {
-    value.gamestate.turnSwitch-=1;
-    if(value.gamestate.turnSwitch<=0) {
-      value.gamestate.turnSwitch=-50;
-
-      if(value.gamestate.turnOwner=="p1") {
-        value.gamestate.turnOwner="p2"
-      } else {
-
-        value.gamestate.turnOwner="p1"
-      }
-      if(app.testing) {
-
-          value.gamestate.turnOwner="p1"
-      }
-
-      p1R= app.lib.games["tai"].getRoyals("p1" ,value.gamestate.board)
-      p2R= app.lib.games["tai"].getRoyals("p2" ,value.gamestate.board)
-      if(p1R==0) {
-        value.winner="p2"
-      }
-      if(p2R==0) {
-        value.winner="p1"
-      }
-
-      if(value.winner==null) {
-    value.gamestate.turn+=1;
-  } else {
-
-    app.lib.io.to(value.id).emit('hasWon', { winner: value.winner});
-    /*app.lib.io.in(value.id).clients(function(error, clients){
-         if (error) throw error;
-         for(var i=0; i <clients.length; i++){
-            app.lib.io.sockets.connected[clients[i]].disconnect(true)
-        }
-      })
-      delete app.lib.rooms[value.id];
-      */
-
-       app.lib.rooms[value.id].gamestate=app.lib.games["tai"].makeroom(value.id);
-         app.lib.rooms[value.id].started=false;
-
-
-  }
-    }
-  }
-}
-
-
-    //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
-    ////console.log(value.gamestate.board)
-
-
-
-    app.lib.io.to(value.id).emit('update', { state:JSON.stringify(value)
-    });
-}
-
-
-
-}, 200);
 
 
 
 
 mongoose=require('./shared/middleware/mongoose')()
 .then(() => {
+
   app.lib.io = require('socket.io')(server);
   // mongo is connected, so now we can start the express server.
   server.listen(PORT, () => console.log(`Server up and running on ${PORT}.`));
@@ -436,18 +342,61 @@ message:msg.message
 });
 
 
+
 var taikyoku=require('./games/taikyoku.js')(app);
+
+
+
+var htg=require('./games/htg.js')(app);
+
+
+
 var games={
-tai:taikyoku
+tai:taikyoku,
+htg:htg
 
 
 
 }
 
-app.lib.games=games;
 
 var roomstuff=require('./roomstuff')(app)
 app.lib.roomstuff=roomstuff;
+
+
+
+app.lib.games=games;
+
+
+setInterval(function(){
+
+//tai.app.lib.io.emit('roomList', { state:JSON.stringify()});
+
+  for(var key in app.lib.rooms) {
+
+  var value = app.lib.rooms[key];
+
+
+  if(Object.keys(value.players).length==0) {
+ delete app.lib.rooms[value.id];
+
+
+  }
+if(value.gamename=="taikyoku") {
+
+  app.lib.games["tai"].update(value)
+}
+
+if(value.gamename=="htg") {
+
+  app.lib.games["htg"].update(value)
+}
+}
+
+
+}, 200);
+
+
 
 
 })

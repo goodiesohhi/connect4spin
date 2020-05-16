@@ -57,7 +57,7 @@ var body = document.body,
 //  space:"none",
 RecRooms=0;
 var GameScene;
-var testing=true;
+var testing=false;
 var SelectedPiece=null;
 var SelectedRange=null;
 var Selects=[]
@@ -1159,15 +1159,33 @@ if(gameN!=null) {
 
             loaded=true;
 
+            isNotSpec=false
             if(gameN.players["p1"]!=null) {
             if(gameN.players["p1"].name=="{{user.username}}"){
               localPlayer="p1"
+              isNotSpec=true;
             }
           }
             if(gameN.players["p2"]!=null) {
             if(gameN.players["p2"].name=="{{user.username}}"){
               localPlayer="p2"
+              isNotSpec=true;
             }
+          }
+          if(gameN.players["p3"]!=null) {
+          if(gameN.players["p3"].name=="{{user.username}}"){
+            localPlayer="p3"
+            isNotSpec=true;
+          }
+        }
+        if(gameN.players["p4"]!=null) {
+        if(gameN.players["p4"].name=="{{user.username}}"){
+          localPlayer="p4"
+          isNotSpec=true;
+        }
+      }
+          if(!isNotSpec) {
+            localPlayer="spectator"
           }
           if(localPlayer!="p1") {
               $( "#sg" ).remove();
@@ -1691,7 +1709,7 @@ socket.on('upDatePiece', function (data) {
   var leaveGame=function(){
   //  console.log("s1")
 
-    socket.emit('disconnectGame',{p:localPlayer})
+    socket.emit('disconnectGame',{p:localPlayer,game:gameN.gamename})
     gameN={leave:true}
   }
   var startGame=function(){

@@ -54,7 +54,7 @@ var localPlayer
 var cursorKeys;
 
 var game;
-var gameHTG;
+var gameSDF;
 var frame=0;
 var controlRegister={}
 var sendControls=function(scene) {
@@ -67,7 +67,7 @@ var sendControls=function(scene) {
   var isShiftDown = cursorKeys.shift.isDown;
 
   socket.emit('updateControls',{
-    id:gameHTG.id,
+    id:gameSDF.id,
     player:localPlayer,
     control:controlRegister[frame],
     frame:frame,
@@ -167,31 +167,31 @@ Extends: Phaser.Scene,
     {
 
 
-if(gameHTG!=null) {
+if(gameSDF!=null) {
 
-      if(gameHTG.gamestate!=null) {
+      if(gameSDF.gamestate!=null) {
 
         isNotSpec=false
-        if(gameHTG.players["p1"]!=null) {
-        if(gameHTG.players["p1"].name=="{{user.username}}"){
+        if(gameSDF.players["p1"]!=null) {
+        if(gameSDF.players["p1"].name=="{{user.username}}"){
           localPlayer="p1"
           isNotSpec=true;
         }
       }
-        if(gameHTG.players["p2"]!=null) {
-        if(gameHTG.players["p2"].name=="{{user.username}}"){
+        if(gameSDF.players["p2"]!=null) {
+        if(gameSDF.players["p2"].name=="{{user.username}}"){
           localPlayer="p2"
           isNotSpec=true;
         }
       }
-      if(gameHTG.players["p3"]!=null) {
-      if(gameHTG.players["p3"].name=="{{user.username}}"){
+      if(gameSDF.players["p3"]!=null) {
+      if(gameSDF.players["p3"].name=="{{user.username}}"){
         localPlayer="p3"
         isNotSpec=true;
       }
     }
-    if(gameHTG.players["p4"]!=null) {
-    if(gameHTG.players["p4"].name=="{{user.username}}"){
+    if(gameSDF.players["p4"]!=null) {
+    if(gameSDF.players["p4"].name=="{{user.username}}"){
       localPlayer="p4"
       isNotSpec=true;
     }
@@ -204,7 +204,7 @@ if(gameHTG!=null) {
           startGame=null;
 
       }
-      if (gameHTG.started) {
+      if (gameSDF.started) {
 
 
             $( "#sg" ).remove();
@@ -212,7 +212,7 @@ if(gameHTG!=null) {
 
 
       }
-      if(gameHTG.players["p2"]==null) {
+      if(gameSDF.players["p2"]==null) {
           if(!testing) {
         $( "#sg" ).remove();
 
@@ -230,8 +230,8 @@ if(gameHTG!=null) {
 
       $( "#lobby" ).empty();
       $( "#lobby" ).append( "<p>Players: </p>" );
-      for (var lo in gameHTG.players) {
-          var opu=gameHTG.players[lo].name
+      for (var lo in gameSDF.players) {
+          var opu=gameSDF.players[lo].name
           if(lo=="p1") {
             opu+= " (Room Owner)"
           }
@@ -242,14 +242,14 @@ if(gameHTG!=null) {
 
 
       $( "#lobby" ).append( "<p>Spectators: </p>" );
-        for (var lo in gameHTG.spectators) {
+        for (var lo in gameSDF.spectators) {
 
-            var opu=gameHTG.spectators[lo].name
+            var opu=gameSDF.spectators[lo].name
 
             $( "#lobby" ).append( "<p>"+opu+"</p>" );
         }
 
-        if(gameHTG.started) {
+        if(gameSDF.started) {
         $('#startGameNow').trigger('click')
 
         this.scene.start('gameScene');
@@ -381,30 +381,30 @@ input.keyboard.enabled=false
 update:function(time, delta) {
 
 
-if(gameHTG!=null) {
+if(gameSDF!=null) {
 
 
   isNotSpec=false
-  if(gameHTG.players["p1"]!=null) {
-  if(gameHTG.players["p1"].name=="{{user.username}}"){
+  if(gameSDF.players["p1"]!=null) {
+  if(gameSDF.players["p1"].name=="{{user.username}}"){
     localPlayer="p1"
     isNotSpec=true;
   }
 }
-  if(gameHTG.players["p2"]!=null) {
-  if(gameHTG.players["p2"].name=="{{user.username}}"){
+  if(gameSDF.players["p2"]!=null) {
+  if(gameSDF.players["p2"].name=="{{user.username}}"){
     localPlayer="p2"
     isNotSpec=true;
   }
 }
-if(gameHTG.players["p3"]!=null) {
-if(gameHTG.players["p3"].name=="{{user.username}}"){
+if(gameSDF.players["p3"]!=null) {
+if(gameSDF.players["p3"].name=="{{user.username}}"){
   localPlayer="p3"
   isNotSpec=true;
 }
 }
-if(gameHTG.players["p4"]!=null) {
-if(gameHTG.players["p4"].name=="{{user.username}}"){
+if(gameSDF.players["p4"]!=null) {
+if(gameSDF.players["p4"].name=="{{user.username}}"){
 localPlayer="p4"
 isNotSpec=true;
 }
@@ -464,12 +464,12 @@ socket.on('nothing', function (data) {
   var leaveGame=function(){
   //  console.log("s1")
 
-    socket.emit('disconnectGame',{p:localPlayer,game:gameHTG.gamename})
+    socket.emit('disconnectGame',{p:localPlayer,game:gameSDF.gamename})
 
   }
   var startGame=function(){
   //  console.log("s1")
-    socket.emit('startGame',{id:gameHTG.id})
+    socket.emit('startGame',{id:gameSDF.id})
   }
 
 
@@ -477,7 +477,7 @@ socket.on('nothing', function (data) {
     var txt = $('#roomtxt').val();
       if (/\S/.test(txt)&&txt.length<20) {
 
-  socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"htg" });
+  socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"sdf" });
     $('#roomtxt').val("");
     $('#startGameNow').trigger('click')
 
@@ -487,7 +487,7 @@ socket.on('nothing', function (data) {
 
   var joinClick=function(txt) {
 
-  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"htg"});
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"sdf"});
     $('#roomtxt').val("");
     $('#startGameNow').trigger('click')
 
@@ -497,11 +497,11 @@ socket.on('nothing', function (data) {
 
   var startGame=function(){
   //  console.log("s1")
-    socket.emit('startGame',{id:gameHTG.id})
+    socket.emit('startGame',{id:gameSDF.id})
   }
   var joinRoom=function() {
     var txt = $('#roomtxt').val();
-  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"htg"});
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"sdf"});
     $('#roomtxt').val("");
     $('#startGameNow').trigger('click')
 
@@ -542,7 +542,7 @@ socket.on('nothing', function (data) {
 
 
 <div id="menu1g" class="tab-pane fade in active show">
-  {{#unless (inGame user.roomlock "htg") }}
+  {{#unless (inGame user.roomlock "sdf") }}
 
 
   <script type="text/javascript">
@@ -572,7 +572,7 @@ socket.on('nothing', function (data) {
 <div class="container">
 
 
-{{#each (rooms "htg")}}
+{{#each (rooms "sdf")}}
 <div class="roomEntry">
 Room name:  {{roomname}}  id: {{id}}  started:{{started}} <button id= "joinC" class="input-group-append btn btn-success" value="{{id}}">Join</button>
 </div>
@@ -584,7 +584,7 @@ Room name:  {{roomname}}  id: {{id}}  started:{{started}} <button id= "joinC" cl
 </div>
 
 {{/unless}}
-{{#if (inGame user.roomlock "htg") }}
+{{#if (inGame user.roomlock "sdf") }}
 <h1> Lobby</h1>
 <button id ="sg" type="button" class=" btn btn-success right">Start Game</button>
 <button id ="leaveBTN" type="button" class=" btn btn-success right">Leave Room</button>

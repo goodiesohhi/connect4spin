@@ -702,6 +702,83 @@ function create_UUID(){
     return uuid;
 }
 
+
+
+tai.update=function(value) {
+
+
+  if(!app.testing) {
+    if(value.players["p2"]==null) {
+
+      if(value.started)
+      {
+        value.started=false
+        value.gamestate =  app.lib.games["tai"].makeroom(value.id);
+          app.lib.io.to(value.id).emit('reload', {});
+      }
+
+    }
+  }
+
+    if(value.gamestate.turnSwitch>0) {
+      value.gamestate.turnSwitch-=1;
+      if(value.gamestate.turnSwitch<=0) {
+        value.gamestate.turnSwitch=-50;
+
+        if(value.gamestate.turnOwner=="p1") {
+          value.gamestate.turnOwner="p2"
+        } else {
+
+          value.gamestate.turnOwner="p1"
+        }
+        if(app.testing) {
+
+            value.gamestate.turnOwner="p1"
+        }
+
+        p1R= app.lib.games["tai"].getRoyals("p1" ,value.gamestate.board)
+        p2R= app.lib.games["tai"].getRoyals("p2" ,value.gamestate.board)
+        if(p1R==0) {
+          value.winner="p2"
+        }
+        if(p2R==0) {
+          value.winner="p1"
+        }
+
+        if(value.winner==null) {
+      value.gamestate.turn+=1;
+    } else {
+
+      app.lib.io.to(value.id).emit('hasWon', { winner: value.winner});
+      /*app.lib.io.in(value.id).clients(function(error, clients){
+           if (error) throw error;
+           for(var i=0; i <clients.length; i++){
+              app.lib.io.sockets.connected[clients[i]].disconnect(true)
+          }
+        })
+        delete app.lib.rooms[value.id];
+        */
+
+         app.lib.rooms[value.id].gamestate=app.lib.games["tai"].makeroom(value.id);
+           app.lib.rooms[value.id].started=false;
+
+
+    }
+      }
+    }
+
+
+
+      //tai.app.lib.io.to(value.id).emit('update', { state:value.gamestate
+      ////console.log(value.gamestate.board)
+
+
+
+      app.lib.io.to(value.id).emit('update', { state:JSON.stringify(value)
+      });
+
+
+}
 tai.loadPiece=function(sho,p,player,tile) {
 
   var temp=cloneDeep (dat[p])
@@ -773,7 +850,7 @@ start=function(app) {
 
 
 
-//  console.log(tai.app)
+
 //  roomTemp=tai.app.lib.roomstuff.createRoom("taikyoku")
   //tai.app.lib.rooms[roomTemp.id]=roomTemp
   //console.log(tai.app.lib.rooms)
@@ -871,6 +948,7 @@ tai.app.lib.rooms[data.room].gamestate.needPromo=data.piece;
   });
 
   });
+
   return tai
 
 
@@ -908,5 +986,3 @@ nsp.on('connection', function(socket){
   });
 });
 */
-
-runOnce=false

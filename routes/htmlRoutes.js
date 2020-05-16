@@ -41,6 +41,18 @@ start=function(appz) {
 
   });
 
+
+
+    router.get('/games/sdf', (req, res) => {
+
+      res.render('sdf', {
+        user: req.user,
+        //work: app.lib.rooms[req.user.roomlock]
+        //rooms:
+
+      });
+
+    });
   // simply shows the login view.
   router.get('/login', (req, res) => {
     res.render('login', {

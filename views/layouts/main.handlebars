@@ -317,9 +317,26 @@ localHasWon=true;
 
 socket.on('update',function(data){
 
-  console.log("updating")
-  console.log(data);
-  gameN=JSON.parse(data.state)
+
+  var load=JSON.parse(data.state)
+
+
+  if (load.gamename=="taikyoku") {
+
+  gameN=load
+
+}
+if (load.gamename=="htg") {
+
+gameHTG=load
+
+}
+
+if (load.gamename=="sdf") {
+
+gameSDF=load
+
+}
 
 })
 
