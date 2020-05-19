@@ -2,8 +2,10 @@ const app = require("../app.js")
 const db = require('../shared/models');
 const qg={}
 qg.areas=require("./qg/index1.js")()
-
-qg.setFlag=function(flag,value,socket) {
+function isFunction(functionToCheck) {
+ return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
+qg.setFlag=function(flag,value,socket,after) {
   var doc = db.User.findOne({username: socket.username}, function(err,obj) {
     var data=obj.gamedata.get("qg")
     if(data.data.flags["global"]==null) {
@@ -13,7 +15,14 @@ qg.setFlag=function(flag,value,socket) {
 
     obj.gamedata.set("qg",data);
     obj.markModified("gamedata");
-    obj.save()
+
+    obj.save().then(function(){
+      if(after!=null) {
+      after()
+    }
+
+
+    })
   })
 
 
@@ -26,6 +35,8 @@ qg.advance=function(choice,socket) {
 console.log("CHOICE");
 console.log(choice);
 console.log(qg.areas[area.id].getCHOICE[index])
+
+
  if(qg.areas[area.id].getCHOICE[index][choice][1]=="n") {
    var splitted=index.split(";")
 
@@ -126,7 +137,76 @@ qg.setAreaFlag=function(flag,value,area,socket, after) {
 
 
 }
-qg.sendRoom=function(areaz,socket) {
+
+qg.grantBattle=function(socket,after) {
+  var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+    var data=obj.gamedata.get("qg")
+    if(data.character.stats==null) {
+      data.character.stats={
+        virl:5,
+        hard:5,
+        werd:5,
+        thic:100,
+        sexy:5,
+        stam:100
+
+
+
+
+
+      }
+
+        if(data.character.skills==null) {
+      data.character.skills={
+
+      }
+    }
+    }
+
+
+    obj.gamedata.set("qg",data);
+    obj.markModified("gamedata");
+    obj.save().then(function(){
+      if(after!=null) {
+      after()
+    }
+
+
+    })
+  })
+
+
+}
+
+qg.gibItem=function (socket,item,count,thenx) {
+  var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+    var data=obj.gamedata.get("qg")
+
+    if(data.character.inventory[item]==null) {
+      data.character.inventory[item]={
+        id:item,
+        count:count,
+      }
+    } else {
+
+      data.character.inventory[item].count+=count;
+    }
+    obj.gamedata.set("qg",data)
+
+    obj.markModified("gamedata");
+    obj.save().then(function() {
+
+    if(thenx!=null) {
+      thenx();
+
+    }
+  })
+  })
+
+
+}
+
+qg.sendRoom=function(areaz,socket,reload) {
 var sent={}
 
 
@@ -142,18 +222,23 @@ console.log(area);
     var doc = db.User.findOne({username: socket.username}, function(err,obj) {
       var data=obj.gamedata.get("qg")
 if(area!=null){
+
       if(data.data.flags[area.id]==null) {
         data.data.flags[area.id]={
 
 
         }
         data.data.flags[area.id].visted=true;
+        data.data.flags[area.id].enteredSections={
+
+        }
         data.data.flags[area.id].index="a;1";
+        data.data.area=area.id;
         obj.gamedata.set("qg",data)
 
         //console.log("testing");
         //console.log(obj.gamedata.get("qg"))
-        data.data.area=area.id;
+
         obj.markModified("gamedata");
         obj.save().then(function() {
           sent.index=qg.getIndex(area,socket,data);
@@ -179,7 +264,29 @@ if(area!=null){
           }
           }
 
-          socket.emit('sentArea', {area:sent});
+          if(area.script[sent.index]!=null&&reload==null) {
+
+            if(isFunction(area.script[sent.index])){
+              area.script[sent.index](socket,qg,function(){
+
+                socket.emit('sentArea', {area:sent});
+              })
+            } else {
+              if(area.script[sent.index][0]=="gib") {
+                qg.gibItem(socket,area.script[sent.index][1],area.script[sent.index][2],function(){
+                  socket.emit('sentArea', {area:sent});
+
+                })
+
+              }
+
+            }
+          } else {
+              socket.emit('sentArea', {area:sent});
+
+          }
+
+
 
 
         })
@@ -206,8 +313,30 @@ if(area!=null){
 
         }
         }
-        socket.emit('sentArea', {area:sent});
+        if(area.script[sent.index]!=null&&reload==null) {
+
+          if(isFunction(area.script[sent.index])){
+            area.script[sent.index](socket,qg,function(){
+
+              socket.emit('sentArea', {area:sent});
+            })
+          } else {
+            if(area.script[sent.index][0]=="gib") {
+              qg.gibItem(socket,area.script[sent.index][1],area.script[sent.index][2],function(){
+                socket.emit('sentArea', {area:sent});
+
+              })
+
+            }
+
+          }
+        } else {
+            socket.emit('sentArea', {area:sent});
+
+        }
+
       }}
+
 
 
     })
@@ -278,7 +407,7 @@ socket.emit('reload', {id:"qg"});
     }
       obj.save().then(function(){
         console.log("do send")
-        qg.sendRoom(qg.areas[obj.gamedata.get("qg").data.area],socket)
+        qg.sendRoom(qg.areas[obj.gamedata.get("qg").data.area],socket,true)
 
       })
 

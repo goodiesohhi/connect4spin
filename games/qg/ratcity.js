@@ -17,6 +17,7 @@ room.getCHOICE={
 
 
 }
+room.scripts={}
 
 room.isMap={
   "a;1":`

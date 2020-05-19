@@ -1,18 +1,36 @@
 room={}
 room.name="Cave of Beginnings (Pronounced Beh-gennings (stressed first syllable))"
+room.grant=function (socket,qg,then) {
+
+qg.grantBattle(socket,then);
+
+}
+
+room.script={
+"a;5":room.grant,
+"a;6":["gib","sword",1]
+
+}
+
+
 room.getTXT={
 
   "a;1": "You awake on the cold damp floor. You're in a cave. ",
-  "a;2": "Yes I know it's cliche but it's 2am right now for me just go along with it",
+  "a;2": "Yes I know it's cliche but it's 2am right now for me just go along with it.",
   "a;3": "You awake in a cave. ",
-  "a;4":"You take a look through the hole. It's very dark and you can't see anything at all!"
+  "a;4":"You take a look through the hole. It's very dark and you can't see anything at all!",
+  "a;5":"Upon closer inspection however, you make out a glimmer in the dark.",
+  "a;6":`Phewph. That could have been bad. You put your hand into questionable hole and have been rewarded with a sword.
+  Its terrible genericness befits the fact that it will soon be replaced and promptly forgotten.`
 
 }
 room.getIMG={
 "a;1":"cave1.png",
 "a;2":"2am.png",
 "a;3":"cave2.png",
-"a;4":"hole.png"
+"a;4":"hole.png",
+"a;5":"hole2.png",
+"a;6":"getsword.png"
 }
 room.getCHOICE={
   "a;1":[[  "Take note of the cliche", "n"]],
@@ -20,6 +38,8 @@ room.getCHOICE={
 
   "a;2":[[  "Go along with it", "n"]],
   "a;3":[["The hole","n"]],
+  "a;4":[["Look Closer","n"]],
+  "a;5":[["Put hand in questionable hole","n"]]
 
 
 
