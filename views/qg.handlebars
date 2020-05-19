@@ -1,0 +1,125 @@
+
+
+<head>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+<link rel="manifest" href="/images/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+
+  <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js.map">
+
+
+  </script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="/stylesheets/style.css">
+<link rel="stylesheet" href="/stylesheets/dat.gui.css">
+  <meta charset="utf-8">
+  <title>FoxFyreGames</title>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Materialize CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<section class="section">
+  {{#if user}}
+  <h3 id="areaName" class="slightM"> </h3>
+  <div id="pic" class="slightM">
+
+  </div>
+
+  <div>
+    <p id="lore" class="slightM"> </p>
+  </div>
+
+ <div id="choice">
+
+ </div>
+
+
+
+  <script type="text/javascript">
+  var socket;
+
+  jQuery(function ($) {
+  $( document ).ready(function() {
+
+
+  socket.emit('joined', {  username: "{{user.username}}" });
+
+  socket.on('sentArea', function (data) {
+    $( "#areaName" ).empty();
+    $( "#areaName" ).append(data.area.areaName);
+    if(data.area.map==null){
+        $( "#map" ).remove()
+    }
+    if(data.area.image!=null) {
+      $( "#pic" ).empty();
+
+      if (data.area.map!=null) {
+          $( "#pic" ).append("<img src='./images/qg/"+data.area.image+"'  usemap='#map'>");
+          $("#pic").append(data.area.map)
+          $("area").click(function(){
+            event.preventDefault()
+
+          })
+          $('.mclick').click(function() {
+
+            event.preventDefault();
+            console.log(event.target.id);
+            socket.emit('select', {  username: "{{user.username}}",choice:parseInt(event.target.id)});
+
+          })
+
+      } else {
+        $( "#pic" ).append("<img src='./images/qg/"+data.area.image+"'>");
+      }
+
+    }
+    $( "#lore" ).empty();
+    $( "#lore" ).append(data.area.text);
+    $( "#choice" ).empty();
+    if(data.area.map==null) {
+    for(var x in data.area.choice) {
+      $( "#choice" ).append("<p class='slightM'><a href= '#' id='c"+x+"'>"+data.area.choice[x][0]+"</a></p>");
+      $( "#c"+x ).click(function() {
+        event.preventDefault();
+        socket.emit('select', {  username: "{{user.username}}",choice:x });
+
+      })
+
+    }
+  }
+    console.log(data.area)
+    console.log(data.area.enter)
+
+  });
+
+
+})})
+
+
+</script>
+  {{/if}}
+  {{#unless user}}
+<p class="slightM">  Login to play some ebic games </p>
+  {{/unless}}
+</section>

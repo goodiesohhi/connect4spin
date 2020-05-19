@@ -29,6 +29,9 @@ const UserSchema = new Schema({
   },
   roomlock:{
     type: Map
+  },
+  gamedata:{
+    type:Map
   }
 });
 
@@ -71,6 +74,12 @@ var dateTime = date+' '+time;
   });
 });
 
+
+
+UserSchema.post('save', function(doc, next) {
+
+  next();
+});
 // Here, we define a method that will be available on each instance of the User.
 // This method will validate a given password with the actual password, and resolve
 // true if the password is a match, or false if it is not.

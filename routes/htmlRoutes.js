@@ -41,6 +41,16 @@ start=function(appz) {
 
   });
 
+  router.get('/qg', (req, res) => {
+
+    res.render('qg', {
+      user: req.user,
+      //work: app.lib.rooms[req.user.roomlock]
+      //rooms:
+
+    });
+
+  });
 
 
     router.get('/games/sdf', (req, res) => {

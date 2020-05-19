@@ -18,6 +18,8 @@ var theID=game+":"+create_UUID()
 if(game=="taikyoku" ) {
 
 gs=roomstuff.app.lib.games["tai"].makeroom(theID);
+} else {
+  gs=roomstuff.app.lib.games[game].makeroom(theID);
 }
 var room={
   id:theID,
@@ -27,6 +29,7 @@ var room={
   gamestate:gs,
   spectators:{},
   started:false,
+  startedRun:false,
   playerNames:{},
   winner:null,
 

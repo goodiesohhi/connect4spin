@@ -7,5 +7,8 @@ module.exports = function() {
   // Configure mongoose to use Promises, because callbacks are passe.
   mongoose.Promise = global.Promise;
   // Connect to the Mongo DB
-  return mongoose.connect(MONGODB_URI);
+  var yes=mongoose.connect(MONGODB_URI);
+  //mongoose.set('debug', true);
+
+  return yes;
 }

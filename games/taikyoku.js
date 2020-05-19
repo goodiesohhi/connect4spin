@@ -702,6 +702,9 @@ function create_UUID(){
     return uuid;
 }
 
+tai.first=function(value) {
+  value.startedRun=true;
+}
 
 
 tai.update=function(value) {
@@ -858,15 +861,16 @@ start=function(app) {
   tai.app.lib.io.on('connection', (socket) => {
 
   socket.on('endTurn', (data) => {
+    if (tai.app.lib.rooms[data.room]!=null) {
     if(data.player==tai.app.lib.rooms[data.room].gamestate.turnOwner) {
     tai.app.lib.rooms[data.room].gamestate.turnSwitch=7;
       tai.app.lib.rooms[data.room].gamestate.needPromo=null;
-  }
+  }}
   })
 
 
   socket.on('yesPromote', (data) => {
-
+  if (tai.app.lib.rooms[data.room]!=null) {
 if(data.player==tai.app.lib.rooms[data.room].gamestate.turnOwner) {
 
 
@@ -900,10 +904,10 @@ if(data.player==tai.app.lib.rooms[data.room].gamestate.turnOwner) {
     }
 
     }}
-  })
+  }})
 
   socket.on('makeMove', (data) => {
-
+  if (tai.app.lib.rooms[data.room]!=null) {
     if(tai.app.lib.rooms[data.room].gamestate.needPromo==null) {
 
 if(tai.app.lib.rooms[data.room].winner!=null&&tai.app.lib.rooms[data.room].gamestate.turn<3) {
@@ -945,7 +949,7 @@ tai.app.lib.rooms[data.room].gamestate.needPromo=data.piece;
 }
 
 }
-  });
+}});
 
   });
 

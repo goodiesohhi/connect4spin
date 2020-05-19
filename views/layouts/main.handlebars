@@ -305,7 +305,8 @@ socket.on('chatMessage', function (data) {
 
 
 socket.on('reload', function (data) {
-  console.log("please reload")
+
+  console.log("please reload "+data.id)
   window.location.reload(true);
 });
 
@@ -324,6 +325,7 @@ socket.on('update',function(data){
   if (load.gamename=="taikyoku") {
 
   gameN=load
+
 
 }
 if (load.gamename=="htg") {

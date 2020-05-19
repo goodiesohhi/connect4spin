@@ -55,8 +55,10 @@ var cursorKeys;
 
 var game;
 var gameSDF;
+var pointer;
 var frame=0;
 var controlRegister={}
+var input;
 var sendControls=function(scene) {
 
   var isUpDown = cursorKeys.up.isDown;
@@ -66,14 +68,27 @@ var sendControls=function(scene) {
   var isSpaceDown = cursorKeys.space.isDown;
   var isShiftDown = cursorKeys.shift.isDown;
 
+  controlRegister.Up=isUpDown
+  controlRegister.Down=isDownDown
+  controlRegister.Left=isLeftDown
+  controlRegister.Right=isRightDown
+  controlRegister.Space=isSpaceDown
+  controlRegister.Mouse={
+    position:scene.input.activePointer.position,
+    buttons:scene.input.activePointer.buttons,
+
+  }
+  pointer=scene.input.activePointer;
   socket.emit('updateControls',{
     id:gameSDF.id,
     player:localPlayer,
-    control:controlRegister[frame],
+    control:controlRegister,
     frame:frame,
-    //mouse:scene.input.activePointer,
-  })
 
+
+
+  })
+console.log(gameSDF.gamestate.inputs["p1"][gameSDF.gamestate.frame])
     frame++
 
 }
@@ -151,11 +166,13 @@ Extends: Phaser.Scene,
 
    },
     preload:function () {
-      cursorKeys = this.input.keyboard.createCursorKeys();
 
   },
 
     create:function(){
+      input=this.input;
+
+        cursorKeys = this.input.keyboard.createCursorKeys();
 
 
 
@@ -251,6 +268,7 @@ if(gameSDF!=null) {
 
         if(gameSDF.started) {
         $('#startGameNow').trigger('click')
+        console.log("begin")
 
         this.scene.start('gameScene');
       }
@@ -292,7 +310,7 @@ preload:function ()
   this.game.canvas.id = 'game';
   }
 
- cursorKeys = scene.input.keyboard.createCursorKeys();
+ cursorKeys = this.input.keyboard.createCursorKeys();
 
   this.input.keyboard.on('keydown-SPACE', function () {
 

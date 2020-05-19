@@ -21,6 +21,10 @@ htg.update=function(value){
   });
 }
 
+htg.first=function(value) {
+  value.started=true;
+}
+
 
 start=function(app) {
 
@@ -53,9 +57,6 @@ start=function(app) {
   return htg
 }
 
-htg.first=function(value) {
-  value.started=true;
-}
 
 
 

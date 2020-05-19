@@ -26,7 +26,7 @@ app.lib = {
 
 
  };
- app.testing=false;
+ app.testing=true;
 
  var addRoom=function(r){
 app.lib.rooms[r.id]=r;
@@ -189,7 +189,7 @@ mongoose=require('./shared/middleware/mongoose')()
 
             obj.save();
 
-             socket.emit('reload', {});
+             socket.emit('reload', {id:"3"});
           })
 
 
@@ -208,7 +208,7 @@ mongoose=require('./shared/middleware/mongoose')()
               if(app.lib.rooms[obj.roomlock.get(keys)]!=null) {
 
               socket.join(obj.roomlock.get(keys))
-            //  socket.to(obj.roomlock).emit('reload', {});
+
             } else {
 
               obj.roomlock.set(keys,"");
@@ -260,7 +260,7 @@ obj.save();
 
      socket.join(tRoom.id)
      //console.log("joined"+tRoom.id);
-     socket.emit('reload', {});
+     socket.emit('reload', {id:"1"});
       obj.save()
 
     });
@@ -299,7 +299,7 @@ obj.save();
                obj.roomlock.set(j.game,tRoom.id);
 
                socket.join(j.roomName)
-               socket.to(tRoom.id).emit('reload', {});
+               socket.to(tRoom.id).emit('reload', {id:"6"});
                obj.save()
 
               });
@@ -313,7 +313,7 @@ obj.save();
             obj.roomlock.set(j.game,tRoom.id);
 
              socket.join(j.roomName)
-             socket.to(tRoom.id).emit('reload', {});
+             socket.to(tRoom.id).emit('reload', {id:"2"});
              tRoom.spectators[socket.username]=socket.username
 
                socket.join(j.roomName)
@@ -342,19 +342,26 @@ message:msg.message
 });
 
 
-
+var qg=require("./games/qg.js")(app);
+console.log("qg good")
 var taikyoku=require('./games/taikyoku.js')(app);
-
+console.log("tai good")
 
 
 var htg=require('./games/htg.js')(app);
+console.log("htg good")
+var sdf=require('./games/sdf.js')(app);
+console.log("sdf good")
+
+
 
 
 
 var games={
 tai:taikyoku,
-htg:htg
-
+htg:htg,
+sdf:sdf,
+qg:qg
 
 
 }
@@ -377,24 +384,38 @@ setInterval(function(){
   var value = app.lib.rooms[key];
 
 
-  if(Object.keys(value.players).length==0) {
+  if(value.players["p1"]==null) {
+
+console.log(value.players["p1"])
  delete app.lib.rooms[value.id];
+ //app.lib.io.to(value.id).emit('reload', {});
 
 
   }
 if(value.gamename=="taikyoku") {
-
+  if(!value.startedRun) {
+    app.lib.games["tai"].first(value)
+  }
   app.lib.games["tai"].update(value)
 }
 
 if(value.gamename=="htg") {
-
+  if(!value.startedRun) {
+    app.lib.games["htg"].first(value)
+  }
   app.lib.games["htg"].update(value)
 }
+
+if(value.gamename=="sdf") {
+  if(!value.startedRun) {
+    app.lib.games["sdf"].first(value)
+  }
+  app.lib.games["sdf"].update(value)
+}
 }
 
 
-}, 200);
+}, 17);
 
 
 
