@@ -8,8 +8,6 @@ var app=0;
 start=function(appz) {
   app=appz;
 
-
-  // shows the home view. if the user is logged in, their User record is available at req.user
   router.get('/', (req, res) => {
     res.render('home', {
       user: req.user
@@ -19,60 +17,20 @@ start=function(appz) {
   });
 
 
-  router.get('/games/taikyoku', (req, res) => {
-
-    res.render('taikyoku', {
+  router.get('/games/connect4', (req, res) => {
+    res.render('c4', {
       user: req.user,
       //work: app.lib.rooms[req.user.roomlock]
       //rooms:
-
     });
-
   });
 
-  router.get('/games/htg', (req, res) => {
-
-    res.render('htg', {
-      user: req.user,
-      //work: app.lib.rooms[req.user.roomlock]
-      //rooms:
-
-    });
-
-  });
-
-  router.get('/qg', (req, res) => {
-
-    res.render('qg', {
-      user: req.user,
-      //work: app.lib.rooms[req.user.roomlock]
-      //rooms:
-
-    });
-
-  });
-
-
-    router.get('/games/sdf', (req, res) => {
-
-      res.render('sdf', {
-        user: req.user,
-        //work: app.lib.rooms[req.user.roomlock]
-        //rooms:
-
-      });
-
-    });
-  // simply shows the login view.
   router.get('/login', (req, res) => {
     res.render('login', {
       flash: req.flash('error')
     });
   });
 
-  // configures this route to authenticate the request against the "local" strategy
-  // if they authenticate correcty, it'll redirect back to the home page. if they do not
-  // it'll send them back to the login page.
   router.post(
     '/login',
     passport.authenticate(
@@ -85,16 +43,12 @@ start=function(appz) {
     )
   );
 
-  // logs the user out and destroys their current session, then sends them back to the homepage
   router.get('/logout', (req, res) => {
-    // logs the user out
     req.logout();
-    // destroys their session completely
     req.session.destroy();
     res.redirect('/');
   });
 
-  // shows the create view.
   router.get('/create', (req, res) => {
     res.render('create', {
       flash: req.flash('error')
@@ -110,26 +64,18 @@ start=function(appz) {
   });
 
 
-  // when a user submits a new user, this will create the account.
+
   router.post('/create', (req, res, next) => {
-
     const user = new db.User(req.body);
-
     user.save(req.body)
       .then(req => {
         res.redirect('/login');
       })
       .catch(err => {
-        // if this error code is thrown, that means the username already exists.
-        // let's handle that nicely by redirecting them back to the create screen
-        // with that flash message
         if (err.code === 11000) {
-          req.flash("error", "That username is already in use.");
+          req.flash("error", "Username in use.");
           return res.redirect('/create');
         }
-
-        // otherwise, it's some nasty unexpected error, so we'll just send it off to
-        // to the next middleware to handle the error.
         next(err);
       });
   });

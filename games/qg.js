@@ -2,6 +2,9 @@ const app = require("../app.js")
 const db = require('../shared/models');
 const qg={}
 qg.areas=require("./qg/index1.js")()
+qg.enemies=require("./qgenemies/index10.js")()
+qg.items=require("./qgitems/index10.js")()
+
 function isFunction(functionToCheck) {
  return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
@@ -27,6 +30,114 @@ qg.setFlag=function(flag,value,socket,after) {
 
 
 }
+
+
+/*
+
+{
+  virl:5,
+  hard:5,
+  werd:5,
+  thic:100,
+  sexy:5,
+  stam:100
+
+
+
+
+
+}
+*/
+qg.getEnemy=function(b) {
+
+enemy={}
+enemy.stats= qg.enemies[b].stats;
+enemy.skills=qg.enemies[b].skills;
+enemy.name=qg.enemies[b].name;
+enemy.id=qg.enemies[b].id;
+enemy.battleMessage="Encountered "+enemy.name+"!"
+return enemy;
+}
+qg.startBattle=function(b, socket) {
+
+  var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+    data=obj.gamedata.get("qg")
+
+    if(data.enemy==null) {
+      data.enemy=qg.getEnemy(b);
+
+      obj.gamedata.set("qg",data)
+
+      //console.log("testing");
+      //console.log(obj.gamedata.get("qg"))
+
+      obj.markModified("gamedata");
+      obj.save().then(function() {
+
+        sent={}
+        sent=data.enemy;
+
+
+
+        socket.emit('sentBattle', {enemy:sent});
+
+
+      })
+    } else {
+
+
+
+        sent={}
+        sent=data.enemy;
+        console.log("sending enemy"+data.enemy)
+
+        socket.emit('sentBattle', {enemy:sent});
+
+
+
+
+
+    }
+
+
+  })
+}
+
+
+qg.getTotalStats(data) {
+  var t=data.character.stats;
+  for(x in data.character.equip) {
+    t.virl +=qg.items[data.character.equip[x]].stats.virl;
+      t.hard +=qg.items[data.character.equip[x]].stats.hard;
+        t.werd +=qg.items[data.character.equip[x]].stats.werd;
+          t.thic +=qg.items[data.character.equip[x]].stats.thic;
+            t.sexy +=qg.items[data.character.equip[x]].stats.sexy;
+  }
+  return t;
+
+
+}
+qg.advanceB=function(choice,socket) {
+    var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+      data=obj.gamedata.get("qg")
+      if(data.enemy!=null) {
+      playerdmg=0;
+      enemydmg=0;
+      if (choice==0) {
+      playerdmg=   (qg.getTotalStats().virl)+(qg.getTotalStats().werd)-data.enemy.stats.hard
+      if(playerdmg<0)playerdmg=0;
+
+
+      }
+      
+    }
+
+
+
+
+    })
+  }
+
 qg.advance=function(choice,socket) {
     var doc = db.User.findOne({username: socket.username}, function(err,obj) {
       data=obj.gamedata.get("qg")
@@ -47,7 +158,13 @@ console.log(qg.areas[area.id].getCHOICE[index])
       qg.sendRoom(area,socket)
    })
 
- } else {
+ } else if(qg.areas[area.id].getCHOICE[index][choice][1]=="b") {
+   qg.startBattle(qg.areas[area.id].getCHOICE[index][choice][2],socket);
+
+
+ } else
+
+ {
    if(qg.areas[area.id].getCHOICE[index][choice][1].includes(".js")) {
      console.log("choice was")
     console.log( qg.areas[area.id].getCHOICE[index][choice][1]);
@@ -211,6 +328,8 @@ var sent={}
 
 
 
+
+
   //console.log("c")
   //console.log(c);
 
@@ -220,7 +339,13 @@ console.log(areaz);
 var area=areaz
 console.log(area);
     var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+
       var data=obj.gamedata.get("qg")
+      if(data.enemy!=null) {
+        console.log("Please dont return");
+
+                  return;
+      }
 if(area!=null){
 
       if(data.data.flags[area.id]==null) {
@@ -329,6 +454,11 @@ if(area!=null){
 
             }
 
+            if(area.script[sent.index][0]=="battle") {
+             qg.startBattle(area.script[sent.index][1],socket)
+
+            }
+
           }
         } else {
             socket.emit('sentArea', {area:sent});
@@ -360,6 +490,39 @@ start=function(app) {
 
   qg.app.lib.io.on('connection', (socket) => {
 
+    socket.on('gotoInventory', (data) => {
+
+          if(socket.username!=null && socket.username!="") {
+
+          var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+
+            var data=obj.gamedata.get("qg")
+            var inv=data.character.inventory;
+
+            send={}
+            for(x in inv) {
+              send[x]=qg.items[x]
+              send[x].count=inv[x].count
+            }
+            var eq={}
+            console.log("equip");
+            for(x in data.character.equip){
+              console.log(data.character.equip[x])
+              eq[x]=qg.items[data.character.equip[x]];
+
+            }
+
+
+
+          socket.emit('sendInventory', {inventory:send,equip:eq});
+
+          })
+        }
+
+
+
+
+    })
 
   socket.on('makeCharacter', (data) => {
 
@@ -370,10 +533,97 @@ start=function(app) {
 
   })
 
+  socket.on('useITM',(dataz) => {
+
+
+    if(socket.username!=null && socket.username!="") {
+
+    var doc = db.User.findOne({username: socket.username}, function(err,obj) {
+
+      var data=obj.gamedata.get("qg")
+
+      item=qg.items[dataz.choice]
+      choice=dataz.choice;
+
+      if(item!=null&&dataz.choice!="none.js") {
+        console.log("HELLOHELLOHELLO");
+
+        if(item.type=="equipment") {
+          if(data.character.equip[item.subtype]=="none.js"){
+            data.character.equip[item.subtype]=choice;
+            if(data.character.inventory[choice].count==1) {
+              delete data.character.inventory[choice];
+            } else {
+              data.character.inventory[choice].count--;
+            }
+
+          } else {
+
+            if(data.character.inventory[data.character.equip[item.subtype]]==null) {
+              data.character.inventory[data.character.equip[item.subtype]]={
+                id:data.character.equip[item.subtype],
+                count:1,
+              }
+            } else {
+
+              data.character.inventory[data.character.equip[item.subtype]].count+=count;
+            }
+
+            data.character.equip[item.subtype]=choice;
+
+            if(data.character.inventory[choice].count==1) {
+              delete data.character.inventory[choice];
+            } else {
+              data.character.inventory[choice].count--;
+            }
+
+
+
+          }
+        }
+
+        obj.gamedata.set("qg",data);
+        obj.markModified("gamedata");
+
+        obj.save().then(function(){
+        var inv=data.character.inventory;
+          send={}
+          for(x in inv) {
+            send[x]=qg.items[x]
+            send[x].count=inv[x].count
+          }
+          var eq={}
+          console.log("equip");
+          for(x in data.character.equip){
+            console.log(data.character.equip[x])
+            eq[x]=qg.items[data.character.equip[x]];
+
+          }
+
+
+
+        socket.emit('sendInventory', {inventory:send,equip:eq});
+
+
+        })
+      }
+
+    })
+  }
+
+
+  })
+
+  socket.on('bSelect',(data) => {
+
+    qg.advanceB(data.choice,socket)
+
+  })
+
   socket.on('joined', (data) => {
 
 
-
+console.log(socket.username+" has joined");
 
     if(socket.username!=null && socket.username!="") {
 
@@ -395,6 +645,14 @@ socket.emit('reload', {id:"qg"});
         character:{
         class:null,
         inventory:{},
+        equip:{
+          hat:"none.js",
+          wep:"none.js",
+          top:"none.js",
+          bottom:"none.js",
+          relic1:"none.js",
+          relic2:"none.js"
+        },
 
       },data:{
         flags:{
@@ -407,7 +665,15 @@ socket.emit('reload', {id:"qg"});
     }
       obj.save().then(function(){
         console.log("do send")
+        var data2=obj.gamedata.get("qg")
+
+console.log("VALUE OF"+data2.enemy)
+        if (data2.enemy==null) {
+
         qg.sendRoom(qg.areas[obj.gamedata.get("qg").data.area],socket,true)
+      } else {
+        qg.startBattle(null,socket);
+      }
 
       })
 

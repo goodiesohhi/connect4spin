@@ -1,0 +1,614 @@
+
+<section class="section">
+
+  {{#if user}}
+
+<script
+			  src="https://code.jquery.com/jquery-3.5.1.js"
+			  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+			  crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/stylesheets/style.css">
+<script src="/javascripts/taidata.js"></script>
+
+<script type="text/javascript">
+
+var body = document.body,
+    overlay = document.querySelector('.overlay'),
+    overlayBtts = document.querySelectorAll('button[class$="overlay"]');
+
+[].forEach.call(overlayBtts, function(btt) {
+
+  btt.addEventListener('click', function() {
+
+     var overlayOpen = this.className === 'open-overlay';
+
+     overlay.setAttribute('aria-hidden', !overlayOpen);
+     body.classList.toggle('noscroll', overlayOpen);
+
+     overlay.scrollTop = 0;
+
+  }, false);
+
+});
+
+
+
+
+//  owner:null,
+//  space:"none",
+RecRooms=0;
+
+var testing=true;
+
+var Selects=[]
+var winText=null;
+var localPlayer;
+var makeMove=true;
+var following=null;
+var localHasWon=false;
+var wintimer=200;
+
+var game;
+var layer =null
+var tiles =null;
+
+var gameState={};
+var pieceSprites;
+var promoteBTN=null;
+var endBTN=null;
+var canvas = null;
+var ctx =null;
+function getMousePos(canvas, event) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+    };
+};
+
+function isInside(pos, rect){
+    return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
+}
+const columns=[];
+
+
+  for (var i=0; i<7; i++) {
+      columns[i] = {
+          x:100+100*i,
+          y:0,
+          width:100,
+          height:800
+      };
+
+    };
+
+jQuery(function ($) {
+$( document ).ready(function() {
+  canvas = document.getElementById("myCanvas");
+  ctx = canvas.getContext("2d");
+  $("#myCanvas").click(function(e){
+
+    var mousePos = getMousePos(canvas, e);
+  for (var i=0; i<7; i++) {
+if (isInside(mousePos,columns[i])) {
+  console.log("Clicked on column"+i);
+    socket.emit('makeMove', { location: i,room: gameN.id,player:  localPlayer});
+}
+}
+
+
+  });
+
+    $('#create').click(function(){
+
+      createRoom();
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+
+    $('#leaveBTN').click(function(){
+
+      leaveGame();
+      $('#logo').trigger('click')
+
+     window.location.reload(true);
+    })
+
+    $('#sg').click(function(){
+
+      startGame();
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+
+    $('#joinC').click(function(){
+
+      joinClick($(this).attr("value"));
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+    $('#join').click(function(){
+
+      joinRoom();
+      $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+    })
+  $( "#info" ).trigger('click')
+
+
+taiSocket=socket;
+var cam=null
+var input=null;
+input=null;
+loaded=false
+
+setInterval(function(){
+if(gameN!=null) {
+
+
+      $( "#lobby" ).empty();
+      $( "#lobby" ).append( "<p>Players: </p>" );
+      for (var lo in gameN.players) {
+          var opu=gameN.players[lo].name
+          if(lo=="p1") {
+            opu+= " (Room Owner)"
+          }
+
+
+          $( "#lobby" ).append( "<p>"+opu+"</p>" );
+      }
+
+
+      $( "#lobby" ).append( "<p>Spectators: </p>" );
+        for (var lo in gameN.spectators) {
+
+            var opu=gameN.spectators[lo].name
+
+            $( "#lobby" ).append( "<p>"+opu+"</p>" );
+        }
+
+        if(gameN.started) {
+        $('#startGameNow').trigger('click')
+
+
+      }
+
+
+
+
+
+
+
+      if(!loaded) {
+
+        if(gameN!=null) {
+
+          if(gameN.gamestate!=null) {
+
+            loaded=true;
+
+            isNotSpec=false
+            if(gameN.players["p1"]!=null) {
+            if(gameN.players["p1"].name=="{{user.username}}"){
+              localPlayer="p1"
+              isNotSpec=true;
+            }
+          }
+            if(gameN.players["p2"]!=null) {
+            if(gameN.players["p2"].name=="{{user.username}}"){
+              localPlayer="p2"
+              isNotSpec=true;
+            }
+          }
+          if(gameN.players["p3"]!=null) {
+          if(gameN.players["p3"].name=="{{user.username}}"){
+            localPlayer="p3"
+            isNotSpec=true;
+          }
+        }
+        if(gameN.players["p4"]!=null) {
+        if(gameN.players["p4"].name=="{{user.username}}"){
+          localPlayer="p4"
+          isNotSpec=true;
+        }
+      }
+          if(!isNotSpec) {
+            localPlayer="spectator"
+          }
+          if(localPlayer!="p1") {
+              $( "#sg" ).remove();
+              startGame=null;
+
+          }
+          if (gameN.started) {
+
+
+                $( "#sg" ).remove();
+                startGame=null;
+
+
+          }
+          if(gameN.players["p2"]==null) {
+              if(!testing) {
+            $( "#sg" ).remove();
+
+            startGame=null;
+          }
+          }
+
+
+          }
+
+
+        }
+      }
+
+
+
+
+//shusjnl
+
+
+
+if(gameN!=null) {
+  if(localHasWon) {
+
+    window.alert(gameN.winner+ " wins!");
+    window.location.reload(true);
+  }
+
+  if(gameN.started) {
+    if(gameN.players["p1"]!=null) {
+    if(gameN.players["p1"].name=="{{user.username}}"){
+      localPlayer="p1"
+    }
+  }
+    if(gameN.players["p2"]!=null) {
+    if(gameN.players["p2"].name=="{{user.username}}"){
+      localPlayer="p2"
+    }
+  }
+
+  $( "#lobby" ).empty();
+  $( "#lobby" ).append( "<p>Players: </p>" );
+  for (var lo in gameN.players) {
+
+      var opu=gameN.players[lo].name
+
+      $( "#lobby" ).append( "<p>"+opu+"</p>" );
+  }
+
+
+  $( "#lobby" ).append( "<p>Spectators: </p>" );
+    for (var lo in gameN.spectators) {
+
+        var opu=gameN.spectators[lo].name
+
+        $( "#lobby" ).append( "<p>"+opu+"</p>" );
+    }
+
+
+
+
+
+
+    $( "#log" ).empty();
+  $( "#log" ).append( "<br>" );
+    for (var lo in gameN.gamestate.movelog) {
+
+        var opu=gameN.gamestate.movelog[lo]
+
+        $( "#log" ).append( "<p>"+opu+"</p>" );
+    }
+
+    $( "#info" ).empty();
+
+  $( "#info" ).append( "<h1> Turn "+gameN.gamestate.turn+"</h1>" )
+
+  $( "#info" ).append( "<br>" );
+  if(gameN.players["p1"]!=null){
+
+    if(gameN.gamestate.turnOwner=="p1") {
+      $( "#info" ).append( "<p>P1: "+gameN.players["p1"].name +" (turn)");
+    } else {
+
+      $( "#info" ).append( "<p>P1: "+gameN.players["p1"].name );
+    }
+
+
+
+
+  }
+  if(gameN.players["p2"]!=null){
+    if(gameN.gamestate.turnOwner=="p2") {
+      $( "#info" ).append( "<p>P2: "+gameN.players["p2"].name +" (turn)");
+    } else {
+
+      $( "#info" ).append( "<p>P2: "+gameN.players["p2"].name );
+    }
+
+  }
+  $( "#info" ).append( "<p> Connect 4 Spin</p>" );
+  $( "#info" ).append( "<br>" );
+  $( "#info" ).append( "<p> Click on a column to drop a piece. You can also spin the board</p>" );
+
+
+
+  for (var i = 1; i <= 7; i++) {
+
+                for (var o = 1; o <= 7; o++) {
+            //  var alpha = i * 0.1;
+              //ctx.globalAlpha = alpha;
+              ctx.fillStyle = "##2f3c7d";
+              //ctx.fillRect(100*i, 100*o, 100, 100);
+              ctx.fillStyle = "#FFFFFF";
+                ctx.strokeRect(100*i, 100*o, 100, 100);
+            }
+          }
+
+          var x=0;
+          var y=0;
+
+          gameN.gamestate.board.forEach(function(item){
+
+            item.forEach(function(piece){
+              ctx.beginPath();
+              ctx.arc(100+x*100+50, 750-y*100, 50, 0, 2 * Math.PI);
+              if(piece.owner=="p1") {
+              ctx.fillStyle = 'red';
+            } else {
+              ctx.fillStyle = 'blue';
+
+            }
+              ctx.fill();
+              ctx.stroke();
+              y++;
+
+            })
+            y=0;
+            x++;
+
+          })
+
+
+
+
+
+
+  /*
+circle
+
+ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+ctx.stroke();
+  */
+
+
+  }
+}
+
+
+
+
+
+
+
+}
+}, 100);
+
+});
+})
+
+
+
+
+
+
+
+
+
+
+
+
+  var leaveGame=function(){
+  //  console.log("s1")
+
+    socket.emit('disconnectGame',{p:localPlayer,game:gameN.gamename})
+    gameN={leave:true}
+  }
+  var startGame=function(){
+  //  console.log("s1")
+    socket.emit('startGame',{id:gameN.id})
+  }
+
+
+  var createRoom=function(roomNAME) {
+    var txt = $('#roomtxt').val();
+      if (/\S/.test(txt)&&txt.length<20) {
+
+  socket.emit('createRoom', { roomName: txt, username: "{{user.username}}",game:"connect4" });
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+  window.location.reload(true);
+  }
+  }
+
+  var joinClick=function(txt) {
+
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"connect4"});
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+
+  }
+
+  var startGame=function(){
+  //  console.log("s1")
+    socket.emit('startGame',{id:gameN.id})
+  }
+  var joinRoom=function() {
+    var txt = $('#roomtxt').val();
+  socket.emit('joinRoom', { roomName: txt, username: "{{user.username}}", game:"connect4"});
+    $('#roomtxt').val("");
+    $('#startGameNow').trigger('click')
+
+      window.location.reload(true);
+
+  }
+
+
+</script>
+<!--<script type="module" type="text/javascript"  src='./javascripts/imports.js'></script> -->
+
+
+<div class="row">
+
+
+
+<div class="container2 container absH col-xs-6" id="theGame">
+
+  <ul class="nav nav-tabs">
+    <li ><a data-toggle="tab" id="startGameNow" href="#game">Game</a></li>
+    <li class="active"><a class="active" id="toLobby" data-toggle="tab" href="#menu1g" aria-expanded="true">Rooms</a></li>
+    <li><a data-toggle="tab" href="#menu2g">KSOSML</a></li>
+
+  </ul>
+
+  <div class="tab-content">
+    <div id="game" class="tab-pane fade">
+
+<div class="opa" id="gameCanvasDiv"></div>
+
+
+<canvas id="myCanvas" width="800" height="800"></canvas>
+
+
+
+
+
+
+</div>
+
+
+<div id="menu1g" class="tab-pane fade in active show">
+  {{#unless (inGame user.roomlock "connect4") }}
+
+
+  <script type="text/javascript">
+
+
+
+
+    setInterval(function(){
+
+
+      if(gameN!=null ||localHasWon) {
+
+$("#menu1g").empty()
+window.location.reload(true);
+}
+}, 500);
+//
+
+</script>
+  <h3>Create/Join Room</h3>
+  <div class="mb-3">
+     <input type="text" class="form-control" placeholder="Room" id="roomtxt" />
+    <div class="input-group-append">
+<button id ="create" type="button" class=" btn btn-success right">Create</button>
+
+   <button  id ="join" type="button" class=" btn btn-success right">Join</button>
+</div>
+
+
+</div>
+
+<button class="input-group-append btn btn-success" onClick="window.location.reload();">Refresh</button>
+<hr>
+<h3>Room List</h3>
+<div class="container">
+
+
+{{#each (rooms "connect4")}}
+<div class="roomEntry">
+Room name:  {{roomname}}  id: {{id}}  started:{{started}} <button id= "joinC" class="input-group-append btn btn-success" value="{{id}}">Join</button>
+</div>
+
+{{/each}}
+
+
+
+</div>
+
+{{/unless}}
+{{#if (inGame user.roomlock "connect4") }}
+<h1> Lobby</h1>
+<button id ="sg" type="button" class=" btn btn-success right">Start Game</button>
+<button id ="leaveBTN" type="button" class=" btn btn-success right">Leave Room</button>
+<div id="lobby">
+</div>
+
+
+
+{{/if}}
+
+
+
+</div>
+<div id="menu2g" class="tab-pane fade">
+
+</div></div>
+
+</div>
+<div class="col-xs-6 container3 absL border">
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Info</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#log" role="tab" aria-controls="log" aria-selected="false">Move Log</a>
+    </li>
+
+  </ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active in" id="info" role="tabpanel" aria-labelledby="info-tab">
+
+  </div>
+  <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab"  style="overflow:auto; height:400px;">
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+</div>
+</div>
+  {{/if}}
+  {{#unless user}}
+  You must be logged in to play
+  {{/unless}}
+
+
+</section>

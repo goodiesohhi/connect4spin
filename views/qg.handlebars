@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="/stylesheets/style.css">
 <link rel="stylesheet" href="/stylesheets/dat.gui.css">
   <meta charset="utf-8">
-  <title>FoxFyreGames</title>
+  <title>Connect 4 Spin</title>
   <!--Import Google Icon Font-->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Materialize CSS CDN -->
@@ -41,8 +41,18 @@
 
 <section class="section">
   {{#if user}}
-  <h3 id="areaName" class="slightM"> </h3>
-  <div id="pic" class="slightM">
+
+  <div class="sidenav2">
+    <p id="stam">Stamina: </p>
+  <a id="invLink" href="#">Inventory</a>
+  <a href="#">Nada</a>
+  <a href="#">Nada</a>
+  <a href="#">Nada</a>
+</div>
+
+  <div id="mainGame" class="mainGame">
+  <h5 id="areaName" class="slightM"> </h5>
+  <div id="pic" class="slightM pic">
 
   </div>
 <br>
@@ -53,18 +63,107 @@
  <div id="choice">
 
  </div>
+</div>
 
 
 
   <script type="text/javascript">
   var socket;
 
+generate_Item_Handler=function(y,data){
+  return function(event) {
+        event.preventDefault()
+
+  console.log("heije")
+  $("#lore").empty()
+    $( "#pic" ).empty()
+    if(data.inventory[x].useTxt==null) {
+  $("#lore").append("<p>"+data.inventory[x].desc+"</p>");
+} else {
+    $("#lore").append("<p>"+data.inventory[x].desc+"</p>");
+      $("#lore").append("<a  href='#' class='item' id='"+x +"'>"+data.inventory[x].useTxt+"</a>");
+      $("#lore").on('click', '[id="'+x+'"]', function(){
+        event.preventDefault()
+        console.log("USING "+x)
+        socket.emit('useITM', {  username: "{{user.username}}",choice:x});
+
+      })
+
+}
+  $( "#pic" ).append("<img src='./images/qgitems/"+data.inventory[x].id+".png'>");
+};
+}
+
+generate_Equip_handler=function( y ,data) {
+  return function(event) {
+    event.preventDefault()
+    console.log(y)
+
+    $("#lore").empty()
+      $( "#pic" ).empty()
+      if(data.equip[y].id!="none.js") {
+              $("#lore").append("<p>"+data.equip[y].desc+"</p><a href='#' id=' "+y+"'> Unequip</a>");
+
+            } else {
+
+              $("#lore").append("<p>"+data.equip[y].desc+"</p>");
+            }
+
+    //  socket.emit('unequip', {  username: "{{user.username}}",choice:y});
+
+      $( "#pic" ).append("<img src='./images/qgitems/"+data.equip[y].id+".png'>");
+   };
+}
   jQuery(function ($) {
   $( document ).ready(function() {
 
 
   socket.emit('joined', {  username: "{{user.username}}" });
 
+
+  socket.on('sendInventory', function (data) {
+$( "#areaName" ).empty();
+  $( "#pic" ).empty();
+  $( "#choice" ).empty();
+  $( "#lore" ).empty();
+  $("#temptext").remove()
+
+$("#invLink").text("Back to Game")
+$("#invLink").click(function(){
+window.location.reload()
+
+})
+
+
+$("#equipped").remove()
+    $( "#pic" ).before("<div id='equipped'></div>");
+    console.log(data.equip)
+
+    $("#equipped").before("<h5 id='temptext'>Currently Equipped:</h5>")
+    for(y in data.equip) {
+      console.log(data.equip)
+
+      $("#equipped").append("<p>"+y+" : "+"<a href='#' class='itemEquipped' id='"+y +"'>"+data.equip[y].name+"</a></p>")
+
+      $('#'+y).on('click',
+
+        generate_Equip_handler(y,data)
+      )
+
+    }
+    $( "#choice" ).empty();
+    $("#choice").before("<h5 id= 'temptext'>Inventory</h5>")
+
+    for(x in data.inventory) {
+
+      $( "#choice" ).append("<a href='#' class='item' id='"+x +"'>"+data.inventory[x].name+" x"+data.inventory[x].count+"</a>")
+      console.log('[id="'+x+'"]'+ " selected");
+      $("#choice").on('click', '[id="'+x+'"]',
+
+        generate_Item_Handler(x,data)
+      )
+    }
+  })
   socket.on('sentArea', function (data) {
     $( "#areaName" ).empty();
     $( "#areaName" ).append(data.area.areaName);
@@ -110,6 +209,52 @@
   }
     console.log(data.area)
     console.log(data.area.enter)
+
+  });
+
+$("#invLink").click(function() {
+  event.preventDefault();
+  socket.emit('gotoInventory', {  username: "{{user.username}}"});
+
+})
+
+  socket.on('sentBattle', function (data) {
+    $( "#areaName" ).empty();
+    $( "#areaName" ).append(data.enemy.name);
+
+    $( "#map" ).remove()
+
+
+      $( "#pic" ).empty();
+
+
+      $( "#pic" ).append("<img src='./images/qg/enemies/"+data.enemy.id+".png'>");
+
+
+
+    $( "#lore" ).empty();
+    $( "#lore" ).append(data.enemy.battleMessage);
+    $( "#choice" ).empty();
+    $( "#choice" ).append("<p class='slightM'><a class= 'basicAttack' href= '#' id=0>"+"smack"+"</a></p>");
+    $(".basicAttack").click(function() {
+      event.preventDefault();
+      socket.emit('bSelect', {  username: "{{user.username}}",choice:0 });
+
+    })
+
+/*    for(var x in data.enemy.choice) {
+      $( "#choice" ).append("<p class='slightM'><a href= '#' id='c"+x+"'>"+data.enemy.choice[x][0]+"</a></p>");
+      $( "#c"+x ).click(function() {
+        event.preventDefault();
+        socket.emit('select', {  username: "{{user.username}}",choice:x });
+
+      })
+
+    }
+
+*/
+    console.log(data.enemy)
+
 
   });
 

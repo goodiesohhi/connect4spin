@@ -1,2 +1,1 @@
- SET DEBUG=taikyoku & npm start
-
+ SET DEBUG=connect4 & npm start

@@ -180,6 +180,7 @@ if(gameN!=null) {
 
 }
 
+if(!(window.location.href.indexOf("qg") > -1)) {
 randomNumber = Math.floor(Math.random() * images.length);
 var bgImg = 'url(' + images[randomNumber] + ')';
 
@@ -191,6 +192,13 @@ randomNumber = Math.floor(Math.random() * images.length);
  bgImg = 'url(' + images[randomNumber] + ')';
 
 $('.styleNav').css({'background':bgImg, 'background-size':'tile', });
+} else {
+var blank= 'url(/images/bg/blank.png)'
+$('body').css({'background':blank, 'background-size':'tile', });
+  $('.styleNav').css({'background':blank, 'background-size':'tile', });
+}
+
+
 
 });
 
@@ -322,23 +330,13 @@ socket.on('update',function(data){
   var load=JSON.parse(data.state)
 
 
-  if (load.gamename=="taikyoku") {
+  if (load.gamename=="connect4") {
 
   gameN=load
 
 
 }
-if (load.gamename=="htg") {
 
-gameHTG=load
-
-}
-
-if (load.gamename=="sdf") {
-
-gameSDF=load
-
-}
 
 })
 

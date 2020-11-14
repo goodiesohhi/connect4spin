@@ -9,14 +9,15 @@ console.log(normalizedPath)
 
 require("fs").readdirSync(normalizedPath).forEach(function(file) {
   console.log("yo");
-  if(file!="index1.js") {
-
-  areas[file]=require("./" + file);
+  if(file!="index10.js") {
+    console.log(normalizedPath+"\\" + file)
+    areas[file]=require(normalizedPath+"\\" + file);
   areas[file].id=file
+  if(areas[file].type=="equipment") areas[file].useTxt="Equip"
+
 }
 });
 
-console.log(areas)
 return areas
 }
 

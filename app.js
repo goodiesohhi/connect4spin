@@ -234,8 +234,8 @@ obj.save();
 
           var lock
 
-
-
+          console.log("Hey1! "+app.lib);
+        console.log("Hey! "+app.lib.roomstuff);
         tRoom=  addRoom( app.lib.roomstuff.createRoom(j.roomName,j.game));
         tRoom.players["p1"]= {
         name: socket.username,
@@ -341,27 +341,18 @@ message:msg.message
   });
 });
 
+console.log("c4 check")
+var connect4=require("./games/connect4.js")(app);
+console.log("c4 good")
 
-var qg=require("./games/qg.js")(app);
-console.log("qg good")
-var taikyoku=require('./games/taikyoku.js')(app);
-console.log("tai good")
-
-
-var htg=require('./games/htg.js')(app);
-console.log("htg good")
-var sdf=require('./games/sdf.js')(app);
-console.log("sdf good")
 
 
 
 
 
 var games={
-tai:taikyoku,
-htg:htg,
-sdf:sdf,
-qg:qg
+connect4:connect4,
+
 
 
 }
@@ -392,26 +383,14 @@ console.log(value.players["p1"])
 
 
   }
-if(value.gamename=="taikyoku") {
+if(value.gamename=="connect4") {
   if(!value.startedRun) {
-    app.lib.games["tai"].first(value)
+    app.lib.games["connect4"].first(value)
   }
-  app.lib.games["tai"].update(value)
+  app.lib.games["connect4"].update(value)
 }
 
-if(value.gamename=="htg") {
-  if(!value.startedRun) {
-    app.lib.games["htg"].first(value)
-  }
-  app.lib.games["htg"].update(value)
-}
 
-if(value.gamename=="sdf") {
-  if(!value.startedRun) {
-    app.lib.games["sdf"].first(value)
-  }
-  app.lib.games["sdf"].update(value)
-}
 }
 
 
