@@ -45,7 +45,9 @@ app.use(function (req, res, next) {
       res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
       res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
       res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3030');
-      res.setHeader('Access-Control-Allow-Origin', 'http://localhost/socket.io/');
+	  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:9999');
+      res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000/socket.io/');
+	    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:9999/socket.io/');
     next();
 });
 
