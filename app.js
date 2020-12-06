@@ -147,11 +147,11 @@ app.lib.handlebars=handlebars
 mongoose=require('./shared/middleware/mongoose')()
 .then(() => {
 
-  app.lib.io = require('socket.io')(server,
+  app.lib.io = require('socket.io')(server,{
    cors: {
     origin: '*',
   }
-  );
+});
   
   server.listen(PORT, () => console.log(`Server running on ${PORT}.`));
 
