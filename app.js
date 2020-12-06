@@ -26,7 +26,7 @@ app.lib = {
 
 
  };
- app.testing=true;
+ app.testing=false;
 
  var addRoom=function(r){
 app.lib.rooms[r.id]=r;
@@ -50,16 +50,16 @@ app.use(function (req, res, next) {
 });
 
 // view engine setup
-const PORT=process.env.PORT || 80
+const PORT=process.env.PORT || 3000
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine("handlebars", hbs({
     helpers: {
 
         inGame: function (id, g) {
-          //console.log("g: "+g)
-          //console.log(id)
-          if(id[g]==null) {
+          console.log("g: "+g)
+          console.log(id)
+          if(id==undefined) {
             return false
           }
           if(id[g]!="") {
