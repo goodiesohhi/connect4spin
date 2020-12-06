@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = function() {
 
-  var MONGODB_URI = process.env.PROD_MONGODB || "mongodb+srv://goodiesohhi:Xtq2663BdpFeugE@taikyoku1-ymrbh.mongodb.net/test?retryWrites=true&w=majority";
+  var MONGODB_URI = "mongodb://localhost:3000/database";
 
   mongoose.Promise = global.Promise;
 

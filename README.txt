@@ -16,7 +16,12 @@ OpenStack creds:
 ssh: 134.117.132.185 
 passwd: connect4isfun
 
+
+
 I have cloned the project into the instance and installed all dependencies (I think) 
+
+mongod -dbpath ./connect4spin/database
+
 npm start to start express and node and stuff.
 in app.js, there's a flag (app.testing).
 there's a corresponding flag in c4.handlebars that disables/enables the button
