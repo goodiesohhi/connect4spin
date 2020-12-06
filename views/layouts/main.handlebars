@@ -12,13 +12,10 @@
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
 
-
+<!--cdn stuff-->
   <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js.map">
 
-
-  </script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -29,7 +26,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <link rel="stylesheet" href="/stylesheets/style.css">
-<link rel="stylesheet" href="/stylesheets/dat.gui.css">
+
   <meta charset="utf-8">
   <title>Connect 4</title>
   <!--Import Google Icon Font-->
@@ -41,6 +38,42 @@
 </head>
 
 <body>
+<div id="cover">
+<div id="loadC"><h2>LOADING....</h2>
+<h1>Loading sockets.. Might take a bit.</h2>
+<script type="text/javascript"> 
+
+var canvasL = null;
+var ctxL =null;
+jQuery(function ($) {
+$( document ).ready(function() {
+
+var x=0
+
+
+  canvasL = document.getElementById("loadCanvas");
+  ctxL = canvasL.getContext("2d");
+  
+  setInterval(function(){ 
+    var img = new Image();
+  img.onload = function() {
+    ctxL.drawImage(img, 0, 0);
+  };
+  img.src = '/load'+x+'.png';
+if(x<3) {
+x++;
+} else {
+x=0;
+}
+  }, 1000);
+
+});
+})
+
+</script>
+<canvas id="loadCanvas" width="100" height="100"></canvas>
+</div>
+</div>
     <a href="/" id="logo" class="brand-logo topZero "><img id="logo" class="logo" src="/images/banner.png"></a>
   {{#if user}}
 
@@ -92,15 +125,8 @@
 <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 <div class="container">
 
-  <ul class="nav nav-tabs">
-    <li ><a id="publicChat"data-toggle="tab" href="#chat">Chat</a></li>
-    <li><a data-toggle="tab" class= "smaller" href="#menu1">Menu 1</a></li>
-    <li><a data-toggle="tab" class= "smaller" href="#menu2">Menu 2</a></li>
 
-  </ul>
-
-  <div class="tab-content">
-    <div id="chat" class="tab-pane fade">
+    <div id="chat">
 
       <div class="panel-body ">
            <ul class="media-list" style="height: 525px; overflow-y: scroll" id="chatbox-listMessages">
@@ -115,15 +141,8 @@
       Please Login to Chat
       {{/unless}}
       </div>
-    </div>
-    <div id="menu1" class="tab-pane fade">
-      <h3>Menu 1</h3>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-    <div id="menu2" class="tab-pane fade">
-      <h3>Menu 2</h3>
-      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-    </div>
+   
+    
 
   </div>
 </div>
@@ -157,6 +176,7 @@
 '/images/bg/tile.png',];
 var randomNumber;
 
+/*
 window.onload = function() {
   if (window.location.href.indexOf("games") > -1) {
 
@@ -172,7 +192,7 @@ window.onload = function() {
  }
  }
 }
-
+*/
   $(document).ready(function(){
 
 if(gameN!=null) {
@@ -180,28 +200,11 @@ if(gameN!=null) {
 
 }
 
-if(!(window.location.href.indexOf("qg") > -1)) {
-randomNumber = Math.floor(Math.random() * images.length);
-var bgImg = 'url(' + images[randomNumber] + ')';
 
-$('body').css({'background':bgImg, 'background-size':'tile', });
-
-
-images.splice(randomNumber,1);
-randomNumber = Math.floor(Math.random() * images.length);
- bgImg = 'url(' + images[randomNumber] + ')';
-
-$('.styleNav').css({'background':bgImg, 'background-size':'tile', });
-} else {
-var blank= 'url(/images/bg/blank.png)'
-$('body').css({'background':blank, 'background-size':'tile', });
-  $('.styleNav').css({'background':blank, 'background-size':'tile', });
-}
 
 
 
 });
-
 
 
     $(function() {
@@ -211,9 +214,7 @@ $('body').css({'background':blank, 'background-size':'tile', });
 
       $('button.openbtn').click(function(e)
 {
-    // Special stuff to do when this link is clicked...
-
-    // Cancel the default action
+    
     e.preventDefault();
 });
     });
@@ -230,44 +231,28 @@ $('body').css({'background':blank, 'background-size':'tile', });
 
   btt.addEventListener('click', function() {
 
-     /* Detect the button class name */
+     
      var overlayOpen = this.className === 'open-overlay';
 
-     /* Toggle the aria-hidden state on the overlay and the
-        no-scroll class on the body */
      overlay.setAttribute('aria-hidden', !overlayOpen);
      body.classList.toggle('noscroll', overlayOpen);
 
-     /* On some mobile browser when the overlay was previously
-        opened and scrolled, if you open it again it doesn't
-        reset its scrollTop property */
+  
      overlay.scrollTop = 0;
 
   }, false);
 
 });
-  /*
-  var locationz=""
-  if(window.location.hostname.includes("localhost")) {
-    locationz='http://localhost:3001'
-  } else {
-    locationz=window.location.hostname
-  }
-   const socket = io.connect(location);
-  /*var tai=2;
 
-
- const socket = io.connect('http://localhost:3001');
- */
 var gameN=null;
 socket=0;
   if (window.location.host.includes("localhost")){
 
-  socket= io.connect(window.location.host)
-  console.log("On LOCAL")
+  socket= io.connect(window.location.host,{transports:['websocket','polling']})
+  console.log("On LOCAL, connecting to "+"ws://"+window.location.host)
   }else{
-   socket= io.connect(window.location.host)
-   console.log("not local")
+   socket= io.connect(window.location.host,{transports:['websocket','polling']})
+   console.log("not local, connecting to "+"ws://"+window.location.host)
   }
 socket.emit('connectZ', {  username: "{{user.username}}" });
 
@@ -280,6 +265,27 @@ socket.emit('connectZ', {  username: "{{user.username}}" });
         ' </div></div></div></li>'
     );
 };
+
+setInterval(function(){ 
+
+if(socket!=null) {
+
+if(!(window.location.href.indexOf("connect4") > -1)) {
+ $("#cover").hide();
+}
+
+if(socket.connected) {
+ $("#cover").hide();
+}
+}
+
+}, 100);
+$(window).on('beforeunload', function(){
+//close socket before unloading
+
+console.log("close socket");
+    socket.close();
+});
 
 
 
@@ -315,11 +321,12 @@ socket.on('chatMessage', function (data) {
 socket.on('reload', function (data) {
 
   console.log("please reload "+data.id)
-  window.location.reload(true);
+//  window.location.reload(true);
 });
 
 
 socket.on('hasWon', function (data) {
+localWinner=data.winner;
 localHasWon=true;
 });
 
@@ -379,6 +386,8 @@ function openNav() {
 function closeNav() {
   document.getElementById("mySidepanel").style.width = "0";
 }
+
+
 
   </script>
 </body>

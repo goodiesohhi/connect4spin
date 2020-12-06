@@ -20,6 +20,23 @@ a {
     }
 }
 
+
+#loadC {
+	
+	 margin: auto;
+  width: 50%;
+}
+#cover {
+	
+	position: fixed; 
+	height: 100%; 
+	width: 100%; 
+	top:0; 
+	left: 0; 
+	color: #FFFFFF;
+	background: #2f3c7d; 
+	z-index:9999;}
+
 /* The sidebar menu */
 .sidenav2 {
   border-style: solid;

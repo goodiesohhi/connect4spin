@@ -17,8 +17,9 @@ ssh: 134.117.132.185
 passwd: connect4isfun
 
 I have cloned the project into the instance and installed all dependencies (I think) 
-SET DEBUG=connect4 & npm start to start express and node and stuff.
+npm start to start express and node and stuff.
 in app.js, there's a flag (app.testing).
+there's a corresponding flag in c4.handlebars that disables/enables the button
 It's set to true which allows the game to be started with only one player connected and play with only themselves.
 
 ToDo:

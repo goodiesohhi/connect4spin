@@ -64,6 +64,10 @@ app.engine("handlebars", hbs({
           if(id==undefined) {
             return false
           }
+		  
+		  if(Object.keys(id).length === 0 && id.constructor === Object) {
+			  return false;
+		  }
           if(id[g]!="") {
           return true
           } else {
@@ -152,7 +156,15 @@ mongoose=require('./shared/middleware/mongoose')()
   app.lib.io = require('socket.io')(server,{
    cors: {
     origin: '*',
-  }
+	methods: ["GET", "POST"],
+	credentials: true
+  },
+  cookie: {
+    name: "test",
+    httpOnly: false,
+    path: "/custom"
+  },
+  transports: ['websocket','polling'],
 });
   
   server.listen(PORT, () => console.log(`Server running on ${PORT}.`));
@@ -237,10 +249,9 @@ obj.save();
 
         socket.on('createRoom', (j) => {
 
-          var lock
+          var lock;
 
-          console.log("Hey1! "+app.lib);
-        console.log("Hey! "+app.lib.roomstuff);
+       
         tRoom=  addRoom( app.lib.roomstuff.createRoom(j.roomName,j.game));
         tRoom.players["p1"]= {
         name: socket.username,
@@ -382,7 +393,7 @@ setInterval(function(){
 
   if(value.players["p1"]==null) {
 
-console.log(value.players["p1"])
+//console.log(value.players["p1"])
  delete app.lib.rooms[value.id];
  //app.lib.io.to(value.id).emit('reload', {});
 

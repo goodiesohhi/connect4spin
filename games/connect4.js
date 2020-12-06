@@ -34,6 +34,18 @@ c4.update=function(value) {
 
     }
   }
+  
+  if(value.gamestate.finish) {
+	  
+	  //count down until room reset;
+	  value.gamestate.timer--;
+	 
+  }
+   if(value.gamestate.timer<=0) {
+	//reset room;
+	 //app.lib.rooms[value.id].started=false;
+    app.lib.rooms[value.id].gamestate=app.lib.games["connect4"].makeroom(value.id);
+   }
 
     if(value.gamestate.turnSwitch>0) {
       value.gamestate.turnSwitch-=1;
@@ -103,6 +115,22 @@ var owner=value.gamestate.board[i][o].owner;
   }
 
 
+for(var n=0;n<4;n++) {
+    if(value.gamestate.board[i+n]!=null) {
+    if(value.gamestate.board[i+n][o-n]!=null) {
+      if(value.gamestate.board[i+n][o-n].owner==owner) {
+      x++;
+    }
+  }
+    }
+  }
+
+
+
+  if(x<4) {
+    x=0;
+  }
+
   if(x>=4) {
 
     value.winner=owner;
@@ -120,7 +148,7 @@ console.log("winner");
         if(value.winner==null) {
       value.gamestate.turn+=1;
     } else {
-
+value.gamestate.turn+=1;
       app.lib.io.to(value.id).emit('hasWon', { winner: value.winner});
       /*app.lib.io.in(value.id).clients(function(error, clients){
            if (error) throw error;
@@ -130,9 +158,9 @@ console.log("winner");
         })
         delete app.lib.rooms[value.id];
         */
-
-         app.lib.rooms[value.id].gamestate=app.lib.games["connect4"].makeroom(value.id);
-           app.lib.rooms[value.id].started=false;
+		app.lib.rooms[value.id].gamestate.finish=true;
+        
+          
           value.winner=null;
 
 
@@ -163,6 +191,11 @@ c4.makeroom=function(theID) {
   board.turnOwner="p1";
   board.turnSwitch=-50;
   board.board=new Array(7);
+  board.lastPiece={};
+  board.pieceID=0;
+  board.canSpin=true;
+  board.finish=false;
+  board.timer=400;
 
   for (var i=0;i<7;i++) {
 
@@ -190,9 +223,7 @@ start=function(app) {
 
 
 
-//  roomTemp=c4.app.lib.roomstuff.createRoom("c4kyoku")
-  //c4.app.lib.rooms[roomTemp.id]=roomTemp
-  //console.log(c4.app.lib.rooms)
+
 
   c4.app.lib.io.on('connection', (socket) => {
 
@@ -206,6 +237,91 @@ start=function(app) {
 
 
 
+ socket.on('spinMove', (data) => {
+	   if (c4.app.lib.rooms[data.room]!=null) {
+
+
+if(c4.app.lib.rooms[data.room].winner!=null&&c4.app.lib.rooms[data.room].gamestate.turn<3) {
+  c4.app.lib.rooms[data.room].winner=null;
+}
+
+if(c4.app.lib.rooms[data.room]!=null) {
+	if(!c4.app.lib.rooms[data.room].gamestate.finish) {
+    if(c4.app.lib.rooms[data.room].gamestate.turnSwitch==-50) {
+
+if(data.player==  c4.app.lib.rooms[data.room].gamestate.turnOwner||app.testing) {
+	if(c4.app.lib.rooms[data.room].gamestate.canSpin) {
+		
+		 var tempBoard;
+		 tempBoard=new Array(7);
+  for (var i=0;i<7;i++) {
+
+   tempBoard[i]=new Array(0);
+  }
+		
+		if(data.left==false) {
+			
+					for(var z=6;z>=0;z--) {
+
+
+for(var e=6;e>=0;e--) {
+	
+	if(c4.app.lib.rooms[data.room].gamestate.board[z]!=null) {
+	//console.log(" column "+z);
+	if(c4.app.lib.rooms[data.room].gamestate.board[z][e]!=null&&c4.app.lib.rooms[data.room].gamestate.board[z][e]!==undefined) {
+		c4.app.lib.rooms[data.room].gamestate.board[z][e].lastY=z;
+		tempBoard[e].push(c4.app.lib.rooms[data.room].gamestate.board[z][e]);
+		//console.log("moving "+z+","+e+" to column "+e);
+	}
+	}
+}
+         
+		 }
+			
+		} else {
+					for(var z=0;z<7;z++) {
+
+
+for(var e=6;e>=0;e--) {
+	if(c4.app.lib.rooms[data.room].gamestate.board[z]!=null) {
+	if(c4.app.lib.rooms[data.room].gamestate.board[z][e]!=null&&c4.app.lib.rooms[data.room].gamestate.board[z][e]!==undefined) {
+		c4.app.lib.rooms[data.room].gamestate.board[z][e].lastY=6-z;
+		tempBoard[6-e].push(c4.app.lib.rooms[data.room].gamestate.board[z][e]);
+		//console.log("moving "+z+","+e+" to column "+6-e);
+	}
+	}
+}
+         
+		 }
+			
+		}
+		
+		for(var z=7;z>0;z--) {
+		for(var e=7;e>0;e--) {
+	if(tempBoard[z]!=null) {
+	if(tempBoard[z][e]!=null&&tempBoard[z][e]!=undefined) {
+		
+		tempBoard[z][e].y=e;
+	
+	}
+		}}
+		}
+		
+		c4.app.lib.rooms[data.room].gamestate.board=tempBoard;
+		
+		c4.app.lib.rooms[data.room].gamestate.lastPiece=-2;
+
+  c4.app.lib.rooms[data.room].gamestate.turnSwitch=7;
+   c4.app.lib.rooms[data.room].gamestate.canSpin=false;
+		
+		
+
+	   
+	   
+	   }}}}}}
+})
+ 
+ 
 
   socket.on('makeMove', (data) => {
   if (c4.app.lib.rooms[data.room]!=null) {
@@ -215,10 +331,12 @@ if(c4.app.lib.rooms[data.room].winner!=null&&c4.app.lib.rooms[data.room].gamesta
   c4.app.lib.rooms[data.room].winner=null;
 }
 if(c4.app.lib.rooms[data.room]!=null) {
+	if(!c4.app.lib.rooms[data.room].gamestate.finish) {
     if(c4.app.lib.rooms[data.room].gamestate.turnSwitch==-50) {
 
 if(data.player==  c4.app.lib.rooms[data.room].gamestate.turnOwner||app.testing) {
 
+if(c4.app.lib.rooms[data.room].gamestate.board[data.location].length<7) {
 
 
 
@@ -234,6 +352,8 @@ if(data.player==  c4.app.lib.rooms[data.room].gamestate.turnOwner||app.testing) 
       {
         owner:p,
         y:c4.app.lib.rooms[data.room].gamestate.board[data.location].length,
+		id:c4.app.lib.rooms[data.room].gamestate.pieceID,
+		lastY:-1,
       }
     );
 
@@ -243,17 +363,22 @@ if(data.player==  c4.app.lib.rooms[data.room].gamestate.turnOwner||app.testing) 
     {
       owner:data.player,
       y:c4.app.lib.rooms[data.room].gamestate.board[data.location].length,
+	  id:c4.app.lib.rooms[data.room].gamestate.pieceID,
+	  lastyY:-1,
     }
   );
   }
+  
 
-
+c4.app.lib.rooms[data.room].gamestate.lastPiece=c4.app.lib.rooms[data.room].gamestate.pieceID;
+c4.app.lib.rooms[data.room].gamestate.pieceID++;
   c4.app.lib.rooms[data.room].gamestate.turnSwitch=7;
-
+   c4.app.lib.rooms[data.room].gamestate.canSpin=true;
 
 
 }
-}}
+}
+}}}
 
 
 }
