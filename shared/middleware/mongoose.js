@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = function() {
 
-  var MONGODB_URI = "mongodb://localhost:3000/database";
+  var MONGODB_URI = "mongodb://localhost:3000/";
 
   mongoose.Promise = global.Promise;
 
