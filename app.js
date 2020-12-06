@@ -26,7 +26,7 @@ app.lib = {
 
 
  };
- app.testing=true;
+ app.testing=false;
 
  var addRoom=function(r){
 app.lib.rooms[r.id]=r;
@@ -57,9 +57,9 @@ app.engine("handlebars", hbs({
     helpers: {
 
         inGame: function (id, g) {
-          //console.log("g: "+g)
-          //console.log(id)
-          if(id[g]==null) {
+          console.log("g: "+g)
+          console.log(id)
+          if(id==undefined) {
             return false
           }
           if(id[g]!="") {
