@@ -139,7 +139,6 @@ app.lib.handlebars=handlebars
 
 
 
-// WARNING: app.listen(80) will NOT work here!
 
 
 
@@ -149,8 +148,9 @@ mongoose=require('./shared/middleware/mongoose')()
 .then(() => {
 
   app.lib.io = require('socket.io')(server);
-  // mongo is connected, so now we can start the express server.
-  server.listen(PORT, () => console.log(`Server up and running on ${PORT}.`));
+  app.lib.io.set('origins', '*:*');
+ 
+  server.listen(PORT, () => console.log(`Server running on ${PORT}.`));
 
 
 
