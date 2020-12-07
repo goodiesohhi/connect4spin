@@ -13,7 +13,7 @@ bcrypt(hashing. for auth);
 
 Instructions.
 OpenStack creds:
-ssh: 134.117.132.185 
+ssh student@134.117.132.185 
 passwd: connect4isfun
 
 
@@ -27,8 +27,5 @@ in app.js, there's a flag (app.testing).
 there's a corresponding flag in c4.handlebars that disables/enables the button
 It's set to true which allows the game to be started with only one player connected and play with only themselves.
 
-ToDo:
-Make it prettier. Animations etc.
 
-Implement that extra gimmick of letting players turn the board and have the pieces fall and then continue from there.
  

@@ -40,7 +40,7 @@ app.use(flash());
 app.use(secure)
 app.use(function (req, res, next) {
 
-    // Website you wish to allow to connect
+   
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost/');
       res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
       res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
@@ -51,7 +51,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-// view engine setup
+// view engine
 const PORT=process.env.PORT || 3000
 
 app.set('views', path.join(__dirname, 'views'));
@@ -121,18 +121,18 @@ app.post('/send', (req, res) => {
 
 });
 
-// catch 404 and forward to error handler
+// forward 404 errors.
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+//error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+  
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  //render error page
   res.status(err.status || 500);
   res.render('error');
 });
@@ -149,7 +149,7 @@ app.lib.handlebars=handlebars
 
 
 
-
+//connect to mongodb server using mongoose
 mongoose=require('./shared/middleware/mongoose')()
 .then(() => {
 
